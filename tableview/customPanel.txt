@@ -1,0 +1,136 @@
+class CustomFilterPunel {
+  eGui;
+  init(params) {
+      this.eGui = document.createElement('div');
+      this.eGui.style.textAlign = 'center';
+  
+      // calculate stats when new rows loaded, i.e. onModelUpdated
+      const renderStats = () => {
+          this.eGui.innerHTML = this.calculateHTML(params, filter)
+      };
+      params.api.addEventListener('gridReady', renderStats);
+  }
+
+  getGui() {
+      return this.eGui;
+  }
+
+  refresh() {}
+
+  calculateHTML(params, nodes) {
+        let html = nodes.map((node) => {
+            if (node === "cols")
+                return this.calculateCols(params, nodes.length);
+            else
+                return this.calculateParams(params, node, nodes.length);
+        })
+
+        document.getElementById("ag-32").lastChild.style.width = "100%";
+
+        return `<div 
+                    class='filter-wrapper'
+                    style='grid-template-rows: repeat(${nodes.length}, ${99.5 / (nodes.length)}vh)'
+                >
+                    ${html.join("")}
+                </div>
+        `
+  }
+
+  calculateCols(params, len) {
+      let cols = Object.keys(params.api.getRowNode(1).data);
+      let cols_thtml = cols.map((column) => {
+          return `
+              <div class='column-filter-item'>
+                    <input 
+                        class='input-cols-filter' 
+                        onclick='clickItem(event, "AllCols")' 
+                        type="checkbox" 
+                        value='${column}' 
+                        checked
+                        id='${column}' 
+                    />
+                    <label class='input-column-name' for='${column}'>${column.toLocaleUpperCase()}</label>
+              </div>
+          `
+      })
+
+      return `
+          <div class='column-filter' id='ag-cols'>
+              <div>
+                  <div class='title'>Search for cols...</div>
+                  <div class='column-filter-wrapper' style="height: calc(${90 / len}vh - 50px);">
+                      <div class='column-filter-item'>
+                            <input 
+                                class='input-cols-filter' 
+                                type='checkbox' 
+                                value='All' 
+                                onclick='clickAll("ag-cols")' 
+                                checked
+                                id='AllCols' 
+                            />
+                            <label class='input-column-name' for='AllCols'>(All)</label>
+                      </div>
+                      ${cols_thtml.join("")}
+                  </div>
+              </div>
+              <div class='apply-button-wrapper'>
+                  <button class='apply-button' onclick='clickHandleCols(event)'>Apply</button>
+              </div>
+          </div>
+      `;
+  };
+
+  calculateParams(params, node, len) {
+      let result = [];
+      params.api.forEachNode(elem => {
+          result.push(elem.data[node.toLocaleLowerCase()]);
+      });
+      let values = [...new Set(result)];
+
+      let values_html = values.map((value) => {
+          return `
+              <div class='column-filter-item'>
+                  <input 
+                        class='input-cols-filter' 
+                        onclick='clickItem(event, "AllParams${node}")' 
+                        type="checkbox" 
+                        value='${value}' 
+                        checked
+                        id='${value}' 
+                    />
+                  <label for='${value}' class='input-column-name'>${value}</label>
+              </div>
+          `
+      })
+
+      return `
+          <div class='column-filter' id='${node}'>
+              <div>
+                  <div class='title'>Search for ${node}...</div>
+                  <div class='column-filter-wrapper' style="height: calc(${90 / len}vh - 50px);">
+                      <div class='column-filter-item'>
+                            <input 
+                                class='input-cols-filter' 
+                                type="checkbox" 
+                                value='All' 
+                                onclick='clickAll("${node}")' 
+                                checked
+                                id='AllParams${node}' 
+                            />
+                            <label 
+                                for='AllParams${node}' 
+                                class='input-column-name'
+                            >
+                                (All)
+                            </label>
+                      </div>
+                      ${values_html.join("")}
+                  </div>
+              </div>
+              <div class='apply-button-wrapper'>
+                  <button class='apply-button' onclick='clickHandleFilter(event, "${node}")'>Apply</button>
+              </div>
+          </div>
+      `;
+  };
+}
