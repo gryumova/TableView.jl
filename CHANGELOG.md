@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
  - Added CHANGELOG file.
+ - Added the ability to disable resizable columns.
 
 ### Fixed
  - Сlick function on filter elements.
