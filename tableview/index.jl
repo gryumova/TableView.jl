@@ -115,9 +115,6 @@ function show(table, filter=[], resize=true, outFile="./result/index.html")
         <script src='http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js'></script>
         <style>
             $style
-            body {
-                background: #ffffff;
-            } 
         </style>
     </head>
     <body>
@@ -248,6 +245,7 @@ function show(table, filter=[], resize=true, outFile="./result/index.html")
                 gridApi.setColumnFilterModel(id.toLocaleLowerCase(), { 
                     values: list
                 }).then(() => gridApi.onFilterChanged())
+
                 event.preventDefault();
             }
 
@@ -271,6 +269,42 @@ function show(table, filter=[], resize=true, outFile="./result/index.html")
                 if (!event.target.checked) {
                     allCheckbox.checked = false;
                 } 
+            }
+
+            function inputSearch(event, id) {
+                if (event.target.value.length > 0) {
+                    \$(`#\${id} .column-filter-item`).hide().filter(function () {
+                        return \$(this).text().toLowerCase().indexOf(event.target.value.toLowerCase()) != -1;
+                    }).show();
+                }
+                else {
+                    \$(`#\${id} .column-filter-item`).show();
+                }
+            }
+
+            function clickResetRow(id) {
+                let result = [];
+                gridApi.forEachNode(elem => {
+                    result.push(elem.data[id.toLocaleLowerCase()]);
+                });
+                let list = [...new Set(result)];
+
+                gridApi.setColumnFilterModel(id.toLocaleLowerCase(), { 
+                    values: list
+                }).then(() => gridApi.onFilterChanged())
+            }
+
+            function clickResetCols(id) {
+                event.preventDefault();
+
+                const columnDefs = gridApi.getColumnDefs();
+                columnDefs.forEach((colDef) => {
+                    colDef.hide = false;
+                });
+
+                gridApi.setGridOption('columnDefs', columnDefs);
+
+                \$(`#\${id} .column-filter-item`).show();
             }
         </script>
     </body>

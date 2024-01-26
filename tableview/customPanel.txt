@@ -1,3 +1,4 @@
+
 class CustomFilterPunel {
   eGui;
   init(params) {
@@ -9,8 +10,8 @@ class CustomFilterPunel {
           this.eGui.innerHTML = this.calculateHTML(params, filter)
       };
       params.api.addEventListener('gridReady', renderStats);
+      params.api.addEventListener('modelUpdated', renderStats);
   }
-
   getGui() {
       return this.eGui;
   }
@@ -37,8 +38,10 @@ class CustomFilterPunel {
   }
 
   calculateCols(params, len) {
-      let cols = Object.keys(params.api.getRowNode(1).data);
-      let cols_thtml = cols.map((column) => {
+      let columns = params.api.getAllDisplayedColumns().map((item) => {
+        return item.colId
+      });
+      let cols_thtml = columns.map((column) => {
           return `
               <div class='column-filter-item'>
                     <input 
@@ -54,11 +57,18 @@ class CustomFilterPunel {
           `
       })
 
+
       return `
           <div class='column-filter' id='ag-cols'>
               <div>
-                  <div class='title'>Search for cols...</div>
-                  <div class='column-filter-wrapper' style="height: calc(${90 / len}vh - 50px);">
+                  <input 
+                    type="text" 
+                    id="searcherCols" 
+                    class='title' 
+                    placeholder="Search for cols..."
+                    oninput="inputSearch(event, 'searchCols')"
+                  />
+                  <div class='column-filter-wrapper' style="height: calc(${90 / len}vh - 50px);" id="searchCols">
                       <div class='column-filter-item'>
                             <input 
                                 class='input-cols-filter' 
@@ -74,6 +84,7 @@ class CustomFilterPunel {
                   </div>
               </div>
               <div class='apply-button-wrapper'>
+                  <button class='apply-button' onclick='clickResetCols("searchCols")'>Reset</button>
                   <button class='apply-button' onclick='clickHandleCols(event)'>Apply</button>
               </div>
           </div>
@@ -83,7 +94,9 @@ class CustomFilterPunel {
   calculateParams(params, node, len) {
       let result = [];
       params.api.forEachNode(elem => {
-          result.push(elem.data[node.toLocaleLowerCase()]);
+            if (elem.displayed === true) {
+                result.push(elem.data[node.toLocaleLowerCase()]);
+            }
       });
       let values = [...new Set(result)];
 
@@ -106,8 +119,14 @@ class CustomFilterPunel {
       return `
           <div class='column-filter' id='${node}'>
               <div>
-                  <div class='title'>Search for ${node}...</div>
-                  <div class='column-filter-wrapper' style="height: calc(${90 / len}vh - 50px);">
+                  <input 
+                    type="text" 
+                    id="searcher${node}" 
+                    class="title" 
+                    placeholder="Search for ${node}..." 
+                    oninput="inputSearch(event, 'search${node}')"
+                  />
+                  <div class='column-filter-wrapper' style="height: calc(${90 / len}vh - 50px);" id="search${node}">
                       <div class='column-filter-item'>
                             <input 
                                 class='input-cols-filter' 
@@ -128,7 +147,8 @@ class CustomFilterPunel {
                   </div>
               </div>
               <div class='apply-button-wrapper'>
-                  <button class='apply-button' onclick='clickHandleFilter(event, "${node}")'>Apply</button>
+                    <button class='apply-button' onclick='clickResetRow("${node}")'>Reset</button>
+                    <button class='apply-button' onclick='clickHandleFilter(event, "${node}")'>Apply</button>
               </div>
           </div>
       `;

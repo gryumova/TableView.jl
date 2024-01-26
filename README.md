@@ -1,6 +1,5 @@
 # Table-view
 Generating an html file with a table based on aggrid. 
-![](./result/example.png)
 
 # Usage
 the show function returns the name of the generated file:

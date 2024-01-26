@@ -1,8 +1,10 @@
+
 body {
     display: flex;
     flex-direction: row;
 
     margin: 0px;
+    background: #ffffff;
 } 
 #grid-container {
     border: none;
@@ -41,10 +43,20 @@ body {
 }
 .title {
     text-align: start;
-    margin: 0px 5px 5px 5px;
+    width: 100%;
+    margin: -5px 5px 5px 5px;
 
+    font-size: 14px;
     font-weight: 600;
     color: #808080;
+
+    border:none;
+
+    cursor: pointer;
+}
+.title:focus {
+    border: none;
+    outline: none;
 }
 .column-filter-item {
     margin: 7px 0px 0px 0px;
@@ -72,6 +84,8 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+
+    cursor: pointer;
 }
 input[type="checkbox"] {
     margin-right: 15px;
@@ -124,15 +138,18 @@ input[type="checkbox"]:checked:after {
 }
 .apply-button-wrapper {
     width: calc(100% - 10px);
+    height: 29px;
 
     position: absolute;
+    margin-top: 10px;
+
     bottom: 5px;
     right: 5px;
     left: 5px;
 }
 .apply-button {
-    width: 100%;
-    margin-top: 5px;
+    position: relative;
+    width: 49%;
 
     border: none;
     background-color: #eeeeee;
@@ -148,7 +165,6 @@ input[type="checkbox"]:checked:after {
 .apply-button:hover {
     background: #cdcdcd;
 }
-
 label {
     pointer: cursor;
 }

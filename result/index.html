@@ -5,11 +5,13 @@
         <meta name='viewport' content='width=device-width, initial-scale=1'/>
         <script src='http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js'></script>
         <style>
-            body {
+            
+body {
     display: flex;
     flex-direction: row;
 
     margin: 0px;
+    background: #ffffff;
 } 
 #grid-container {
     border: none;
@@ -48,10 +50,20 @@
 }
 .title {
     text-align: start;
-    margin: 0px 5px 5px 5px;
+    width: 100%;
+    margin: -5px 5px 5px 5px;
 
+    font-size: 14px;
     font-weight: 600;
     color: #808080;
+
+    border:none;
+
+    cursor: pointer;
+}
+.title:focus {
+    border: none;
+    outline: none;
 }
 .column-filter-item {
     margin: 7px 0px 0px 0px;
@@ -79,6 +91,8 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+
+    cursor: pointer;
 }
 input[type="checkbox"] {
     margin-right: 15px;
@@ -131,15 +145,18 @@ input[type="checkbox"]:checked:after {
 }
 .apply-button-wrapper {
     width: calc(100% - 10px);
+    height: 29px;
 
     position: absolute;
+    margin-top: 10px;
+
     bottom: 5px;
     right: 5px;
     left: 5px;
 }
 .apply-button {
-    width: 100%;
-    margin-top: 5px;
+    position: relative;
+    width: 49%;
 
     border: none;
     background-color: #eeeeee;
@@ -155,13 +172,10 @@ input[type="checkbox"]:checked:after {
 .apply-button:hover {
     background: #cdcdcd;
 }
-
 label {
     pointer: cursor;
 }
-            body {
-                background: #ffffff;
-            } 
+
         </style>
     </head>
     <body>
@@ -212,7 +226,8 @@ label {
             }
         </style>
         <script>
-            class CustomFilterPunel {
+            
+class CustomFilterPunel {
   eGui;
   init(params) {
       this.eGui = document.createElement('div');
@@ -223,8 +238,8 @@ label {
           this.eGui.innerHTML = this.calculateHTML(params, filter)
       };
       params.api.addEventListener('gridReady', renderStats);
+      params.api.addEventListener('modelUpdated', renderStats);
   }
-
   getGui() {
       return this.eGui;
   }
@@ -251,8 +266,10 @@ label {
   }
 
   calculateCols(params, len) {
-      let cols = Object.keys(params.api.getRowNode(1).data);
-      let cols_thtml = cols.map((column) => {
+      let columns = params.api.getAllDisplayedColumns().map((item) => {
+        return item.colId
+      });
+      let cols_thtml = columns.map((column) => {
           return `
               <div class='column-filter-item'>
                     <input 
@@ -268,11 +285,18 @@ label {
           `
       })
 
+
       return `
           <div class='column-filter' id='ag-cols'>
               <div>
-                  <div class='title'>Search for cols...</div>
-                  <div class='column-filter-wrapper' style="height: calc(${90 / len}vh - 50px);">
+                  <input 
+                    type="text" 
+                    id="searcherCols" 
+                    class='title' 
+                    placeholder="Search for cols..."
+                    oninput="inputSearch(event, 'searchCols')"
+                  />
+                  <div class='column-filter-wrapper' style="height: calc(${90 / len}vh - 50px);" id="searchCols">
                       <div class='column-filter-item'>
                             <input 
                                 class='input-cols-filter' 
@@ -288,6 +312,7 @@ label {
                   </div>
               </div>
               <div class='apply-button-wrapper'>
+                  <button class='apply-button' onclick='clickResetCols("searchCols")'>Reset</button>
                   <button class='apply-button' onclick='clickHandleCols(event)'>Apply</button>
               </div>
           </div>
@@ -297,7 +322,9 @@ label {
   calculateParams(params, node, len) {
       let result = [];
       params.api.forEachNode(elem => {
-          result.push(elem.data[node.toLocaleLowerCase()]);
+            if (elem.displayed === true) {
+                result.push(elem.data[node.toLocaleLowerCase()]);
+            }
       });
       let values = [...new Set(result)];
 
@@ -320,8 +347,14 @@ label {
       return `
           <div class='column-filter' id='${node}'>
               <div>
-                  <div class='title'>Search for ${node}...</div>
-                  <div class='column-filter-wrapper' style="height: calc(${90 / len}vh - 50px);">
+                  <input 
+                    type="text" 
+                    id="searcher${node}" 
+                    class="title" 
+                    placeholder="Search for ${node}..." 
+                    oninput="inputSearch(event, 'search${node}')"
+                  />
+                  <div class='column-filter-wrapper' style="height: calc(${90 / len}vh - 50px);" id="search${node}">
                       <div class='column-filter-item'>
                             <input 
                                 class='input-cols-filter' 
@@ -342,7 +375,8 @@ label {
                   </div>
               </div>
               <div class='apply-button-wrapper'>
-                  <button class='apply-button' onclick='clickHandleFilter(event, "${node}")'>Apply</button>
+                    <button class='apply-button' onclick='clickResetRow("${node}")'>Reset</button>
+                    <button class='apply-button' onclick='clickHandleFilter(event, "${node}")'>Apply</button>
               </div>
           </div>
       `;
@@ -427,6 +461,7 @@ label {
                 gridApi.setColumnFilterModel(id.toLocaleLowerCase(), { 
                     values: list
                 }).then(() => gridApi.onFilterChanged())
+
                 event.preventDefault();
             }
 
@@ -450,6 +485,42 @@ label {
                 if (!event.target.checked) {
                     allCheckbox.checked = false;
                 } 
+            }
+
+            function inputSearch(event, id) {
+                if (event.target.value.length > 0) {
+                    $(`#${id} .column-filter-item`).hide().filter(function () {
+                        return $(this).text().toLowerCase().indexOf(event.target.value.toLowerCase()) != -1;
+                    }).show();
+                }
+                else {
+                    $(`#${id} .column-filter-item`).show();
+                }
+            }
+
+            function clickResetRow(id) {
+                let result = [];
+                gridApi.forEachNode(elem => {
+                    result.push(elem.data[id.toLocaleLowerCase()]);
+                });
+                let list = [...new Set(result)];
+
+                gridApi.setColumnFilterModel(id.toLocaleLowerCase(), { 
+                    values: list
+                }).then(() => gridApi.onFilterChanged())
+            }
+
+            function clickResetCols(id) {
+                event.preventDefault();
+
+                const columnDefs = gridApi.getColumnDefs();
+                columnDefs.forEach((colDef) => {
+                    colDef.hide = false;
+                });
+
+                gridApi.setGridOption('columnDefs', columnDefs);
+
+                $(`#${id} .column-filter-item`).show();
             }
         </script>
     </body>
