@@ -85,7 +85,7 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
 
-    cursor: pointer;
+    pointer: default;
 }
 input[type="checkbox"] {
     margin-right: 15px;
@@ -136,6 +136,9 @@ input[type="checkbox"]:not(:checked):after {
 input[type="checkbox"]:checked:after {
     opacity: 1;
 }
+input[type="text"] {
+    cursor: text;
+}
 .apply-button-wrapper {
     width: calc(100% - 10px);
     height: 29px;
@@ -166,5 +169,5 @@ input[type="checkbox"]:checked:after {
     background: #cdcdcd;
 }
 label {
-    pointer: cursor;
+    pointer: default;
 }
