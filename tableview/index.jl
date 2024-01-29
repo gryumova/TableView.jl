@@ -87,9 +87,9 @@ function getSideBar(bar)
     end
 end
 
-function show(table, filter=[], resize=true, outFile="./result/index.html")
+function showTable(table, filter=[], resize=true, outFile="./result/index.html")
     rowData = JSON.json(table)
-    columnDefs = getColumnDefs(table, resize)
+    columnDefs = getColumnDefs(table)
     if !resize
         minWidth = "minWidth: 150"
     else
@@ -228,6 +228,7 @@ function show(table, filter=[], resize=true, outFile="./result/index.html")
                 });
 
                 gridApi.setGridOption('columnDefs', columnDefs);
+
                 event.preventDefault();
             }
 
@@ -241,12 +242,33 @@ function show(table, filter=[], resize=true, outFile="./result/index.html")
                         list.push(node.value) ;
                 })
 
-                // set filter model and update
                 gridApi.setColumnFilterModel(id.toLocaleLowerCase(), { 
                     values: list
                 }).then(() => gridApi.onFilterChanged())
+                .then(() => \$(`.filter-wrapper .column-filter`).map((item, elem) => {
+                    if (elem.id !== id) {
+                        updateFilter(elem.id);
+                    }
+                }));
 
                 event.preventDefault();
+            }
+
+            function updateFilter(id) {
+                if (id !== 'ag-cols') {
+                    let result = [];
+                    gridApi.getRenderedNodes().map(elem => {
+                        result.push(elem.data[id.toLocaleLowerCase()].toLocaleLowerCase());
+                    });
+                    let list = [...new Set(result)];
+
+                    \$(`#\${id} .column-filter-item`).hide().filter(function () {
+                        if (\$(this).text().trim() === '(All)') 
+                            return true;
+                        
+                        return list.indexOf(\$(this).text().trim().toLowerCase()) !== -1;
+                    }).show();
+                } 
             }
 
             function clickAll(id) {
@@ -265,9 +287,9 @@ function show(table, filter=[], resize=true, outFile="./result/index.html")
             }
 
             function clickItem(event, id) {
-                let allCheckbox = document.getElementById(id);
+                let AllCheckbox = document.getElementById(id);
                 if (!event.target.checked) {
-                    allCheckbox.checked = false;
+                    AllCheckbox.checked = false;
                 } 
             }
 
@@ -292,6 +314,13 @@ function show(table, filter=[], resize=true, outFile="./result/index.html")
                 gridApi.setColumnFilterModel(id.toLocaleLowerCase(), { 
                     values: list
                 }).then(() => gridApi.onFilterChanged())
+                .then(() => \$(`.filter-wrapper .column-filter`).map((item, elem) => {
+                    updateFilter(elem.id);
+                }));
+
+                \$(`#\${id} .column-filter-item input`).each((index, elem) => {
+                    elem.checked = true;
+                });
             }
 
             function clickResetCols(id) {
@@ -304,7 +333,9 @@ function show(table, filter=[], resize=true, outFile="./result/index.html")
 
                 gridApi.setGridOption('columnDefs', columnDefs);
 
-                \$(`#\${id} .column-filter-item`).show();
+                \$(`#\${id} .column-filter-item input`).each((index, elem) => {
+                    elem.checked = true;
+                });
             }
         </script>
     </body>
@@ -324,5 +355,5 @@ filters = ["Location","cols", "Company", "Rocket"]
 
 bigData = readData("./tableview/data.txt")
 
-show(JSON.parse(bigData), filters, false)
+showTable(JSON.parse(bigData), filters, false)
 

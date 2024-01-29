@@ -85,7 +85,7 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
 
-    pointer: default;
+    cursor: default;
 }
 input[type="checkbox"] {
     margin-right: 15px;
@@ -167,7 +167,4 @@ input[type="text"] {
 
 .apply-button:hover {
     background: #cdcdcd;
-}
-label {
-    pointer: default;
 }

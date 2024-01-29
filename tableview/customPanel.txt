@@ -9,11 +9,18 @@ class CustomFilterPunel {
       const renderStats = () => {
           this.eGui.innerHTML = this.calculateHTML(params, filter)
       };
+      const updateStat = () => {
+          this.eGui.innerHTML = this.updateHTML(params, filter, node); 
+      }
       params.api.addEventListener('gridReady', renderStats);
-      params.api.addEventListener('modelUpdated', renderStats);
+    //   params.api.addEventListener('modelUpdated', () => console.log(this.updated));
   }
   getGui() {
       return this.eGui;
+  }
+
+  setUpdated(value) {
+    this.updated = value;
   }
 
   refresh() {}

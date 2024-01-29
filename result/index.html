@@ -232,7 +232,6 @@ class CustomFilterPunel {
       this.eGui = document.createElement('div');
       this.eGui.style.textAlign = 'center';
   
-      // calculate stats when new rows loaded, i.e. onModelUpdated
       const renderStats = () => {
           this.eGui.innerHTML = this.calculateHTML(params, filter)
       };
@@ -240,7 +239,6 @@ class CustomFilterPunel {
           this.eGui.innerHTML = this.updateHTML(params, filter, node); 
       }
       params.api.addEventListener('gridReady', renderStats);
-    //   params.api.addEventListener('modelUpdated', () => console.log(this.updated));
   }
   getGui() {
       return this.eGui;
@@ -253,21 +251,63 @@ class CustomFilterPunel {
   refresh() {}
 
   calculateHTML(params, nodes) {
-        let html = nodes.map((node) => {
+        let textFilter = nodes.map((node) => {
             if (node === "cols")
                 return this.calculateCols(params, nodes.length);
             else
                 return this.calculateParams(params, node, nodes.length);
         })
+        let numericFulter = calculateNumericFilter(params, "Price");
 
         document.getElementById("ag-32").lastChild.style.width = "100%";
 
-        return `<div 
-                    class='filter-wrapper'
-                    style='grid-template-rows: repeat(${nodes.length}, ${99.5 / (nodes.length)}vh)'
+        return `
+        <div>
+            <div 
+                class='filter-wrapper'
+                style='grid-template-rows: repeat(${nodes.length}, ${99.5 / (nodes.length)}vh)'
+            >
+                ${textFilter.join("")}
+            </div>
+            <div>
+                ${numericFulter}
+            </div>
+        </div>
+        `
+  }
+
+  calculateNumericFilter(params, node) {
+        return `
+        <div>
+            <div 
+                class="slider" 
+                data-slider  
+                data-initial-start="15" 
+                data-initial-end="83"
+            > 
+                <span 
+                    class="slider-handle" 
+                    data-slider-handle 
+                    role="slider"
+                > 
+                </span> 
+                <span 
+                    class="slider-fill" 
+                    data-slider-fill
                 >
-                    ${html.join("")}
-                </div>
+                </span> 
+    
+                <span 
+                    class="slider-handle" 
+                    data-slider-handle 
+                    role="slider"
+                > 
+                </span> 
+              
+                <input type="hidden" /> 
+                <input type="hidden" /> 
+            </div> 
+        </div>
         `
   }
 
@@ -277,52 +317,50 @@ class CustomFilterPunel {
       });
       let cols_thtml = columns.map((column) => {
           return `
-              <div class='column-filter-item'>
-                    <input 
-                        class='input-cols-filter' 
-                        onclick='clickItem(event, "AllCols")' 
-                        type="checkbox" 
-                        value='${column}' 
-                        checked
-                        id='${column}' 
-                    />
-                    <label class='input-column-name' for='${column}'>${column.toLocaleUpperCase()}</label>
-              </div>
-          `
+            <div class='column-filter-item'>
+                <input 
+                    class='input-cols-filter' 
+                    onclick='clickItem(event, "AllCols")' 
+                    type="checkbox" 
+                    value='${column}' 
+                    checked
+                    id='${column}' 
+                />
+                <label class='input-column-name' for='${column}'>${column.toLocaleUpperCase()}</label>
+            </div>`
       })
 
 
       return `
-          <div class='column-filter' id='ag-cols'>
-              <div>
-                  <input 
-                    type="text" 
-                    id="searcherCols" 
-                    class='title' 
-                    placeholder="Search for cols..."
-                    oninput="inputSearch(event, 'searchCols')"
-                  />
-                  <div class='column-filter-wrapper' style="height: calc(${90 / len}vh - 50px);" id="searchCols">
-                      <div class='column-filter-item'>
-                            <input 
-                                class='input-cols-filter' 
-                                type='checkbox' 
-                                value='All' 
-                                onclick='clickAll("ag-cols")' 
-                                checked
-                                id='AllCols' 
-                            />
-                            <label class='input-column-name' for='AllCols'>(All)</label>
-                      </div>
-                      ${cols_thtml.join("")}
-                  </div>
-              </div>
-              <div class='apply-button-wrapper'>
-                  <button class='apply-button' onclick='clickResetCols("searchCols")'>Reset</button>
-                  <button class='apply-button' onclick='clickHandleCols(event)'>Apply</button>
-              </div>
-          </div>
-      `;
+        <div class='column-filter' id='ag-cols'>
+            <div>
+                <input 
+                type="text" 
+                id="searcherCols" 
+                class='title' 
+                placeholder="Search for cols..."
+                oninput="inputSearch(event, 'searchCols')"
+                />
+                <div class='column-filter-wrapper' style="height: calc(${90 / len}vh - 50px);" id="searchCols">
+                    <div class='column-filter-item'>
+                        <input 
+                            class='input-cols-filter' 
+                            type='checkbox' 
+                            value='All' 
+                            onclick='clickAll("ag-cols")' 
+                            checked
+                            id='AllCols' 
+                        />
+                        <label class='input-column-name' for='AllCols'>(All)</label>
+                    </div>
+                    ${cols_thtml.join("")}
+                </div>
+            </div>
+            <div class='apply-button-wrapper'>
+                <button class='apply-button' onclick='clickResetCols("searchCols")'>Reset</button>
+                <button class='apply-button' onclick='clickHandleCols(event)'>Apply</button>
+            </div>
+        </div>`
   };
 
   calculateParams(params, node, len) {
@@ -467,25 +505,28 @@ class CustomFilterPunel {
                 gridApi.setColumnFilterModel(id.toLocaleLowerCase(), { 
                     values: list
                 }).then(() => gridApi.onFilterChanged())
-                .then(() => $(`.filter-wrapper .column-filter`).map((item, elem) => {
-                    if (elem.id !== id) {
-                        updateFilter(elem.id);
-                    }
-                }));
-
+                .then(() => {
+                    $(`.filter-wrapper .column-filter`).map((item, elem) => {
+                        if (elem.id !== id) {
+                            updateFilter(elem.id);
+                        }
+                    })
+                });
                 event.preventDefault();
             }
 
             function updateFilter(id) {
-                if (id !== "ag-cols") {
+                if (id !== 'ag-cols') {
                     let result = [];
-                    gridApi.getRenderedNodes().map(elem => {
-                        result.push(elem.data[id.toLocaleLowerCase()].toLocaleLowerCase());
-                    });
+                    gridApi.forEachNode((elem) => {
+                        if (elem.displayed)
+                            result.push(elem.data[id.toLocaleLowerCase()].toLocaleLowerCase());
+                    })
                     let list = [...new Set(result)];
 
+
                     $(`#${id} .column-filter-item`).hide().filter(function () {
-                        if ($(this).text().trim() === "(All)") 
+                        if ($(this).text().trim() === '(All)') 
                             return true;
                         
                         return list.indexOf($(this).text().trim().toLowerCase()) !== -1;
@@ -535,8 +576,7 @@ class CustomFilterPunel {
 
                 gridApi.setColumnFilterModel(id.toLocaleLowerCase(), { 
                     values: list
-                }).then(() => gridApi.onFilterChanged())
-                .then(() => $(`.filter-wrapper .column-filter`).map((item, elem) => {
+                }).then(() => gridApi.onFilterChanged()).then(() => $(`.filter-wrapper .column-filter`).map((item, elem) => {
                     updateFilter(elem.id);
                 }));
 
