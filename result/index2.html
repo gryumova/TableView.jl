@@ -291,6 +291,21 @@ input[type="range"]:active::-webkit-slider-thumb{
 
     color: #3e3d3d;
 }
+
+
+/* STYLED COMPONENT */
+.styled-row-box {
+    text-align: center;
+}
+.styled-row-box span {
+    color: rgb(226, 73, 73);
+    background-color: rgb(134, 208, 134);
+
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+
         </style>
     </head>
     <body>
@@ -586,7 +601,21 @@ calculateNumericItem(params, node, height) {
                     enablePivot: true,
                     minWidth: 150
                 },
-                columnDefs: [{field: 'location', filter: 'agSetColumnFilter'}, {field: 'price', filter: 'agNumberColumnFilter'}, {field: 'time'},{field: 'successful'},{field: 'rocket', filter: 'agSetColumnFilter'}, {field: 'company', filter: 'agSetColumnFilter'}, {field: 'mission'},{field: 'date'},],
+                columnDefs: [
+                    {field: 'location', filter: 'agSetColumnFilter'}, 
+                    {
+                        field: 'price', 
+                        filter: 'agNumberColumnFilter', 
+                        cellRenderer: cellRenderer,
+                        cellClass: ["styled-row-box"]
+                    }, 
+                    {field: 'time'},
+                    {field: 'successful'},
+                    {field: 'rocket', filter: 'agSetColumnFilter'}, 
+                    {field: 'company', filter: 'agSetColumnFilter'}, 
+                    {field: 'mission'},
+                    {field: 'date'},
+                ],
                 sideBar: {
                     toolPanels: [
                         {
@@ -610,6 +639,9 @@ calculateNumericItem(params, node, height) {
             const myGridElement = document.querySelector('#grid-container');
             gridApi = agGrid.createGrid(myGridElement, gridOptions);
 
+            function cellRenderer(params) {
+                return params.value;
+            }
             
             function clickHandleCols(event) {
                 let block = document.getElementById('ag-cols')

@@ -1,41 +1,44 @@
-using .Styles
 import JSON
+import Base: getindex
 
-function getColumnDefs(table)
-    key = keys(table[1])
-    println(key)
-
+function getColumnDefs(keys, filter, numeric)
     columnDefs = "["
-    for i in key
-        columnDefs = columnDefs * "{field: '$i', filter: 'agSetColumnFilter'}, "
+    for i in keys
+        if i in numeric
+            columnDefs = columnDefs * "{field: '$i', filter: 'agNumberColumnFilter'}, "
+        elseif i in filter
+            columnDefs = columnDefs * "{field: '$i', filter: 'agSetColumnFilter'}, "
+        else
+            columnDefs = columnDefs * "{field: '$i'},"
+        end
     end
     columnDefs = columnDefs * "]"
    
     columnDefs
 end
 
-function getStyle(style)
-    if style == Styles.BINANCE
-        Styles.binance
-    elseif style == Styles.KRAKEN
-        Styles.kraken
-    elseif style == Styles.TABLE
-        Styles.table
-    else
-        ""
-    end
+function getKeys(table)
+    keys(table[1])
 end
 
-function getBGColor(theme)
-    if theme == Styles.BINANCE
-        "#1e2329"
-    elseif theme == Styles.KRAKEN
-        "#efedf8"
-    elseif theme == Styles.TABLE
-        "#f7fbfd"
-    else
-        "white"
+function checkTextFilter(keys, filter, row) 
+    for i in filter
+        if i != "cols" && i ∉ keys && !row[i] isa String
+            return false
+        end
     end
+
+    return true
+end
+
+function checkNumericFilter(keys, filter, row) 
+    for i in filter
+        if i ∉ keys && !row[i] isa Number
+            return false
+        end
+    end
+
+    return true
 end
 
 function saveHTML(str, outFile)
@@ -54,42 +57,16 @@ function readData(fileName)
     return s
 end
 
-function getSideBar(bar)
-    if bar
-        "sideBar: {
-            toolPanels: [
-                {
-                    id: 'columns',
-                    labelDefault: 'Columns',
-                    labelKey: 'columns',
-                    iconKey: 'columns',
-                    toolPanel: 'agColumnsToolPanel',
-                    minWidth: 225,
-                    maxWidth: 225,
-                    width: 225
-                },
-                {
-                    id: 'filters',
-                    labelDefault: 'Filters',
-                    labelKey: 'filters',
-                    iconKey: 'filter',
-                    toolPanel: 'agFiltersToolPanel',
-                    minWidth: 180,
-                    maxWidth: 400,
-                    width: 250
-                }
-            ],
-            position: 'left',
-            defaultToolPanel: 'filters'
-        }"
-    else
-        ""
-    end
-end
-
-function showTable(table, filter=[], resize=true, outFile="./result/index.html")
+function showTable(table, filter=[], numericFilter=[], resize=true, outFile="./result/index.html")
     rowData = JSON.json(table)
-    columnDefs = getColumnDefs(table)
+    keys = getKeys(table)
+
+    if !checkNumericFilter(keys, numericFilter, table[1]) || !checkTextFilter(keys, filter, table[1])
+        return ErrorException("Check filters name!")
+    end
+
+    columnDefs = getColumnDefs(keys, filter, numericFilter)
+
     if !resize
         minWidth = "minWidth: 150"
     else
@@ -98,14 +75,14 @@ function showTable(table, filter=[], resize=true, outFile="./result/index.html")
     
     style = readData("./tableview/style.txt")
     
-    if size(filter) != 0
+    if size(filter)!= 0 || size(numericFilter) != 0
         customPanel = readData("./tableview/customPanel.txt")
-        println(customPanel)
     else
         customPanel = ""
     end
 
     filter = JSON.json(filter)
+    numeric = JSON.json(numericFilter)
 
     html = "<!DOCTYPE html>
 <html lang='en'>
@@ -171,6 +148,7 @@ function showTable(table, filter=[], resize=true, outFile="./result/index.html")
 		</script>
         <script type='text/javascript'>
             filter=$filter
+            numeric=$numeric
             let gridApi;
             const gridOptions = {
                 rowData: $rowData,
@@ -207,6 +185,7 @@ function showTable(table, filter=[], resize=true, outFile="./result/index.html")
             const myGridElement = document.querySelector('#grid-container');
             gridApi = agGrid.createGrid(myGridElement, gridOptions);
 
+            
             function clickHandleCols(event) {
                 let block = document.getElementById('ag-cols')
                 let check = \$(block).find('input[type=checkbox]:checked');
@@ -245,28 +224,30 @@ function showTable(table, filter=[], resize=true, outFile="./result/index.html")
                 gridApi.setColumnFilterModel(id.toLocaleLowerCase(), { 
                     values: list
                 }).then(() => gridApi.onFilterChanged())
-                .then(() => \$(`.filter-wrapper .column-filter`).map((item, elem) => {
-                    if (elem.id !== id) {
-                        updateFilter(elem.id);
-                    }
-                }));
-
+                .then(() => {
+                    \$(`.filter-wrapper .column-filter`).map((item, elem) => {
+                        if (elem.id !== id) {
+                            updateFilter(elem.id);
+                        }
+                    })
+                });
                 event.preventDefault();
             }
 
             function updateFilter(id) {
                 if (id !== 'ag-cols') {
                     let result = [];
-                    gridApi.getRenderedNodes().map(elem => {
-                        result.push(elem.data[id.toLocaleLowerCase()].toLocaleLowerCase());
-                    });
+                    gridApi.forEachNode((elem) => {
+                        if (elem.displayed)
+                            result.push(String(elem.data[id.toLocaleLowerCase()]));
+                    })
                     let list = [...new Set(result)];
 
                     \$(`#\${id} .column-filter-item`).hide().filter(function () {
                         if (\$(this).text().trim() === '(All)') 
                             return true;
-                        
-                        return list.indexOf(\$(this).text().trim().toLowerCase()) !== -1;
+
+                        return list.indexOf(\$(this).text().trim().toLocaleLowerCase()) !== -1;
                     }).show();
                 } 
             }
@@ -307,16 +288,17 @@ function showTable(table, filter=[], resize=true, outFile="./result/index.html")
             function clickResetRow(id) {
                 let result = [];
                 gridApi.forEachNode(elem => {
-                    result.push(elem.data[id.toLocaleLowerCase()]);
+                    result.push(String(elem.data[id.toLocaleLowerCase()]));
                 });
                 let list = [...new Set(result)];
 
                 gridApi.setColumnFilterModel(id.toLocaleLowerCase(), { 
                     values: list
-                }).then(() => gridApi.onFilterChanged())
-                .then(() => \$(`.filter-wrapper .column-filter`).map((item, elem) => {
+                }).then(() => gridApi.onFilterChanged()).then(() => \$(`.filter-wrapper .column-filter`).map((item, elem) => {
                     updateFilter(elem.id);
                 }));
+
+                \$(`#\${id} input[type='text']`).val('');
 
                 \$(`#\${id} .column-filter-item input`).each((index, elem) => {
                     elem.checked = true;
@@ -338,6 +320,95 @@ function showTable(table, filter=[], resize=true, outFile="./result/index.html")
                 });
             }
         </script>
+        <script>
+            function slideOne(node){
+                let sliderOne = document.getElementById(`slider-1-\${node}`);
+                let sliderTwo = document.getElementById(`slider-2-\${node}`);
+                let displayValOne = document.getElementById(`range1-\${node}`);
+
+                displayValOne.innerHTML = sliderOne.value;
+                fillColor(node);
+            }
+            function slideTwo(node){
+                let sliderOne = document.getElementById(`slider-1-\${node}`);
+                let sliderTwo = document.getElementById(`slider-2-\${node}`);
+                let displayValTwo = document.getElementById(`range2-\${node}`);
+
+                displayValTwo.innerHTML = sliderTwo.value;
+                fillColor(node);
+            }
+            function fillColor(node){
+                let sliderOne = document.getElementById(`slider-1-\${node}`);
+                let sliderTwo = document.getElementById(`slider-2-\${node}`);
+                let sliderTrack = document.querySelector(`.slider-track-\${node}`);
+                let sliderMaxValue = sliderOne.max;
+                let sliderMinValue = sliderOne.min;
+
+                percent1 = ((sliderOne.value - sliderMinValue) / (sliderMaxValue - sliderMinValue)) * 100;
+                percent2 = ((sliderTwo.value - sliderMinValue) / (sliderMaxValue - sliderMinValue)) * 100;
+                sliderTrack.style.background = `linear-gradient(to right, #dadae5 \${percent1}% , #3e3d3d \${percent1}% , #3e3d3d \${percent2}%, #dadae5 \${percent2}%)`;
+            }
+
+            function clickResetNumeric(node) {
+                let sliderTrack = document.querySelector(`.slider-track-\${node}`);
+                sliderTrack.style.background = `#3e3d3d`;
+
+                let sliderOne = document.getElementById(`slider-1-\${node}`);
+                let sliderTwo = document.getElementById(`slider-2-\${node}`);
+                let sliderMaxValue = sliderOne.max;
+                let sliderMinValue = sliderOne.min;
+
+                let displayValOne = document.getElementById(`range1-\${node}`);
+                let displayValTwo = document.getElementById(`range2-\${node}`);
+
+                sliderOne.value = sliderMinValue;
+                sliderTwo.value = sliderMaxValue;
+                displayValOne.innerHTML = sliderMinValue;
+                displayValTwo.innerHTML = sliderMaxValue;
+
+                gridApi.setColumnFilterModel(node.toLocaleLowerCase(), {
+                    operator: 'AND',
+                    conditions: [
+                        {
+                            filterType: 'number',
+                            type: 'greaterThanOrEqual',
+                            filter: Number(sliderOne)
+                        },
+                        {
+                            filterType: 'number',
+                            type: 'lessThanOrEqual',
+                            filter: Number(sliderTwo)
+                        }
+                ]}).then(() => gridApi.onFilterChanged())
+                .then(() => \$(`.filter-wrapper .column-filter`).map((item, elem) => {
+                    updateFilter(elem.id);
+                }));
+            }
+
+            function clickApplyNumeric(node) {
+                let sliderOne = document.getElementById(`slider-1-\${node}`).value;
+                let sliderTwo = document.getElementById(`slider-2-\${node}`).value;
+
+
+                gridApi.setColumnFilterModel(node.toLocaleLowerCase(), {
+                    operator: 'AND',
+                    conditions: [
+                        {
+                            filterType: 'number',
+                            type: 'greaterThanOrEqual',
+                            filter: Number(sliderOne)
+                        },
+                        {
+                            filterType: 'number',
+                            type: 'lessThanOrEqual',
+                            filter: Number(sliderTwo)
+                        }
+                ]}).then(() => gridApi.onFilterChanged())
+                .then(() => \$(`.filter-wrapper .column-filter`).map((item, elem) => {
+                    updateFilter(elem.id);
+                }));
+            }
+        </script>
     </body>
 </html>"
     
@@ -345,15 +416,41 @@ function showTable(table, filter=[], resize=true, outFile="./result/index.html")
 end
 
 row_table = [
-    (a = 1, b = 2000),
-    (a = 2, b = 2500),
-    (a = 3, b = 3000),
-    (a = 4, b = 1300) 
+    (a = 1, b = 2000, c = 351),
+    (a = 2, b = 2500, c = 621),
+    (a = 3, b = 3000, c = 6211),
+    (a = 4, b = 1300, c = 71) 
 ]
 
-filters = ["Location","cols", "Company", "Rocket"]
-
 bigData = readData("./tableview/data.txt")
+filters = ["location","cols", "company", "rocket"]
 
-showTable(JSON.parse(bigData), filters, false)
 
+columns = [
+    {
+        name: "location",
+        filter: "text",
+        style: {
+            color: "red",
+            background: "greeen"
+        }
+    },
+    {
+        name: "cols",
+    },
+    {
+        name: "company",
+        filter: "text",
+    },
+    {
+        name: "price",
+        filter: "number",
+        style: {
+            background: "red",
+            color: "green"
+        }
+    },
+]
+
+showTable(JSON.parse(bigData), filters, ["price"], false)
+showTable(JSON.parse(JSON.json(row_table)), ["a"], ["b", "c"], false)
