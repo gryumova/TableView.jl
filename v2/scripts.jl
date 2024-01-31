@@ -1,192 +1,81 @@
+module Scripts
 import JSON
-import Base: getindex
+include("utils.jl")
 
-function getColumnDefs(keys, filter, numeric)
-    columnDefs = "["
-    for i in keys
-        if i in numeric
-            columnDefs = columnDefs * "{field: '$i', filter: 'agNumberColumnFilter'}, "
-        elseif i in filter
-            columnDefs = columnDefs * "{field: '$i', filter: 'agSetColumnFilter'}, "
-        else
-            columnDefs = columnDefs * "{field: '$i'},"
-        end
-    end
-    columnDefs = columnDefs * "]"
-   
-    columnDefs
-end
+function getAgGridScripts(columnSettings, data, minWidth)
+    rowData = JSON.json(data)
+    columns = keys(data[1])
 
-function getKeys(table)
-    keys(table[1])
-end
+    columnDefs, styleClasses = Utils.getColumnDefs(columns, columnSettings, keys(columnSettings))
+    filter = Utils.getFilterColumns(columnSettings, "text")
+    numeric =  Utils.getFilterColumns(columnSettings, "number")
 
-function checkTextFilter(keys, filter, row) 
-    for i in filter
-        if i != "cols" && i ∉ keys && !row[i] isa String
-            return false
-        end
-    end
-
-    return true
-end
-
-function checkNumericFilter(keys, filter, row) 
-    for i in filter
-        if i ∉ keys && !row[i] isa Number
-            return false
-        end
-    end
-
-    return true
-end
-
-function saveHTML(str, outFile)
-    io = open(outFile, "w");
-    write(io, str);
-    close(io);
-
-    outFile
-end
-
-function readData(fileName)
-    io = open(fileName, "r")
-    s = read(io, String)
-    close(io)
-
-    return s
-end
-
-function showTable(table, filter=[], numericFilter=[], resize=true, outFile="./result/index.html")
-    rowData = JSON.json(table)
-    keys = getKeys(table)
-
-    if !checkNumericFilter(keys, numericFilter, table[1]) || !checkTextFilter(keys, filter, table[1])
-        return ErrorException("Check filters name!")
-    end
-
-    columnDefs = getColumnDefs(keys, filter, numericFilter)
-
-    if !resize
-        minWidth = "minWidth: 150"
-    else
-        minWidth = ""
-    end
-    
-    style = readData("./tableview/style.txt")
-    
-    if size(filter)!= 0 || size(numericFilter) != 0
-        customPanel = readData("./tableview/customPanel.txt")
-    else
-        customPanel = ""
-    end
-
-    filter = JSON.json(filter)
-    numeric = JSON.json(numericFilter)
-
-    html = "<!DOCTYPE html>
-<html lang='en'>
-    <head>
-        <meta charSet='UTF-8'/>
-        <meta name='viewport' content='width=device-width, initial-scale=1'/>
-        <script src='http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js'></script>
-        <style>
-            $style
-        </style>
-    </head>
-    <body>
-        <div id='grid-container' class='ag-theme-quartz'></div>
-        <style>
-            .ag-theme-quartz,
-            .ag-theme-quartz-dark {
-                --ag-foreground-color: #343434;
-                --ag-background-color: #ffffff;
-
-                --ag-header-foreground-color: #808080;
-                --ag-header-background-color: #ffffff;   
-                
-                --ag-data-color: #636363;
-                
-                --ag-row-border-width: 1px;
-                --ag-row-border-color: #e0e0e0;
-            
-                --ag-header-column-resize-handle-display: block;
-                --ag-header-column-resize-handle-height: 100%;
-                --ag-header-column-resize-handle-width: 1px;
-                --ag-header-column-resize-handle-color: #dddddd;
-
-                --ag-header-column-separator-display: block;
-                --ag-header-column-separator-height: 100%;
-                --ag-header-column-separator-width: 1px;
-                --ag-header-column-separator-color: #dddddd;
-            }
-            .ag-theme-quartz .ag-header-cell-label {
-                font-weight: 600;
-            }
-            .ag-header-cell-text {
-                text-align: center;
-                margin-left: auto;
-                margin-right: auto;
-            }
-            .ag-theme-quartz .ag-cell-value {
-                font-weight: 600;
-            }
-            #ag-32 {
-                border: none;
-            }
-            .ag-root-wrapper.ag-layout-normal.ag-ltr {
-                border-radius: 0;
-            }
-            .ag-header-cell-menu-button {
-                display: none;
-            }
-        </style>
-        <script>
-            $customPanel
-        </script>
-        <script src='https://cdn.jsdelivr.net/npm/ag-grid-enterprise@31.0.2/dist/ag-grid-enterprise.min.js'>
-		</script>
-        <script type='text/javascript'>
-            filter=$filter
-            numeric=$numeric
-            let gridApi;
-            const gridOptions = {
-                rowData: $rowData,
-                defaultColDef: {
-                    flex: 1,
-                    filter: true,
-                    editable: true,
-                    enableValue: true,
-                    enableRowGroup: true,
-                    enablePivot: true,
-                    $minWidth
-                },
-                columnDefs: $columnDefs,
-                sideBar: {
-                    toolPanels: [
-                        {
-                            id: 'customStats',
-                            labelDefault: 'Custom Stats',
-                            labelKey: 'customStats',
-                            iconKey: 'custom-stats',
-                            toolPanel: CustomFilterPunel,
-                            toolPanelParams: {
-                            title: 'Custom Stats',
-                            },
+    script = "
+    <style>
+        $styleClasses
+    </style>
+    <script type='text/javascript'>
+        filter=$filter
+        numeric=$numeric
+        let gridApi;
+        const gridOptions = {
+            rowData: $rowData,
+            defaultColDef: {
+                flex: 1,
+                filter: true,
+                editable: true,
+                enableValue: true,
+                enableRowGroup: true,
+                enablePivot: true,
+                $minWidth
+            },
+            columnDefs: $columnDefs,
+            sideBar: {
+                toolPanels: [
+                    {
+                        id: 'customStats',
+                        labelDefault: 'Custom Stats',
+                        labelKey: 'customStats',
+                        iconKey: 'custom-stats',
+                        toolPanel: CustomFilterPunel,
+                        toolPanelParams: {
+                        title: 'Custom Stats',
                         },
-                    ],
-                    position: 'right',
-                    defaultToolPanel: 'customStats',
-                },
-                onCellValueChanged: (params) => {
-                    params.api.refreshClientSideRowModel();
-                }
+                    },
+                ],
+                position: 'right',
+                defaultToolPanel: 'customStats',
+            },
+            onCellValueChanged: (params) => {
+                params.api.refreshClientSideRowModel();
             }
-            const myGridElement = document.querySelector('#grid-container');
-            gridApi = agGrid.createGrid(myGridElement, gridOptions);
+        }
+        const myGridElement = document.querySelector('#grid-container');
+        gridApi = agGrid.createGrid(myGridElement, gridOptions);
 
-            
-            function clickHandleCols(event) {
+        function numberParser(params) {
+            const newValue = params.newValue;
+            let valueAsNumber;
+            if (newValue === null || newValue === undefined || newValue === '') {
+              valueAsNumber = null;
+            } else {
+              valueAsNumber = parseFloat(params.newValue);
+            }
+            return valueAsNumber;
+        }
+
+        function cellRenderer(params) {
+            return params.value;
+        }
+          
+    </script>"
+end
+
+
+function getFunctionsScripts() 
+    return "
+    <script>
+        function clickHandleCols(event) {
                 let block = document.getElementById('ag-cols')
                 let check = \$(block).find('input[type=checkbox]:checked');
                 
@@ -239,7 +128,7 @@ function showTable(table, filter=[], numericFilter=[], resize=true, outFile="./r
                     let result = [];
                     gridApi.forEachNode((elem) => {
                         if (elem.displayed)
-                            result.push(String(elem.data[id.toLocaleLowerCase()]));
+                            result.push(String(elem.data[id.toLocaleLowerCase()]).toLocaleLowerCase());
                     })
                     let list = [...new Set(result)];
 
@@ -253,7 +142,7 @@ function showTable(table, filter=[], numericFilter=[], resize=true, outFile="./r
             }
 
             function clickAll(id) {
-                let block = document.getElementById(id)
+                let block = document.getElementById(id);
                 let check = \$(block).find('input[type=checkbox]');
 
                 if (check[0].checked === true) {
@@ -318,9 +207,11 @@ function showTable(table, filter=[], numericFilter=[], resize=true, outFile="./r
                 \$(`#\${id} .column-filter-item input`).each((index, elem) => {
                     elem.checked = true;
                 });
+
+                console.log(id)
+                \$(`#ag-cols input[type='text']`).val('');
+                \$(`#\${id} .column-filter-item`).show();
             }
-        </script>
-        <script>
             function slideOne(node){
                 let sliderOne = document.getElementById(`slider-1-\${node}`);
                 let sliderTwo = document.getElementById(`slider-2-\${node}`);
@@ -408,49 +299,9 @@ function showTable(table, filter=[], numericFilter=[], resize=true, outFile="./r
                     updateFilter(elem.id);
                 }));
             }
-        </script>
-    </body>
-</html>"
+    </script>"
     
-    saveHTML(html, outFile)
 end
 
-row_table = [
-    (a = 1, b = 2000, c = 351),
-    (a = 2, b = 2500, c = 621),
-    (a = 3, b = 3000, c = 6211),
-    (a = 4, b = 1300, c = 71) 
-]
 
-bigData = readData("./tableview/data.txt")
-filters = ["location","cols", "company", "rocket"]
-
-
-columns = [
-    {
-        name: "location",
-        filter: "text",
-        style: {
-            color: "red",
-            background: "greeen"
-        }
-    },
-    {
-        name: "cols",
-    },
-    {
-        name: "company",
-        filter: "text",
-    },
-    {
-        name: "price",
-        filter: "number",
-        style: {
-            background: "red",
-            color: "green"
-        }
-    },
-]
-
-showTable(JSON.parse(bigData), filters, ["price"], false)
-showTable(JSON.parse(JSON.json(row_table)), ["a"], ["b", "c"], false)
+end
