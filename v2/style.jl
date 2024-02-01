@@ -1,11 +1,13 @@
 module Style
 
+export mainStyle, agGridStilization
+
 mainStyle = "
     <style>
         body {
             display: flex;
             flex-direction: row;
-        
+
             margin: 0px;
             background: #ffffff;
         } 
@@ -23,20 +25,23 @@ mainStyle = "
         .filter-wrapper {
             display: grid;
             width: 100%;
-        
-            overflow: hidden;
+
+            overflow-x: hidden;
         }
+
         .column-filter {
-            padding: 10px;
             font-weight: 400;
-        
+
             width: calc(100% - 20px);
             position: relative;
-        
+
             display: flex;
             flex-direction: column;
             justify-content: stretch;
             align-items: stretch;
+
+            overflow: hidden;
+            padding: 10px;
         }
         .filter-wrapper .column-filter:not(:first-child) {
             border-top: 1px solid #e0e0e0;
@@ -47,14 +52,14 @@ mainStyle = "
         .title {
             text-align: start;
             width: 100%;
-            margin: -5px 5px 5px 5px;
-        
+            margin: 0px 5px 10px 5px;
+
             font-size: 14px;
             font-weight: 600;
             color: #808080;
-        
+
             border:none;
-        
+
             cursor: pointer;
         }
         .title:focus {
@@ -64,14 +69,14 @@ mainStyle = "
         .column-filter-item {
             margin: 7px 0px 0px 0px;
             width: 100%;
-        
+
             display: flex;
             flex-direction: row;
             align-items: start;
             justify-content: start;
-        
+
             position: relative;
-        
+
             color: #3e3d3d;
             font-weight: 700;
         }
@@ -81,27 +86,27 @@ mainStyle = "
             position: absolute;
             left: 25px;
             right: 0;
-        
+
             text-align: start;
-        
+
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-        
+
             cursor: default;
         }
         input[type='checkbox'] {
             margin-right: 15px;
             display: none;
         }
-        
+
         input[type='checkbox']:checked, 
         input[type='checkbox']:not(:checked) {
             display: inline-block;
             position: relative;
             cursor: pointer;
         }
-        
+
         input[type='checkbox']:checked:before, 
         input[type='checkbox']:not(:checked):before{
             content: '';
@@ -113,7 +118,7 @@ mainStyle = "
             border: 1px solid #b9bdc0;
             background-color: #ffffff;
         }
-        
+
         input[type='checkbox']:checked:after, 
         input[type='checkbox']:not(:checked):after {
             content: '';
@@ -123,7 +128,7 @@ mainStyle = "
             -o-transition: all 0.2s ease;
             transition: all 0.2s ease;
         }
-        
+
         input[type='checkbox']:checked:after, 
         input[type='checkbox']:not(:checked):after {
             left: 2.5px;
@@ -135,7 +140,7 @@ mainStyle = "
         input[type='checkbox']:not(:checked):after {
             opacity: 0;
         }
-        
+
         input[type='checkbox']:checked:after {
             opacity: 1;
         }
@@ -143,81 +148,81 @@ mainStyle = "
             cursor: text;
         }
         .apply-button-wrapper {
-            width: calc(100% - 10px);
+            width: 100%;
             height: 29px;
-        
-            position: absolute;
-            margin-top: 10px;
-        
-            bottom: 5px;
-            right: 5px;
-            left: 5px;
+
+            position: relative;
+            margin: 0;
+            margin-top: 5px;
         }
         .apply-button {
             position: relative;
-            width: 49%;
-        
+            width: calc(50% - 5px);
+
             border: none;
             background-color: #eeeeee;
             color: #646464;
-        
+
             font-size: 14px;
             font-weight: 500;
             padding: 5px;
-        
+            margin: 0;
+
             cursor: pointer;
         }
-        
+
         .apply-button:hover {
             background: #cdcdcd;
         }
-        
+
         .numeric-filter {
+            position: relative;
             border-top: 1px solid #e0e0e0;
             text-align: start;
-        
-            padding-top: 10px;
+
+            /* padding-top: 10px; */
+            padding: 10px;
         }
         .name-numeric-filter {
             font-size: 14px;
             font-weight: 600;
             text-align: start;
-            margin-left: 20px;
-        
+
             color: #3e3d3d;
         }
-        .container{
+        .container {
             position: relative;
-            width: calc(100% - 40px);
+
+            width: 100%;
             height: 6px;
         }
         input[type='range']{
             -webkit-appearance: none;
             -moz-appearance: none;
             appearance: none;
-        
+
             width: 100%;
             outline: none;
-        
+
             position: absolute;
             margin: 0px;
-            left: 20px;
+            left: 0px;
             top: 0;
             bottom: 0;
-        
+
             background-color: transparent;
             pointer-events: none;
         }
         .slider-track{
             width: 100%;
             height: 3px;
-        
+
             position: absolute;
             margin: auto;
-            left: 20px;
+            left: 0px;
             top: 0.6em;
             bottom: 0;
-        
+
             background: #d8d8d8;
             border-radius: 5px;
         }
@@ -237,11 +242,11 @@ mainStyle = "
             -webkit-appearance: none;
             height: 1.2em;
             width: 1.2em;
-        
+
             background-color: #636363;
             cursor: pointer;
             margin-top: 0px;
-        
+
             pointer-events: auto;
             border-radius: 50%;
         }
@@ -249,10 +254,10 @@ mainStyle = "
             -webkit-appearance: none;
             height: 1.2em;
             width: 1.2em;
-        
+
             cursor: pointer;
             border-radius: 50%;
-        
+
             background-color: #636363;
             pointer-events: auto;
         }
@@ -260,9 +265,9 @@ mainStyle = "
             appearance: none;
             height: 1.2em;
             width: 1.2em;
-        
+
             cursor: pointer;
-        
+
             border-radius: 50%;
             background-color: #636363;
             pointer-events: auto;
@@ -273,22 +278,22 @@ mainStyle = "
         }
         .values{
             position: relative;
-            margin: 10px 20px 10px 20px;
-        
+            margin: 10px 0px 10px 0px;
+
             display: flex;
             flex-direction: row;
             justify-content: space-between;
-        
+
             border: none;
-        
+
             text-align: center;
             font-weight: 700;
             font-size: 12px;
-        
+
             color: #3e3d3d;
         }
-        
-        
+
+
         /* STYLED COMPONENT */
         .styled-row-box {
             text-align: center;
@@ -297,8 +302,7 @@ mainStyle = "
             padding: 5px 10px;
             border-radius: 4px;
         }
-    </style>
-"
+    </style>"
 
 
 agGridStilization = "

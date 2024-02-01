@@ -29,28 +29,29 @@ function showTable(
     sideBarFunctions = Scripts.getFunctionsScripts()
 
     html = "<!DOCTYPE html>
-    <html lang='en'>
-    <head>
-        <meta charSet='UTF-8'/>
-        <meta name='viewport' content='width=device-width, initial-scale=1'/>
-        <script src='http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js'></script>
-        $(Style.mainStyle)
-    </head>
-    <body>
-        <div id='grid-container' class='ag-theme-quartz'></div>
-        $(Style.agGridStilization)
-        $customPanel
-        <script src='https://cdn.jsdelivr.net/npm/ag-grid-enterprise@31.0.2/dist/ag-grid-enterprise.min.js'></script>
-        $sideBar
-        $sideBarFunctions
-    </body>
-    </html>"
+<html lang='en'>
+<head>
+    <meta charSet='UTF-8'/>
+    <meta name='viewport' content='width=device-width, initial-scale=1'/>
+    <script src='http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js'></script>
+    $(Style.mainStyle)
+</head>
+<body>
+    <div id='grid-container' class='ag-theme-quartz'></div>
+    $(Style.agGridStilization)
+    $customPanel
+    <script src='https://cdn.jsdelivr.net/npm/ag-grid-enterprise@31.0.2/dist/ag-grid-enterprise.min.js'></script>
+    $sideBar
+    $sideBarFunctions
+</body>
+</html>"
 
         File.saveHTML(html, outFile)
     end
 
 
 bigData = File.readData("./v2/data.txt")
+
 columns = (
             location = (
                 filter = "text",
@@ -66,11 +67,14 @@ columns = (
             price = (
                 filter = "number",
                 style= (
-                    background = "rgb(134, 208, 134)",
-                    color = "rgb(226, 73, 73)",
-                    equals = 3670000
+                    colorUp = "rgb(134, 208, 134)",
+                    colorDown = "rgb(226, 73, 73)",
+                    equals = 12000000
                 )
             ),
+            date = (
+                filter = "date",
+            )
         )
 
 data = (
@@ -84,6 +88,16 @@ data = (
 
 columnsData = (
     a = (
+        filter = "number",
+        style = (
+            color = "red",
+            background = "#FFFF79"
+        )
+    ),
+    b = (
+        filter = "number",
+    ),
+    c = (
         filter = "number",
     ),
     cols = ()

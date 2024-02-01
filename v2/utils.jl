@@ -1,4 +1,6 @@
 module Utils
+
+export checkTextFilter, checkNumericFilter
 import JSON
 
 function checkTextFilter(row) 
@@ -30,18 +32,38 @@ function getColumnDefs(key, columnSettings, filtersName)
 
     columnDefs = "["
 
-    println("--------")
     for i in key
-        item = "{
-            field: '$i',
-        "
-        
+        item = "{ field: '$i', "
+
         if i in filtersName   
             if haskey(columnSettings[i], "filter")
                 if columnSettings[i]["filter"] == "text"
                     item = item * "filter: 'agSetColumnFilter', "
                 elseif columnSettings[i]["filter"] == "number"
                     item = item * "valueParser: numberParser, filter: 'agNumberColumnFilter', "
+                elseif columnSettings[i]["filter"] == "date"
+                    item = item * "filter: 'agDateColumnFilter', filterParams: {
+                        comparator: (filterLocalDateAtMidnight, cellValue) => {
+                            const dateAsString = cellValue;
+
+                            let cellDate = new Date(Date.parse(dateAsString));
+                            var dd = cellDate.getDate();
+                            var mm = cellDate.getMonth();
+                            var yy = cellDate.getFullYear();
+
+                            cellDate = new Date(yy, mm, dd);
+
+                            if (cellDate <= filterLocalDateAtMidnight) {
+                                return -1;
+                            }
+
+                            if (cellDate >= filterLocalDateAtMidnight) {
+                                return 1;
+                            }
+
+                            return 0;
+                        }
+                    }"
                 end
             end
 
@@ -100,7 +122,7 @@ function getColumnDefs(key, columnSettings, filtersName)
                     styleClasses = styleClasses * "color: $color; "
                 end
 
-                styleClasses = styleClasses * "}\n"
+                styleClasses = styleClasses * "}; "
             end
 
         end

@@ -1,6 +1,9 @@
 module Scripts
 import JSON
 include("utils.jl")
+using .Utils
+
+export getAgGridScripts, getFunctionsScripts
 
 function getAgGridScripts(columnSettings, data, minWidth)
     rowData = JSON.json(data)
@@ -9,6 +12,7 @@ function getAgGridScripts(columnSettings, data, minWidth)
     columnDefs, styleClasses = Utils.getColumnDefs(columns, columnSettings, keys(columnSettings))
     filter = Utils.getFilterColumns(columnSettings, "text")
     numeric =  Utils.getFilterColumns(columnSettings, "number")
+    date =  Utils.getFilterColumns(columnSettings, "date")
 
     script = "
     <style>
@@ -17,6 +21,7 @@ function getAgGridScripts(columnSettings, data, minWidth)
     <script type='text/javascript'>
         filter=$filter
         numeric=$numeric
+        date=$date
         let gridApi;
         const gridOptions = {
             rowData: $rowData,
@@ -212,20 +217,35 @@ function getFunctionsScripts()
                 \$(`#ag-cols input[type='text']`).val('');
                 \$(`#\${id} .column-filter-item`).show();
             }
-            function slideOne(node){
+
+            function slideOne(node, type=''){
                 let sliderOne = document.getElementById(`slider-1-\${node}`);
                 let sliderTwo = document.getElementById(`slider-2-\${node}`);
                 let displayValOne = document.getElementById(`range1-\${node}`);
 
-                displayValOne.innerHTML = sliderOne.value;
+                if (Number(sliderOne.value) >= Number(sliderTwo.value)) {
+                    sliderOne.value = sliderTwo.value;
+                }
+
+                if (type == 'date')
+                    displayValOne.innerHTML = formatDate(Number(sliderOne.value)); 
+                else
+                    displayValOne.innerHTML = sliderOne.value;
                 fillColor(node);
             }
-            function slideTwo(node){
+            function slideTwo(node, type=''){
                 let sliderOne = document.getElementById(`slider-1-\${node}`);
                 let sliderTwo = document.getElementById(`slider-2-\${node}`);
                 let displayValTwo = document.getElementById(`range2-\${node}`);
 
-                displayValTwo.innerHTML = sliderTwo.value;
+                if (Number(sliderTwo.value) <= Number(sliderOne.value)) {
+                    sliderTwo.value = sliderOne.value;
+                }
+
+                if (type == 'date')
+                    displayValTwo.innerHTML = formatDate(Number(sliderTwo.value)); 
+                else
+                    displayValTwo.innerHTML = sliderTwo.value;
                 fillColor(node);
             }
             function fillColor(node){
@@ -276,6 +296,55 @@ function getFunctionsScripts()
                 }));
             }
 
+            function clickResetDate(node) {
+                let sliderTrack = document.querySelector(`.slider-track-\${node}`);
+                sliderTrack.style.background = `#3e3d3d`;
+
+                let sliderOne = document.getElementById(`slider-1-\${node}`);
+                let sliderTwo = document.getElementById(`slider-2-\${node}`);
+                let sliderMaxValue = sliderOne.max;
+                let sliderMinValue = sliderOne.min;
+
+                let displayValOne = document.getElementById(`range1-\${node}`);
+                let displayValTwo = document.getElementById(`range2-\${node}`);
+
+                sliderOne.value = sliderMinValue;
+                sliderTwo.value = sliderMaxValue;
+
+                displayValOne.innerHTML = formatDate(Number(sliderMinValue));
+                displayValTwo.innerHTML = formatDate(Number(sliderMaxValue));
+
+                gridApi.setColumnFilterModel(node.toLocaleLowerCase(), null)
+                .then(() => gridApi.onFilterChanged())
+                .then(() => \$(`.filter-wrapper .column-filter`).map((item, elem) => {
+                    updateFilter(elem.id);
+                }));
+            }
+
+            function clickApplyDate(node) {
+                let sliderOne = document.getElementById(`slider-1-\${node}`).value;
+                let sliderTwo = document.getElementById(`slider-2-\${node}`).value;
+
+                gridApi.setColumnFilterModel(node.toLocaleLowerCase(), {
+                    operator: 'AND',
+                    conditions: [
+                        {
+                            filterType: 'date',
+                            type: 'greaterThan',
+                            dateFrom: formatDate(Number(sliderOne))
+                        },
+                        {
+                            filterType: 'date',
+                            type: 'lessThan',
+                            dateFrom: formatDate(Number(sliderTwo))
+                        }
+                ]}).then(() => {
+                    gridApi.onFilterChanged();
+                })
+                .then(() => \$(`.filter-wrapper .column-filter`).map((item, elem) => {
+                    updateFilter(elem.id);
+                }));
+            }
             function clickApplyNumeric(node) {
                 let sliderOne = document.getElementById(`slider-1-\${node}`).value;
                 let sliderTwo = document.getElementById(`slider-2-\${node}`).value;
@@ -286,18 +355,33 @@ function getFunctionsScripts()
                     conditions: [
                         {
                             filterType: 'number',
-                            type: 'greaterThanOrEqual',
+                            type: 'greaterThan',
                             filter: Number(sliderOne)
                         },
                         {
                             filterType: 'number',
-                            type: 'lessThanOrEqual',
+                            type: 'lessThan',
                             filter: Number(sliderTwo)
                         }
                 ]}).then(() => gridApi.onFilterChanged())
                 .then(() => \$(`.filter-wrapper .column-filter`).map((item, elem) => {
                     updateFilter(elem.id);
                 }));
+            }
+
+            function formatDate(date) {
+                date = new Date(date)
+
+
+                var dd = date.getDate();
+                if (dd < 10) dd = '0' + dd;
+
+                var mm = date.getMonth() + 1;
+                if (mm < 10) mm = '0' + mm;
+
+                var yy = date.getFullYear();
+
+                return yy + '-' + mm + '-' + dd;
             }
     </script>"
     

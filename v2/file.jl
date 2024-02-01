@@ -1,5 +1,7 @@
 module File
 
+export readData, saveHTML
+
 function readData(fileName)
     io = open(fileName, "r")
     s = read(io, String)
@@ -15,4 +17,5 @@ function saveHTML(str, outFile)
 
     outFile
 end
+
 end
