@@ -1,3 +1,5 @@
+# CustomPanel
+
 customPanelScript = "
     <script>
         class CustomFilterPunel {

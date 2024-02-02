@@ -11,7 +11,7 @@ Simple example:
 ```julia
 using TableView
 
-#
+
 data = (
     (a = 0, b = 1, c = 6),
     (a = 1, b = 35, c = 7),

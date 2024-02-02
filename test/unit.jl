@@ -1,4 +1,8 @@
-using Test
+# test/unit
+
+@testset "empty table" begin
+    @test TableView.showtable(()) isa Nothing
+end
 
 @testset "named tuple table" begin
     table = [
@@ -47,8 +51,10 @@ end
             "style" => ( "color" => "red", "background" => "#FFFF79" )
     ))
     columnsDictDate = Dict(
-        "a" => Dict(
+        "date" => Dict(
             "filter" => "date",
-    ))
-    @test TableView.showtable(array, ) isa String
+    )) 
+    @test TableView.showTable(data, columnSettings=columnsDictDate) isa String
+    @test TableView.showTable(data, columnSettings=columnsDictNumber) isa String
+    @test TableView.showTable(data, columnSettings=columnsDictText) isa String
 end

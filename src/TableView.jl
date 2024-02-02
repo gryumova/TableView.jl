@@ -7,13 +7,15 @@ include("CustomPanel.jl")
 include("File.jl")
 include("Utils.jl")
 
-
 function showTable(
                     table; 
                     columnSettings::Dict = Dict(), 
                     resize::Bool = true, 
                     outFile::String = "./index.html"
                 )
+    if length(table) == 0
+        return 
+    end
 
     if !resize
         minWidth = "minWidth: 150"

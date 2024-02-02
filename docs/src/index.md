@@ -6,7 +6,7 @@ Simple example:
 ```julia
 using TableView
 
-#
+
 data = (
     (a = 0, b = 1, c = 6),
     (a = 1, b = 35, c = 7),
@@ -28,18 +28,18 @@ data = (
 #           equals = 10,
 #       )
 
-settings = (
-    a = (
-        filter = "number",
-        style = (
-            color = "red",
-            background = "#FFFF79"
+settings = Dict(
+    a => Dict(
+        filter => "number",
+        style => (
+            color => "red",
+            background => "#FFFF79"
         )
     ),
-    c = (
+    c => Dict(
         filter = "text",
     ),
-    cols = ()
+    cols => Dict()
 )
 
 # 'table' argument specifies the data to be displayed in the table
