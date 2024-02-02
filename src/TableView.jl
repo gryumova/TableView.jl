@@ -7,12 +7,43 @@ include("CustomPanel.jl")
 include("File.jl")
 include("Utils.jl")
 
+export showTable
+
+"""
+    TableView.showTable(
+                    table; 
+                    columnSettings::Dict = Dict(), 
+                    resize::Bool = true, 
+                    outFile::String = "./index.html"
+                )::String
+
+Function accepts 
+    - table for display, 
+    - configuration for table filters in the form of a dictionary
+    - checkbox for changing column widths 
+    - name for the output file.
+Returns the path to the generated html file.
+
+## Examples
+
+```julia-repl
+julia> data = ((a = 0, b = 1),(a = 1, b = 35))
+((a = 0, b = 1), (a = 1, b = 35))
+
+julia> settings = ( "a" => ("filter" => "number"))
+"a" => ("filter" => "number")
+
+julia> TableView.showTable(data, settings)
+"./index.html"
+```
+"""
+
 function showTable(
                     table; 
                     columnSettings::Dict = Dict(), 
                     resize::Bool = true, 
                     outFile::String = "./index.html"
-                )
+                )::String
     if length(table) == 0
         return 
     end

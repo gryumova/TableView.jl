@@ -1,5 +1,6 @@
 # Style
 
+
 mainStyle = "
     <style>
         body {

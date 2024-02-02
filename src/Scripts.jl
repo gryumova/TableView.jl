@@ -3,6 +3,7 @@
 import JSON
 include("Utils.jl")
 
+
 function getSidebar()
     return "sideBar: {
             toolPanels: [
