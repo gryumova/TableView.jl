@@ -1,8 +1,30 @@
 import JSON
 include("Utils.jl")
 
+function getSidebar()
+    return "sideBar: {
+            toolPanels: [
+                {
+                    id: 'customStats',
+                    labelDefault: 'Custom Stats',
+                    labelKey: 'customStats',
+                    iconKey: 'custom-stats',
+                    toolPanel: CustomFilterPunel,
+                    toolPanelParams: {
+                    title: 'Custom Stats',
+                    },
+                },
+            ],
+            position: 'right',
+            defaultToolPanel: 'customStats',
+        },
+        onCellValueChanged: (params) => {
+            params.api.refreshClientSideRowModel();
+        }"
+end
+
 function getAgGridScripts(
-                    columnSettings::Dict{String, Dict}, 
+                    columnSettings::Dict, 
                     data::Any, 
                     minWidth::String
                 )
@@ -13,6 +35,12 @@ function getAgGridScripts(
     filter = getFilterColumns(columnSettings, "text")
     numeric =  getFilterColumns(columnSettings, "number")
     date =  getFilterColumns(columnSettings, "date")
+
+    if length(keys(columnSettings))!= 0 
+        SideBar =  getSidebar()
+    else 
+        SideBar = ""
+    end
 
     script = "
     <style>
@@ -35,25 +63,7 @@ function getAgGridScripts(
                 $minWidth
             },
             columnDefs: $columnDefs,
-            sideBar: {
-                toolPanels: [
-                    {
-                        id: 'customStats',
-                        labelDefault: 'Custom Stats',
-                        labelKey: 'customStats',
-                        iconKey: 'custom-stats',
-                        toolPanel: CustomFilterPunel,
-                        toolPanelParams: {
-                        title: 'Custom Stats',
-                        },
-                    },
-                ],
-                position: 'right',
-                defaultToolPanel: 'customStats',
-            },
-            onCellValueChanged: (params) => {
-                params.api.refreshClientSideRowModel();
-            }
+            $SideBar
         }
         const myGridElement = document.querySelector('#grid-container');
         gridApi = agGrid.createGrid(myGridElement, gridOptions);

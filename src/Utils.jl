@@ -2,7 +2,7 @@ import JSON
 
 function getColumnDefs(
             key, 
-            columnSettings::Dict{String, Dict}, 
+            columnSettings::Dict, 
             filtersName
         )
     key = JSON.parse(JSON.json(key))
@@ -115,7 +115,11 @@ function getColumnDefs(
     return columnDefs, styleClasses
 end
 
-function getFilterColumns(columnSettings::Dict{String, Dict}, type::String)
+function getFilterColumns(columnSettings::Dict, type::String)
+    if length(keys(columnSettings)) == 0
+        return JSON.json([])
+    end
+
     columnsName = []
 
     for i in keys(columnSettings)

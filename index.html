@@ -655,15 +655,15 @@
     <script src='https://cdn.jsdelivr.net/npm/ag-grid-enterprise@31.0.2/dist/ag-grid-enterprise.min.js'></script>
     
     <style>
-        .styled-row-box-a span {}; 
+        
     </style>
     <script type='text/javascript'>
-        filter=["cols"]
-        numeric=["c","b","a"]
-        date=[]
+        filter=[]
+        numeric=[]
+        date=["a"]
         let gridApi;
         const gridOptions = {
-            rowData: [{"a":0,"b":1,"c":6},{"a":1,"b":35,"c":7},{"a":2,"b":134,"c":6},{"a":3,"b":868,"c":7},{"a":4,"b":34,"c":0}],
+            rowData: [{"a":0,"b":1,"c":6,"date":"2022.05.03"},{"a":1,"b":35,"c":7,"date":"2022.06.02"},{"a":2,"b":134,"c":6,"date":"2022.03.10"},{"a":3,"b":868,"c":7,"date":"2022.02.08"},{"a":4,"b":34,"c":0,"date":"2022.08.01"}],
             defaultColDef: {
                 flex: 1,
                 filter: true,
@@ -671,31 +671,53 @@
                 enableValue: true,
                 enableRowGroup: true,
                 enablePivot: true,
-                minWidth: 150
+                
             },
-            columnDefs: [{ field: 'a', valueParser: numberParser, filter: 'agNumberColumnFilter', cellRenderer: cellRenderer, cellClass: ['styled-row-box', 'styled-row-box-a'], },
-{ field: 'b', valueParser: numberParser, filter: 'agNumberColumnFilter', },
-{ field: 'c', valueParser: numberParser, filter: 'agNumberColumnFilter', },
+            columnDefs: [{ field: 'a', filter: 'agDateColumnFilter', filterParams: {
+                        comparator: (filterLocalDateAtMidnight, cellValue) => {
+                            const dateAsString = cellValue;
+
+                            let cellDate = new Date(Date.parse(dateAsString));
+                            var dd = cellDate.getDate();
+                            var mm = cellDate.getMonth();
+                            var yy = cellDate.getFullYear();
+
+                            cellDate = new Date(yy, mm, dd);
+
+                            if (cellDate <= filterLocalDateAtMidnight) {
+                                return -1;
+                            }
+
+                            if (cellDate >= filterLocalDateAtMidnight) {
+                                return 1;
+                            }
+
+                            return 0;
+                        }
+                    }},
+{ field: 'b', },
+{ field: 'c', },
+{ field: 'date', },
 ],
             sideBar: {
-                toolPanels: [
-                    {
-                        id: 'customStats',
-                        labelDefault: 'Custom Stats',
-                        labelKey: 'customStats',
-                        iconKey: 'custom-stats',
-                        toolPanel: CustomFilterPunel,
-                        toolPanelParams: {
-                        title: 'Custom Stats',
-                        },
+            toolPanels: [
+                {
+                    id: 'customStats',
+                    labelDefault: 'Custom Stats',
+                    labelKey: 'customStats',
+                    iconKey: 'custom-stats',
+                    toolPanel: CustomFilterPunel,
+                    toolPanelParams: {
+                    title: 'Custom Stats',
                     },
-                ],
-                position: 'right',
-                defaultToolPanel: 'customStats',
-            },
-            onCellValueChanged: (params) => {
-                params.api.refreshClientSideRowModel();
-            }
+                },
+            ],
+            position: 'right',
+            defaultToolPanel: 'customStats',
+        },
+        onCellValueChanged: (params) => {
+            params.api.refreshClientSideRowModel();
+        }
         }
         const myGridElement = document.querySelector('#grid-container');
         gridApi = agGrid.createGrid(myGridElement, gridOptions);

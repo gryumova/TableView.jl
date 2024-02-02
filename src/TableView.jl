@@ -7,11 +7,12 @@ include("CustomPanel.jl")
 include("File.jl")
 include("Utils.jl")
 
+
 function showTable(
-                    table::Any, 
-                    columnSettings::Dict{String, Dict}={}, 
-                    resize::Bool=true, 
-                    outFile::String="./index.html"
+                    table; 
+                    columnSettings::Dict = Dict(), 
+                    resize::Bool = true, 
+                    outFile::String = "./index.html"
                 )
 
     if !resize
