@@ -8,9 +8,9 @@ include("File.jl")
 include("Utils.jl")
 
 function showTable(
-                    table, 
-                    columnSettings=(), 
-                    resize=true, 
+                    table::Any, 
+                    columnSettings::Dict{String, Dict}={}, 
+                    resize::Bool=true, 
                     outFile::String="./index.html"
                 )
 

@@ -1,7 +1,11 @@
 import JSON
 include("Utils.jl")
 
-function getAgGridScripts(columnSettings, data, minWidth)
+function getAgGridScripts(
+                    columnSettings::Dict{String, Dict}, 
+                    data::Any, 
+                    minWidth::String
+                )
     rowData = JSON.json(data)
     columns = keys(data[1])
 

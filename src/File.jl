@@ -1,4 +1,4 @@
-function readData(fileName)
+function readData(fileName::String)
     io = open(fileName, "r")
     s = read(io, String)
     close(io)
@@ -6,10 +6,10 @@ function readData(fileName)
     return s
 end
 
-function saveHTML(str, outFile)
+function saveHTML(str::String, outFile::String)
     io = open(outFile, "w");
     write(io, str);
     close(io);
 
-    outFile
+    return outFile
 end

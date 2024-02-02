@@ -10,21 +10,24 @@ data = (
     
 )
 
-columnsData = (
-    a = (
-        filter = "number",
-        style = (
-            color = "red",
-            background = "#FFFF79"
+
+columnsDict = Dict(
+    "a" => Dict(
+        "filter" => "number",
+        "style" => (
+            "color" => "red",
+            "background" => "#FFFF79"
         )
     ),
-    b = (
-        filter = "number",
+    "b" => Dict(
+        "filter" => "number",
     ),
-    c = (
-        filter = "number",
+    "c" => Dict(
+        "filter" => "number",
     ),
-    cols = ()
+    "cols" => Dict()
 )
 
-TableView.showTable(data, columnsData, false, "./index.html")
+haskey(columnsDict["a"], "filter")
+
+TableView.showTable(data, columnsDict, false, "./index.html")
