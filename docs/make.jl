@@ -1,25 +1,22 @@
 using TableView
 using Documenter
 
-DocMeta.setdocmeta!(EasyCurl, :DocTestSetup, :(using EasyCurl); recursive = true)
+DocMeta.setdocmeta!(TableView, :DocTestSetup, :(using TableView); recursive = true)
 
 makedocs(;
-    modules = [EasyCurl],
-    repo = "https://github.com/bhftbootcamp/EasyCurl.jl/blob/{commit}{path}#{line}",
-    sitename = "EasyCurl.jl",
+    modules = [TableView],
+    repo = "https://github.com/gryumova/TableView.jl/blob/{commit}{path}#{line}",
+    sitename = "TableView.jl",
     format = Documenter.HTML(;
         prettyurls = get(ENV, "CI", "false") == "true",
-        canonical = "https://bhftbootcamp.github.io/EasyCurl.jl",
+        canonical = "https://github.com/gryumova/TableView.jl",
         edit_link = "master",
         assets = String["assets/favicon.ico"],
-        repolink = "https://github.com/bhftbootcamp/EasyCurl.jl.git",
+        repolink = "https://github.com/gryumova/TableView.jl.git",
     ),
     pages = [
         "Home" => "index.md",
-        "API Reference" => "pages/api_reference.md",
-        "Constants" => "pages/constants.md",
-        "For Developers" => "pages/error_handling.md",
     ],
 )
 
-deploydocs(; repo = "github.com/bhftbootcamp/EasyCurl.jl", devbranch = "master")
+deploydocs(; repo = "github.com/gryumova/TableView.jl", devbranch = "master")
