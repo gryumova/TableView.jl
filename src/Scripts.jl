@@ -1,6 +1,6 @@
 module Scripts
 import JSON
-include("utils.jl")
+include("Utils.jl")
 using .Utils
 
 export getAgGridScripts, getFunctionsScripts
