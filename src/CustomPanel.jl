@@ -1,7 +1,3 @@
-module CustomPanel
-
-export customPanelScript
-
 customPanelScript = "
     <script>
         class CustomFilterPunel {
@@ -299,5 +295,3 @@ customPanelScript = "
             };
         }
     </script>"
-
-end

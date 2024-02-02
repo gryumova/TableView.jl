@@ -1,7 +1,3 @@
-module Style
-
-export mainStyle, agGridStilization
-
 mainStyle = "
     <style>
         body {
@@ -352,4 +348,3 @@ agGridStilization = "
             }
         </style>
 "
-end

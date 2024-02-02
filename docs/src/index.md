@@ -3,7 +3,7 @@ TableView is a Julia package for generating an html file with a table based on [
 
 ## Usage
 Simple example:
-```
+```julia
 using TableView
 
 #
@@ -43,8 +43,12 @@ settings = (
 )
 
 # 'table' argument specifies the data to be displayed in the table
-# 'settings' argument specifies the columns to filter, the type of filtering, and the styling of the columns. If you want to filter by columns, specify the key 'cols'
-# 'resize' argument indicates the ability to change the width of the columns. If resize=false, you cannot reduce the column size to less than 150px.
+
+# 'settings' argument specifies the columns to filter, the type of filtering, and the styling of the columns. 
+# If you want to filter by columns, specify the key 'cols'
+
+# 'resize' argument indicates the ability to change the width of the columns. 
+#If resize=false, you cannot reduce the column size to less than 150px.
 
 showTable(table=data, columnSettings=settings, resize=false, outFile="./index.html")
 ```

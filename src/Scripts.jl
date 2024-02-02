@@ -1,18 +1,14 @@
-module Scripts
 import JSON
 include("Utils.jl")
-using .Utils
-
-export getAgGridScripts, getFunctionsScripts
 
 function getAgGridScripts(columnSettings, data, minWidth)
     rowData = JSON.json(data)
     columns = keys(data[1])
 
-    columnDefs, styleClasses = Utils.getColumnDefs(columns, columnSettings, keys(columnSettings))
-    filter = Utils.getFilterColumns(columnSettings, "text")
-    numeric =  Utils.getFilterColumns(columnSettings, "number")
-    date =  Utils.getFilterColumns(columnSettings, "date")
+    columnDefs, styleClasses = getColumnDefs(columns, columnSettings, keys(columnSettings))
+    filter = getFilterColumns(columnSettings, "text")
+    numeric =  getFilterColumns(columnSettings, "number")
+    date =  getFilterColumns(columnSettings, "date")
 
     script = "
     <style>
@@ -74,6 +70,8 @@ function getAgGridScripts(columnSettings, data, minWidth)
         }
           
     </script>"
+
+    return script
 end
 
 
@@ -385,7 +383,4 @@ function getFunctionsScripts()
             }
     </script>"
     
-end
-
-
 end

@@ -1,5 +1,11 @@
 module TableView
+
 import JSON
+include("Scripts.jl")
+include("Style.jl")
+include("CustomPanel.jl")
+include("File.jl")
+include("Utils.jl")
 
 function showTable(
                     table, 
@@ -15,13 +21,13 @@ function showTable(
     end
 
     if length(keys(columnSettings)) != 0
-        customPanel = CustomPanel.customPanelScript
+        customPanel = customPanelScript
     else
         customPanel = ""
     end
 
-    sideBar = Scripts.getAgGridScripts(columnSettings, table, minWidth)
-    sideBarFunctions = Scripts.getFunctionsScripts()
+    sideBar = getAgGridScripts(columnSettings, table, minWidth)
+    sideBarFunctions = getFunctionsScripts()
 
     html = "<!DOCTYPE html>
 <html lang='en'>
@@ -29,11 +35,11 @@ function showTable(
     <meta charSet='UTF-8'/>
     <meta name='viewport' content='width=device-width, initial-scale=1'/>
     <script src='http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js'></script>
-    $(Style.mainStyle)
+    $(mainStyle)
 </head>
 <body>
     <div id='grid-container' class='ag-theme-quartz'></div>
-    $(Style.agGridStilization)
+    $(agGridStilization)
     $customPanel
     <script src='https://cdn.jsdelivr.net/npm/ag-grid-enterprise@31.0.2/dist/ag-grid-enterprise.min.js'></script>
     $sideBar
@@ -41,13 +47,7 @@ function showTable(
 </body>
 </html>"
 
-    File.saveHTML(html, outFile)
+    return saveHTML(html, outFile)
 end
-
-include("scripts.jl")
-include("style.jl")
-include("customPanel.jl")
-include("file.jl")
-include("utils.jl")
 
 end

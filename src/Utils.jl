@@ -1,29 +1,8 @@
-module Utils
-
-export checkTextFilter, checkNumericFilter
 import JSON
 
-function checkTextFilter(row) 
-    for i in filter
-        if i != "cols" && i ∉ keys && !row[i] isa String
-            return false
-        end
-    end
-
-    return true
-end
-
-function checkNumericFilter(keys, filter, row) 
-    for i in filter
-        if i ∉ keys && !row[i] isa Number
-            return false
-        end
-    end
-
-    return true
-end
-
 function getColumnDefs(key, columnSettings, filtersName)
+    println("getColumnDefs", typeof(key), typeof(columnSettings), typeof(filtersName))
+    
     key = JSON.parse(JSON.json(key))
     filtersName = JSON.parse(JSON.json(filtersName))
     columnSettings = JSON.parse(JSON.json(columnSettings))
@@ -136,6 +115,7 @@ function getColumnDefs(key, columnSettings, filtersName)
 end
 
 function getFilterColumns(columnSettings, type)
+    println("getFilterColumns", typeof(columnSettings), typeof(type))
     columnSettings = JSON.parse(JSON.json(columnSettings))
     columnsName = []
 
@@ -152,5 +132,4 @@ function getFilterColumns(columnSettings, type)
     return JSON.json(columnsName)
 end
 
-end
 
