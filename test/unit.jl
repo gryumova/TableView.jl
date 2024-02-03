@@ -1,7 +1,7 @@
 # test/unit
 
 @testset "empty table" begin
-    @test TableView.showtable(()) isa Nothing
+    @test TableView.showTable(()) === ""
 end
 
 @testset "named tuple table" begin
@@ -9,7 +9,7 @@ end
         (a = 2.0, b = 3),
         (a = 3.0, b = 12)
     ]
-    @test TableView.showtable(table) isa String
+    @test TableView.showTable(table) isa String
 end
 
 @testset "array" begin
@@ -17,7 +17,7 @@ end
         (a = Inf, b = NaN, c = missing),
         (a = 3.0, b = 12, c = nothing)
     ]
-    @test TableView.showtable(table) isa String
+    @test TableView.showTable(table) isa String
 end
 
 @testset "resize argument" begin
@@ -28,8 +28,8 @@ end
         (a = 3, b = 868, c = 7),
         (a = 4, b = 34, c = 0),
     )
-    @test TableView.showtable(data, resize=false) isa String
-    @test TableView.showtable(data, resize=true) isa String
+    @test TableView.showTable(data, resize=false) isa String
+    @test TableView.showTable(data, resize=true) isa String
 end
 
 @testset "columnSettings argument" begin

@@ -7,6 +7,7 @@ include("CustomPanel.jl")
 include("File.jl")
 include("Utils.jl")
 
+
 export showTable
 
 """
@@ -45,7 +46,7 @@ function showTable(
                     outFile::String = "./index.html"
                 )::String
     if length(table) == 0
-        return 
+        return ""
     end
 
     if !resize
@@ -55,7 +56,7 @@ function showTable(
     end
 
     if length(keys(columnSettings)) != 0
-        customPanel = customPanelScript
+        customPanel = CUSTOM_PANEL_SCRIPT
     else
         customPanel = ""
     end
@@ -69,11 +70,11 @@ function showTable(
     <meta charSet='UTF-8'/>
     <meta name='viewport' content='width=device-width, initial-scale=1'/>
     <script src='http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js'></script>
-    $(mainStyle)
+    $MAIN_STYLE
 </head>
 <body>
     <div id='grid-container' class='ag-theme-quartz'></div>
-    $(agGridStilization)
+    $AG_GRID_STILIZATION
     $customPanel
     <script src='https://cdn.jsdelivr.net/npm/ag-grid-enterprise@31.0.2/dist/ag-grid-enterprise.min.js'></script>
     $sideBar
