@@ -1,7 +1,12 @@
 # Style
 
+"""
+        MAIN_STYLE
 
-mainStyle = "
+CSS script with basic styles for classes and attributes HTML files:
+"""
+
+const MAIN_STYLE = "
     <style>
         body {
             display: flex;
@@ -303,8 +308,14 @@ mainStyle = "
         }
     </style>"
 
+"""
+    AG_GRID_STILIZATION
 
-agGridStilization = "
+CSS script for AgGrid table styling:
+"""
+
+
+const AG_GRID_STILIZATION = "
         <style>
             .ag-theme-quartz,
             .ag-theme-quartz-dark {

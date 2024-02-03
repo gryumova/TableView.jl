@@ -48,7 +48,7 @@ settings = Dict(
 # If you want to filter by columns, specify the key 'cols'
 
 # 'resize' argument indicates the ability to change the width of the columns. 
-#If resize=false, you cannot reduce the column size to less than 150px.
+# If resize=false, you cannot reduce the column size to less than 150px.
 
 showTable(table=data, columnSettings=settings, resize=false, outFile="./index.html")
 ```

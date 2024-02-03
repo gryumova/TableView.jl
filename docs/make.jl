@@ -11,11 +11,11 @@ makedocs(;
         prettyurls = get(ENV, "CI", "false") == "true",
         canonical = "https://github.com/gryumova/TableView.jl",
         edit_link = "master",
-        assets = String["assets/favicon.ico"],
         repolink = "https://github.com/gryumova/TableView.jl.git",
     ),
     pages = [
         "Home" => "index.md",
+        "Generate HTML " => "showTable.md"
     ],
 )
 

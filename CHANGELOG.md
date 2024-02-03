@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.4] - 2024-02-02
+
+### Added
+
+ - Added docs for package.
+ - Added descriptions to the functions
+
+
+## [0.0.4] - 2024-02-01
+
+### Added
+
+ - Added range slider for numeric and date values.
+ - Added the ability to change cell style.
+
+### Fixed
+ - SideBar generation and functions for click events.
+ - Fixed bugs generate HTML file.
+ - Fixed bugs for different type of values.
+
+
 ## [0.0.3] - 2024-01-25
 
 ### Added

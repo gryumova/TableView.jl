@@ -15,14 +15,14 @@ export showTable
                     columnSettings::Dict = Dict(), 
                     resize::Bool = true, 
                     outFile::String = "./index.html"
-                )::String
+                ) -> String
+Generate html file with a table based on [AgGrid](https://www.ag-grid.com).
 
-Function accepts 
-    - table for display, 
-    - configuration for table filters in the form of a dictionary
-    - checkbox for changing column widths 
-    - name for the output file.
-Returns the path to the generated html file.
+## Fields
+- `table`: Table for display.
+- `columnSettings::Dict`: Configuration for table filters in the form of a dictionary.
+- `resize::Bool`: Checkbox for changing column widths.
+- `outFile::String`: Path for the output file.
 
 ## Examples
 

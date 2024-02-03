@@ -1,10 +1,13 @@
 # CustomPanel
+
 """
+        CUSTOM_PANEL_SCRIPT
+
 JS script that defines the configuration of the filter SideBar for the AgGrid table.
 HTML code is rendered depending on the columns Settings argument of the showTable function. Here are the functions to generate.
 """
 
-customPanelScript = "
+const CUSTOM_PANEL_SCRIPT = "
     <script>
         class CustomFilterPunel {
             eGui;
