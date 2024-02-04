@@ -11,8 +11,9 @@ include("Utils.jl")
 export showTable
 
 """
-    TableView.showTable
-    
+    showTable
+
+
 TableView.showTable(
                 table; 
                 columnSettings::Dict = Dict(), 
