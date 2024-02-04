@@ -3,8 +3,9 @@
 """
         CUSTOM_PANEL_SCRIPT
 
-JS script that defines the configuration of the filter SideBar for the AgGrid table.
-HTML code is rendered depending on the columnSettings argument of the showTable function. Here are the functions to generate.
+CUSTOM_PANEL_SCRIPT is a JS script that defines the filter sidebar configuration for the AgGrid table.
+Functions for generating HTML blocks with corresponding filters are written inside the class. 
+The HTML code is displayed based on the columnsSettings argument to the showTable function.
 """
 
 const CUSTOM_PANEL_SCRIPT = "

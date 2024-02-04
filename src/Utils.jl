@@ -3,6 +3,8 @@
 import JSON
 
 """
+    getStyleDefs
+
 Function parse style argument on settigns.
 Returns a generated JS string that is concatenated with the item variable and a CSS script to style the cell.
 """
@@ -75,6 +77,8 @@ function getStyleDefs(item, settings, i)
 end
 
 """
+    getFilterDefs
+
 Function parse filter argument on settigns. 
 Returns a JS string with column filtering settings.
 """
@@ -121,6 +125,8 @@ function getFilterDefs(settings)
 end
 
 """
+    getColumnDefs
+
 Function parse column filtering and column cell styling settings.
 Returns parsed configuration for columns and css styles.
 """
@@ -153,9 +159,11 @@ function getColumnDefs(
     return columnDefs, styleClasses
 end
 
-# """
-# Returns a list of columns depending on the type of filtering.
-# """
+"""
+    getFilterColumns
+
+Returns a list of columns depending on the type of filtering.
+"""
 
 function getFilterColumns(columnSettings::Dict, type::String)
     if length(keys(columnSettings)) == 0

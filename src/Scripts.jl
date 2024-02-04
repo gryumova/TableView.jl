@@ -4,8 +4,7 @@ import JSON
 include("Utils.jl")
 
 
-function getSidebar()
-    return "sideBar: {
+const SIDE_BAR = "sideBar: {
             toolPanels: [
                 {
                     id: 'customStats',
@@ -24,7 +23,15 @@ function getSidebar()
         onCellValueChanged: (params) => {
             params.api.refreshClientSideRowModel();
         }"
-end
+
+
+"""
+    getAgGridScripts
+
+Generating a js script that creates a grid inside your container by calling the create Grid command in the grid package.
+Once the Panel Component is registered with the grid it needs to be included into the SideBar. 
+    
+"""
 
 function getAgGridScripts(
                     columnSettings::Dict, 
@@ -40,7 +47,7 @@ function getAgGridScripts(
     date =  getFilterColumns(columnSettings, "date")
 
     if length(keys(columnSettings))!= 0 
-        SideBar =  getSidebar()
+        SideBar =  SIDE_BAR
     else 
         SideBar = ""
     end
@@ -92,8 +99,7 @@ function getAgGridScripts(
 end
 
 
-function getFunctionsScripts() 
-    return "
+const FUNCTIONS_SCRIPT =  "
     <script>
         function clickHandleCols(event) {
                 let block = document.getElementById('ag-cols')
@@ -399,5 +405,3 @@ function getFunctionsScripts()
                 return yy + '-' + mm + '-' + dd;
             }
     </script>"
-    
-end

@@ -61,7 +61,7 @@ function showTable(
     end
 
     sideBar = getAgGridScripts(columnSettings, table, minWidth)
-    sideBarFunctions = getFunctionsScripts()
+    sideBarFunctions = FUNCTIONS_SCRIPT
 
     html = "<!DOCTYPE html>
 <html lang='en'>
