@@ -15,6 +15,7 @@ makedocs(;
     ),
     pages = [
         "Home" => "index.md",
+        "Generating HTML" => "pages/generate_html.md",
     ],
 )
 
