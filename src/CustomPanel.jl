@@ -1,11 +1,11 @@
 # CustomPanel
 
-# """
-#         CUSTOM_PANEL_SCRIPT
+"""
+        CUSTOM_PANEL_SCRIPT
 
-# JS script that defines the configuration of the filter SideBar for the AgGrid table.
-# HTML code is rendered depending on the columns Settings argument of the showTable function. Here are the functions to generate.
-# """
+JS script that defines the configuration of the filter SideBar for the AgGrid table.
+HTML code is rendered depending on the columnSettings argument of the showTable function. Here are the functions to generate.
+"""
 
 const CUSTOM_PANEL_SCRIPT = "
     <script>

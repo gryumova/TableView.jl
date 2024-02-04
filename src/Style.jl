@@ -1,10 +1,10 @@
 # Style
 
-# """
-#         MAIN_STYLE
+"""
+        MAIN_STYLE
 
-# CSS script with basic styles for classes and attributes HTML files:
-# """
+CSS script with basic styles for classes and attributes HTML files.
+"""
 
 const MAIN_STYLE = "
     <style>
@@ -184,7 +184,6 @@ const MAIN_STYLE = "
             border-top: 1px solid #e0e0e0;
             text-align: start;
 
-            /* padding-top: 10px; */
             padding: 10px;
         }
         .name-numeric-filter {
@@ -308,11 +307,11 @@ const MAIN_STYLE = "
         }
     </style>"
 
-# """
-#     AG_GRID_STILIZATION
+"""
+    AG_GRID_STILIZATION
 
-# CSS script for AgGrid table styling:
-# """
+CSS script for AgGrid table styling.
+"""
 
 
 const AG_GRID_STILIZATION = "

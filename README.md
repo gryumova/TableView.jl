@@ -1,4 +1,7 @@
 # TableView.jl
+
+[![Build Status](https://github.com/gryumova/TableView.jl/actions/workflows/WORKFLOW-FILE/badge.svg?branch=master)](https://github.com/gryumova/TableView.jl/actions/workflows/CI.yml?query=branch%3Amain)
+[![codecov](https://codecov.io/gh/gryumova/TableView.jl/graph/badge.svg?token=vsEt7JjjYT)](https://codecov.io/gh/gryumova/TableView.jl)
 TableView is a Julia package for generating an html file with a table based on [AgGrid](https://www.ag-grid.com). You can set the configuration for filters and customize the display of column cells.
 
 ## Installation
