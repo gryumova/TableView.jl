@@ -15,7 +15,6 @@ makedocs(;
     ),
     pages = [
         "Home" => "index.md",
-        "Generate HTML " => "showTable.md"
     ],
 )
 

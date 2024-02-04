@@ -1,5 +1,0 @@
-## Generate HTML
-
-```@docs
-showTable
-```
