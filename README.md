@@ -2,6 +2,7 @@
 TableView is a Julia package for generating an html file with a table based on [AgGrid](https://www.ag-grid.com). You can set the configuration for filters and customize the display of column cells.
 
 ## Installation
+To install EasyCurl, simply use the Julia package manager:
 ```
 ] add TableView
 ```
