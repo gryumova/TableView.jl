@@ -1,10 +1,10 @@
 # Style
 
-"""
-        MAIN_STYLE
+# """
+#         MAIN_STYLE
 
-CSS script with basic styles for classes and attributes HTML files:
-"""
+# CSS script with basic styles for classes and attributes HTML files:
+# """
 
 const MAIN_STYLE = "
     <style>
@@ -308,11 +308,11 @@ const MAIN_STYLE = "
         }
     </style>"
 
-"""
-    AG_GRID_STILIZATION
+# """
+#     AG_GRID_STILIZATION
 
-CSS script for AgGrid table styling:
-"""
+# CSS script for AgGrid table styling:
+# """
 
 
 const AG_GRID_STILIZATION = "

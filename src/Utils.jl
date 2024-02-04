@@ -2,10 +2,10 @@
 
 import JSON
 
-"""
-Function parse style argument on settigns.
-Returns a generated JS string that is concatenated with the item variable and a CSS script to style the cell.
-"""
+# """
+# Function parse style argument on settigns.
+# Returns a generated JS string that is concatenated with the item variable and a CSS script to style the cell.
+# """
 
 function getStyleDefs(item, settings, i)
     if length(keys(settings)) == 0
@@ -74,10 +74,10 @@ function getStyleDefs(item, settings, i)
     return item, styleClasses
 end
 
-"""
-Function parse filter argument on settigns.
-Returns a JS string with column filtering settings.
-"""
+# """
+# Function parse filter argument on settigns.
+# Returns a JS string with column filtering settings.
+# """
 
 function getFilterDefs(settings)
     if length(keys(settings)) == 0
@@ -120,10 +120,10 @@ function getFilterDefs(settings)
     return script
 end
 
-"""
-Function parse column filtering and column cell styling settings.
-Returns parsed configuration for columns and css styles.
-"""
+# """
+# Function parse column filtering and column cell styling settings.
+# Returns parsed configuration for columns and css styles.
+# """
 
 function getColumnDefs(
             key, 
@@ -153,9 +153,9 @@ function getColumnDefs(
     return columnDefs, styleClasses
 end
 
-"""
-Returns a list of columns depending on the type of filtering.
-"""
+# """
+# Returns a list of columns depending on the type of filtering.
+# """
 
 function getFilterColumns(columnSettings::Dict, type::String)
     if length(keys(columnSettings)) == 0

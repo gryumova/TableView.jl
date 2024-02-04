@@ -5,7 +5,6 @@ include("Scripts.jl")
 include("Style.jl")
 include("CustomPanel.jl")
 include("File.jl")
-include("Utils.jl")
 
 
 export showTable
