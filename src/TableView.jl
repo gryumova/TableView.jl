@@ -11,12 +11,14 @@ include("Utils.jl")
 export showTable
 
 """
-    TableView.showTable(
-                    table; 
-                    columnSettings::Dict = Dict(), 
-                    resize::Bool = true, 
-                    outFile::String = "./index.html"
-                ) -> String
+    TableView.showTable
+    
+TableView.showTable(
+                table; 
+                columnSettings::Dict = Dict(), 
+                resize::Bool = true, 
+                outFile::String = "./index.html"
+            ) -> String
 Generate html file with a table based on [AgGrid](https://www.ag-grid.com).
 
 ## Fields
