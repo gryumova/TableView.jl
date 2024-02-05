@@ -12,17 +12,17 @@ export show_table
 """
     TableView.show_table(
                     table; 
-                    columnSettings::Dict = Dict(), 
+                    column_settings::Dict = Dict(), 
                     resize::Bool = true, 
-                    outFile::String = "./index.html"
+                    out_file::String = "./index.html"
                 ) -> String
 Generate html file with a table based on [AgGrid](https://www.ag-grid.com).
 
 ## Fields
 - `table`: Table for display.
-- `columnSettings::Dict`: Configuration for table filters in the form of a dictionary.
+- `column_settings::Dict`: Configuration for table filters in the form of a dictionary.
 - `resize::Bool`: Checkbox for changing column widths.
-- `outFile::String`: Path for the output file.
+- `out_file::String`: Path for the output file.
 
 ## Examples
 
