@@ -45,7 +45,6 @@ end
         )
     )
 
-
     @test get_aggrid_scripts(columns_dict, data, "") == test_1
 end
 
