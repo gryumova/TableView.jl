@@ -6,7 +6,7 @@ function readFile(file::String)
     return str
 end
 
-const test1 = readFile("test/Utils/test1.txt")
+const test1 = readFile("./Utils/test1.txt")
 const test2 = (
     "[{ field: 'a', valueParser: numberParser, filter: 'agNumberColumnFilter', },
 { field: 'b', filter: 'agSetColumnFilter', },
