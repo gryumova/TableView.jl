@@ -1,0 +1,46 @@
+
+    <style>
+        
+    </style>
+    <script type='text/javascript'>
+        filter=[]
+        numeric=[]
+        date=[]
+        let gridApi;
+        const gridOptions = {
+            rowData: [{"a":0,"b":1,"c":6,"date":"2022-05-03"},{"a":1,"b":35,"c":7,"date":"2022-06-02"},{"a":2,"b":134,"c":6,"date":"2022-03-10"},{"a":3,"b":868,"c":7,"date":"2022-01-08"},{"a":4,"b":34,"c":0,"date":"2022-08-01"}],
+            defaultColDef: {
+                flex: 1,
+                filter: true,
+                editable: true,
+                enableValue: true,
+                enableRowGroup: true,
+                enablePivot: true,
+                minWidth: 150
+            },
+            columnDefs: [{ field: 'a', },
+{ field: 'b', },
+{ field: 'c', },
+{ field: 'date', },
+],
+            
+        }
+        const myGridElement = document.querySelector('#grid-container');
+        gridApi = agGrid.createGrid(myGridElement, gridOptions);
+
+        function numberParser(params) {
+            const newValue = params.newValue;
+            let valueAsNumber;
+            if (newValue === null || newValue === undefined || newValue === '') {
+              valueAsNumber = null;
+            } else {
+              valueAsNumber = parseFloat(params.newValue);
+            }
+            return valueAsNumber;
+        }
+
+        function cellRenderer(params) {
+            return params.value;
+        }
+          
+    </script>

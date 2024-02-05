@@ -38,18 +38,18 @@ data = (
 #           equals = 10,
 #       )
 
-settings = (
-    a = (
-        filter = "number",
-        style = (
-            color = "red",
-            background = "#FFFF79"
+settings = Dict(
+    "a" => (
+        "filter" => "number",
+        "style" => (
+            "color" => "red",
+            "background" => "#FFFF79"
         )
     ),
-    c = (
-        filter = "text",
+    "c" => (
+        "filter" => "text",
     ),
-    cols = ()
+    "cols" => ()
 )
 
 # 'table' argument specifies the data to be displayed in the table
@@ -60,7 +60,7 @@ settings = (
 # 'resize' argument indicates the ability to change the width of the columns. 
 #If resize=false, you cannot reduce the column size to less than 150px.
 
-showTable(table=data, columnSettings=settings, resize=false, outFile="./index.html")
+showTable(data, columnSettings=settings, resize=false, outFile="./index.html")
 ```
 
 ## Contributing

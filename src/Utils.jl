@@ -11,7 +11,7 @@ Returns a generated JS string that is concatenated with the item variable and a 
 
 function getStyleDefs(item, settings, i)
     if length(keys(settings)) == 0
-        return 0
+        return item, ""
     end
 
     styleClasses = ""
@@ -48,6 +48,7 @@ function getStyleDefs(item, settings, i)
 
                 return {color: '$colorDown'};
             }, "
+            styleClasses = styleClasses * "colorDown: $colorDown; colorUp: $colorUp; "
 
         elseif "equals" in keys(style)
             equals = style["equals"]
@@ -65,6 +66,8 @@ function getStyleDefs(item, settings, i)
 
                 return null;
             }, "
+
+            styleClasses = styleClasses * "color: $color; "
         elseif "color" in keys(style)
             color = style["color"]
             styleClasses = styleClasses * "color: $color; "
@@ -85,7 +88,7 @@ Returns a JS string with column filtering settings.
 
 function getFilterDefs(settings)
     if length(keys(settings)) == 0
-        return 0
+        return ""
     end
 
     script = ""
@@ -165,7 +168,7 @@ end
 Returns a list of columns depending on the type of filtering.
 """
 
-function getFilterColumns(columnSettings::Dict, type::String)
+function getFilterColumns(columnSettings, type::String)
     if length(keys(columnSettings)) == 0
         return JSON.json([])
     end
@@ -184,4 +187,3 @@ function getFilterColumns(columnSettings::Dict, type::String)
 
     return JSON.json(columnsName)
 end
-
