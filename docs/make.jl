@@ -14,7 +14,8 @@ makedocs(;
         repolink = "https://github.com/gryumova/TableView.jl.git",
     ),
     pages = [
-        "Home" => "index.md"
+        "Home" => "index.md",
+        "Generate HTML" => "pages/generate_html.md"
     ],
 )
 

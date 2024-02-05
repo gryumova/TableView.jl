@@ -6,7 +6,7 @@ function readFile(file::String)
     return str
 end
 
-const test_1 = readFile("test/Scripts/test1.txt")
-const test_2 = readFile("test/Scripts/test2.txt")
-const test_3 = readFile("test/Scripts/test3.txt")
-const test_4 = readFile("test/Scripts/test4.txt")
+const test_1 = readFile("./test1.txt")
+const test_2 = readFile("./test2.txt")
+const test_3 = readFile("./test3.txt")
+const test_4 = readFile("./test4.txt")

@@ -37,7 +37,6 @@ julia> TableView.showTable(data, columnSettings=settings)
 "./index.html"
 ```
 """
-
 function showTable(
                     table; 
                     columnSettings::Dict = Dict(), 
