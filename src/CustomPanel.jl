@@ -7,6 +7,7 @@ CUSTOM_PANEL_SCRIPT is a JS script that defines the filter sidebar configuration
 Functions for generating HTML blocks with corresponding filters are written inside the class. 
 The HTML code is displayed based on the columnsSettings argument to the showTable function.
 """
+
 const CUSTOM_PANEL_SCRIPT = "
     <script>
         class CustomFilterPanel {
