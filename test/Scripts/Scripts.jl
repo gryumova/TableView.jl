@@ -10,11 +10,11 @@ include("scripts_test_constants.jl")
         (a = 4, b = 34, c = 0, date = "2022-08-01"),
     )
 
-    @test get_aggrid_scripts(Dict(), data, "") == test_2
-    @test get_aggrid_scripts(Dict(), data, "minWidth: 150") == test_3
+    @test get_aggrid_scripts(Dict(), data, "") == EMPTY_DICT_RESIZE
+    @test get_aggrid_scripts(Dict(), data, "minWidth: 150") == EMPTY_DICT_NOT_RESIZE
 end
 
-@testset "empty different style" begin
+@testset "different style" begin
     data = (
         (a = 0, b = 1, c = 6, date = "2022-05-03"),
         (a = 1, b = 35, c = 7, date = "2022-06-02"),
@@ -45,10 +45,10 @@ end
         )
     )
 
-    @test get_aggrid_scripts(columns_dict, data, "") == test_1
+    @test get_aggrid_scripts(columns_dict, data, "") == DIFFERENT_STYLE
 end
 
-@testset "empty different filter" begin
+@testset "different filter" begin
     data = (
         (a = 0, b = 1, c = 6, date = "2022-05-03"),
         (a = 1, b = 35, c = 7, date = "2022-06-02"),
@@ -71,7 +71,7 @@ end
     ) 
 
 
-    @test get_aggrid_scripts(columns_dict_number, data, "") == test_4
+    @test get_aggrid_scripts(columns_dict_number, data, "") == DIFFERENT_FILTER
 end
 
 @testset "MethodError test" begin

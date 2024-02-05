@@ -55,12 +55,12 @@ end
             )
     )) 
 
-    @test get_style_defs("", columns_dict_equal["c"], "c") === test3 
+    @test get_style_defs("", columns_dict_equal["c"], "c") === STYLE_DEFS_EQUAL 
     @test get_style_defs("", columns_dict_cols["a"], "a") === (
         "cellRenderer: cellRenderer, cellClass: ['styled-row-box', 'styled-row-box-a'], ", 
         ".styled-row-box-a span {background-color: green; color: red; }; "
     )
-    @test get_style_defs("", columns_dict_threshold["b"], "b") === test4
+    @test get_style_defs("", columns_dict_threshold["b"], "b") === STYLE_DEFS_THRESHOLD
     @test get_style_defs("", "", "") === ("", "")
 
 end
@@ -82,7 +82,7 @@ end
         "cols" => Dict(),
     ) 
     @test get_filter_defs(columns_dict_cols["a"]) == "valueParser: numberParser, filter: 'agNumberColumnFilter', "
-    @test get_filter_defs(columns_dict_cols["date"]) == test1
+    @test get_filter_defs(columns_dict_cols["date"]) == FILTER_DEFS
     @test get_filter_defs(Dict()) == ""
 end
 
@@ -97,7 +97,7 @@ end
         "cols" => Dict(),
     ) 
     @test get_column_defs((), Dict(), ()) == ("[]", "")
-    @test get_column_defs(("a", "b", "c", "date", "cols"), columns_dict_cols, ("a", "b", "cols")) == test2
+    @test get_column_defs(("a", "b", "c", "date", "cols"), columns_dict_cols, ("a", "b", "cols")) == COLUMN_DEFS
 end
 
 @testset "MethodError test" begin

@@ -6,7 +6,7 @@ function read_file(file::String)
     return str
 end
 
-const test_1 = read_file("./Scripts/test1.txt")
-const test_2 = read_file("./Scripts/test2.txt")
-const test_3 = read_file("./Scripts/test3.txt")
-const test_4 = read_file("./Scripts/test4.txt")
+const DIFFERENT_STYLE = read_file("./Scripts/differentStyle.txt")
+const EMPTY_DICT_RESIZE = read_file("./Scripts/emptyDictResize.txt")
+const EMPTY_DICT_NOT_RESIZE = read_file("./Scripts/emptyDictNotResize.txt")
+const DIFFERENT_FILTER = read_file("./Scripts/differentFiter.txt")

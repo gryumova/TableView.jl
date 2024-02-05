@@ -50,7 +50,7 @@ settings = Dict(
 # 'resize' argument indicates the ability to change the width of the columns. 
 # If resize=false, you cannot reduce the column size to less than 150px.
 
-showTable(data, column_settings=settings, resize=false, out_file="./index.html")
+show_table(data, column_settings=settings, resize=false, out_file="./index.html")
 ```
 
 ## AgGrid customization

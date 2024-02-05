@@ -134,7 +134,7 @@ end
     ) 
 
 
-    io = open("./test.html", "r");
+    io = open("./index.html", "r");
     expected = read(io, String);
     close(io);
 

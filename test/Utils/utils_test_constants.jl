@@ -6,8 +6,8 @@ function read_file(file::String)
     return str
 end
 
-const test1 = read_file("./Utils/test1.txt")
-const test2 = (
+const FILTER_DEFS = read_file("./Utils/filterDefs.txt")
+const COLUMN_DEFS = (
     "[{ field: 'a', valueParser: numberParser, filter: 'agNumberColumnFilter', },
 { field: 'b', filter: 'agSetColumnFilter', },
 { field: 'c', },
@@ -15,7 +15,7 @@ const test2 = (
 { field: 'cols', },
 ]", "")
 
-const test3 = (
+const STYLE_DEFS_EQUAL = (
     "cellRenderer: cellRenderer, cellClass: ['styled-row-box', 'styled-row-box-c'], cellStyle: params => {
                 if (params.value == '7') {
                     return {color: 'rgb(134, 208, 134)'};
@@ -26,7 +26,7 @@ const test3 = (
     ".styled-row-box-c span {color: rgb(134, 208, 134); }; "
 )
 
-const test4 = (
+const STYLE_DEFS_THRESHOLD = (
     "cellRenderer: cellRenderer, cellClass: ['styled-row-box', 'styled-row-box-b'], cellStyle: params => {
                 if (params.value > 35) {
                     return {color: 'rgb(134, 208, 134)'};
