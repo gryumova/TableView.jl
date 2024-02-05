@@ -33,28 +33,28 @@ Once the Panel Component is registered with the grid it needs to be included int
     
 """
 
-function getAgGridScripts(
-                    columnSettings::Dict, 
+function get_aggrid_scripts(
+                    column_settings::Dict, 
                     data::Any, 
-                    minWidth::String
+                    min_width::String
                 )
-    rowData = JSON.json(data)
+    row_data = JSON.json(data)
     columns = keys(data[1])
 
-    columnDefs, styleClasses = getColumnDefs(columns, columnSettings, keys(columnSettings))
-    filter = getFilterColumns(columnSettings, "text")
-    numeric =  getFilterColumns(columnSettings, "number")
-    date =  getFilterColumns(columnSettings, "date")
+    column_defs, style_classes = get_column_defs(columns, column_settings, keys(column_settings))
+    filter = get_filter_columns(column_settings, "text")
+    numeric =  get_filter_columns(column_settings, "number")
+    date =  get_filter_columns(column_settings, "date")
 
-    if length(keys(columnSettings))!= 0 
-        SideBar =  SIDE_BAR
+    if length(keys(column_settings))!= 0 
+        side_bar =  SIDE_BAR
     else 
-        SideBar = ""
+        side_bar = ""
     end
 
     script = "
     <style>
-        $styleClasses
+        $style_classes
     </style>
     <script type='text/javascript'>
         filter=$filter
@@ -62,7 +62,7 @@ function getAgGridScripts(
         date=$date
         let gridApi;
         const gridOptions = {
-            rowData: $rowData,
+            rowData: $row_data,
             defaultColDef: {
                 flex: 1,
                 filter: true,
@@ -70,10 +70,10 @@ function getAgGridScripts(
                 enableValue: true,
                 enableRowGroup: true,
                 enablePivot: true,
-                $minWidth
+                $min_width
             },
-            columnDefs: $columnDefs,
-            $SideBar
+            columnDefs: $column_defs,
+            $side_bar
         }
         const myGridElement = document.querySelector('#grid-container');
         gridApi = agGrid.createGrid(myGridElement, gridOptions);

@@ -1,5 +1,5 @@
 include("../../src/Scripts.jl")
-include("scripts-test-constants.jl")
+include("scripts_test_constants.jl")
 
 @testset "empty dict" begin
     data = (
@@ -10,8 +10,8 @@ include("scripts-test-constants.jl")
         (a = 4, b = 34, c = 0, date = "2022-08-01"),
     )
 
-    @test getAgGridScripts(Dict(), data, "") == test_2
-    @test getAgGridScripts(Dict(), data, "minWidth: 150") == test_3
+    @test get_aggrid_scripts(Dict(), data, "") == test_2
+    @test get_aggrid_scripts(Dict(), data, "minWidth: 150") == test_3
 end
 
 @testset "empty different style" begin
@@ -23,7 +23,7 @@ end
         (a = 4, b = 34, c = 0, date = "2022-08-01"),
     )
     
-    columnsDict= Dict(
+    columns_dict= Dict(
         "a" => Dict(
             "style" => Dict(
                 "color" => "rgb(134, 208, 134)",
@@ -46,7 +46,7 @@ end
     )
 
 
-    @test getAgGridScripts(columnsDict, data, "") == test_1
+    @test get_aggrid_scripts(columns_dict, data, "") == test_1
 end
 
 @testset "empty different filter" begin
@@ -58,7 +58,7 @@ end
         (a = 4, b = 34, c = 0, date = "2022-08-01"),
     )
     
-    columnsDictNumber = Dict(
+    columns_dict_number = Dict(
         "a" => Dict(
             "filter" => "number",
         ),
@@ -72,7 +72,7 @@ end
     ) 
 
 
-    @test getAgGridScripts(columnsDictNumber, data, "") == test_4
+    @test get_aggrid_scripts(columns_dict_number, data, "") == test_4
 end
 
 @testset "MethodError test" begin
@@ -82,5 +82,5 @@ end
             filter = "text"
         )
     ) 
-    @test_throws MethodError getAgGridScripts(a, data, "")
+    @test_throws MethodError get_aggrid_scripts(settings, data, "")
 end

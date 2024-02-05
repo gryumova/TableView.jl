@@ -1,5 +1,5 @@
 ## Generating HTML-file
 
 ```@docs
-TableView.showTable
+TableView.show_table
 ```

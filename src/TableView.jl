@@ -7,10 +7,10 @@ include("CustomPanel.jl")
 include("File.jl")
 
 
-export showTable
+export show_table
 
 """
-    TableView.showTable(
+    TableView.show_table(
                     table; 
                     columnSettings::Dict = Dict(), 
                     resize::Bool = true, 
@@ -37,30 +37,30 @@ julia> TableView.showTable(data, columnSettings=settings)
 "./index.html"
 ```
 """
-function showTable(
+function show_table(
                     table; 
-                    columnSettings::Dict = Dict(), 
+                    column_settings::Dict = Dict(), 
                     resize::Bool = true, 
-                    outFile::String = "./index.html"
+                    out_file::String = "./index.html"
                 )::String
     if length(table) == 0
         return ""
     end
 
     if !resize
-        minWidth = "minWidth: 150"
+        min_width = "minWidth: 150"
     else
-        minWidth = ""
+        min_width = ""
     end
 
-    if length(keys(columnSettings)) != 0
-        customPanel = CUSTOM_PANEL_SCRIPT
+    if length(keys(column_settings)) != 0
+        custom_panel = CUSTOM_PANEL_SCRIPT
     else
-        customPanel = ""
+        custom_panel = ""
     end
 
-    sideBar = getAgGridScripts(columnSettings, table, minWidth)
-    sideBarFunctions = FUNCTIONS_SCRIPT
+    side_bar = get_aggrid_scripts(column_settings, table, min_width)
+    side_bar_functions = FUNCTIONS_SCRIPT
 
     html = "<!DOCTYPE html>
 <html lang='en'>
@@ -73,14 +73,14 @@ function showTable(
 <body>
     <div id='grid-container' class='ag-theme-quartz'></div>
     $AG_GRID_STILIZATION
-    $customPanel
+    $custom_panel
     <script src='https://cdn.jsdelivr.net/npm/ag-grid-enterprise@31.0.2/dist/ag-grid-enterprise.min.js'></script>
-    $sideBar
-    $sideBarFunctions
+    $side_bar
+    $side_bar_functions
 </body>
 </html>"
 
-    return saveHTML(html, outFile)
+    return save_HTML(html, out_file)
 end
 
 end

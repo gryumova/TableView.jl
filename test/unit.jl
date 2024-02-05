@@ -1,7 +1,7 @@
 # test/unit
 
 @testset "empty table" begin
-    @test TableView.showTable(()) === ""
+    @test TableView.show_table(()) === ""
 end
 
 @testset "named tuple table" begin
@@ -9,7 +9,7 @@ end
         (a = 2.0, b = 3),
         (a = 3.0, b = 12)
     ]
-    @test TableView.showTable(table) isa String
+    @test TableView.show_table(table) isa String
 end
 
 @testset "array" begin
@@ -17,7 +17,7 @@ end
         (a = Inf, b = NaN, c = missing),
         (a = 3.0, b = 12, c = nothing)
     ]
-    @test TableView.showTable(table) isa String
+    @test TableView.show_table(table) isa String
 end
 
 @testset "resize argument" begin
@@ -28,11 +28,11 @@ end
         (a = 3, b = 868, c = 7),
         (a = 4, b = 34, c = 0),
     )
-    @test TableView.showTable(data, resize=false) isa String
-    @test TableView.showTable(data, resize=true) isa String
+    @test TableView.show_table(data, resize=false) isa String
+    @test TableView.show_table(data, resize=true) isa String
 end
 
-@testset "columnSettings: filter type" begin
+@testset "column_settings: filter type" begin
     data = (
         (a = 0, b = 1, c = 6, date = "2022-05-03"),
         (a = 1, b = 35, c = 7, date = "2022-06-02"),
@@ -40,19 +40,15 @@ end
         (a = 3, b = 868, c = 7, date = "2022-01-08"),
         (a = 4, b = 34, c = 0, date = "2022-08-01"),
     )
-    columnsDictNumber = Dict(
+    columns_number = Dict(
         "a" => Dict(
             "filter" => "number",
-    ))
-    columnsDictText = Dict(
-        "b" => Dict(
-            "filter" => "text",
-    ))
-    columnsDictDate = Dict(
+    ))  
+    columns_date = Dict(
         "date" => Dict(
             "filter" => "date",
     )) 
-    columnsDictCols= Dict(
+    columns_cols= Dict(
         "a" => Dict(
                     "filter" => "number"
                 ),
@@ -61,12 +57,12 @@ end
                 ),
         "cols" => Dict(),
     ) 
-    @test TableView.showTable(data, columnSettings=columnsDictDate) isa String
-    @test TableView.showTable(data, columnSettings=columnsDictNumber) isa String
-    @test TableView.showTable(data, columnSettings=columnsDictCols) isa String
+    @test TableView.show_table(data, column_settings=columns_date) isa String
+    @test TableView.show_table(data, column_settings=columns_number) isa String
+    @test TableView.show_table(data, column_settings=columns_cols) isa String
 end
 
-@testset "columnSettings: cell style" begin
+@testset "column_settings: cell style" begin
     data = (
         (a = 0, b = 1, c = 6, date = "2022-05-03"),
         (a = 1, b = 35, c = 7, date = "2022-06-02"),
@@ -74,21 +70,21 @@ end
         (a = 3, b = 868, c = 7, date = "2022-01-08"),
         (a = 4, b = 34, c = 0, date = "2022-08-01"),
     )
-    columnsDict= Dict(
+    columns_dict= Dict(
         "a" => Dict(
             "style" => Dict(
                 "color" => "rgb(134, 208, 134)",
                 "background" => "rgb(226, 73, 73)",
             )
     ))
-    columnsDictEqual = Dict(
+    columns_dict_equal = Dict(
         "c" => Dict(
             "style" => Dict(
                 "color" => "rgb(134, 208, 134)",
                 "equals" => 7
             )
     ))
-    columnsDictThreshold = Dict(
+    columns_dict_threshold = Dict(
         "b" => Dict(
             "style" => Dict(
                 "colorUp" => "rgb(134, 208, 134)",
@@ -96,7 +92,7 @@ end
                 "threshold" => 35
             )
     )) 
-    @test TableView.showTable(data, columnSettings=columnsDict) isa String
-    @test TableView.showTable(data, columnSettings=columnsDictEqual) isa String
-    @test TableView.showTable(data, columnSettings=columnsDictThreshold) isa String
+    @test TableView.show_table(data, column_settings=columns_dict) isa String
+    @test TableView.show_table(data, column_settings=columns_dict_equal) isa String
+    @test TableView.show_table(data, column_settings=columns_dict_threshold) isa String
 end

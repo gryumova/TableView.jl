@@ -1,6 +1,6 @@
 # File
 
-function saveHTML(str::String, outFile::String)
+function save_HTML(str::String, outFile::String)
     io = open(outFile, "w");
     write(io, str);
     close(io);
