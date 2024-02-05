@@ -11,7 +11,7 @@ const SIDE_BAR = "sideBar: {
                     labelDefault: 'Custom Stats',
                     labelKey: 'customStats',
                     iconKey: 'custom-stats',
-                    toolPanel: CustomFilterPunel,
+                    toolPanel: CustomFilterPanel,
                     toolPanelParams: {
                     title: 'Custom Stats',
                     },

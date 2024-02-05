@@ -6,7 +6,7 @@
 TableView is a Julia package for generating an html file with a table based on [AgGrid](https://www.ag-grid.com). You can set the configuration for filters and customize the display of column cells.
 
 ## Installation
-To install EasyCurl, simply use the Julia package manager:
+To install TableView, simply use the Julia package manager:
 ```
 ] add TableView
 ```
@@ -27,41 +27,41 @@ data = (
 
 # 'table' argument can be 'number', 'text', 'date'
 # 'style' argument can include 'color' and 'background'. You can change text color depending of a value of cell.
-#       style = (
-#           colorUp = "red",
-#           colorDown = "green",
-#           threshold = 10,
+#       style => Dict(
+#           colorUp => "red",
+#           colorDown => "green",
+#           threshold => 10,
 #       )
 #       or
-#       style = (
-#           color = "red",
-#           equals = 10,
+#       style => Dict(
+#           color => "red",
+#           equals => 10,
 #       )
 
 settings = Dict(
-    "a" => (
+    "a" => Dict(
         "filter" => "number",
-        "style" => (
+        "style" => Dict(
             "color" => "red",
             "background" => "#FFFF79"
         )
     ),
-    "c" => (
+    "c" => Dict(
         "filter" => "text",
     ),
-    "cols" => ()
+    "cols" => Dict()
 )
 
-# 'table' argument specifies the data to be displayed in the table
+# first argument specifies the data to be displayed in the table
 
-# 'settings' argument specifies the columns to filter, the type of filtering, and the styling of the columns. 
+# 'column_settings' argument specifies the columns to filter, the type of filtering, and the styling of the columns. 
 # If you want to filter by columns, specify the key 'cols'
 
 # 'resize' argument indicates the ability to change the width of the columns. 
 #If resize=false, you cannot reduce the column size to less than 150px.
 
-showTable(data, columnSettings=settings, resize=false, outFile="./index.html")
+showTable(data, column_settings=settings, resize=false, out_file="./index.html")
 ```
 
 ## Contributing
-Contributions to EasyCurl are welcome! If you encounter a bug, have a feature request, or would like to contribute code, please open an issue or a pull request on GitHub.
+Contributions to TableView are welcome! If you encounter a bug, have a feature request, or would like to contribute code, please open an issue or a pull request on GitHub.

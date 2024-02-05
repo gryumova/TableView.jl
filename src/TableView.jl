@@ -30,10 +30,10 @@ Generate html file with a table based on [AgGrid](https://www.ag-grid.com).
 julia> data = ((a = 0, b = 1),(a = 1, b = 35))
 ((a = 0, b = 1), (a = 1, b = 35))
 
-julia> settings = ( "a" => ("filter" => "number"))
+julia> settings = Dict( "a" => Dict("filter" => "number"))
 "a" => ("filter" => "number")
 
-julia> TableView.showTable(data, columnSettings=settings)
+julia> TableView.showTable(data, column_settings=settings)
 "./index.html"
 ```
 """
