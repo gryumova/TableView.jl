@@ -12,10 +12,28 @@ To install TableView, simply use the Julia package manager:
 ```
 
 ## Usage
+
+To generate an html file you need to use the `show_table` function:
+```julia
+show_table(table::Tuple; kw...)
+```
+
+The `table` passed to the function must be a `Tuple` whose elements are identical `NamedTuple` objects.
+Thus, each element of the table will represent its rows.
+Row cells will be specified in key-value pairs of each `NamedTuple`.
+
+## Keyword arguments
+- `column_settings::Dict`: Configuration for table filters. There you can specify following settings:
+  - list the names of the columns and their parameters by another dict.
+  -  ...
+- `resize::Bool`: Determines whether column widths can change.
+- `out_file::String`: Output file name.
+
+
 Simple example:
+
 ```julia
 using TableView
-
 
 data = (
     (a = 0, b = 1, c = 6),
@@ -24,19 +42,6 @@ data = (
     (a = 3, b = 868, c = 7),
     (a = 4, b = 34, c = 0),
 )
-
-# 'table' argument can be 'number', 'text', 'date'
-# 'style' argument can include 'color' and 'background'. You can change text color depending of a value of cell.
-#       style => Dict(
-#           colorUp => "red",
-#           colorDown => "green",
-#           threshold => 10,
-#       )
-#       or
-#       style => Dict(
-#           color => "red",
-#           equals => 10,
-#       )
 
 settings = Dict(
     "a" => Dict(
@@ -51,14 +56,6 @@ settings = Dict(
     ),
     "cols" => Dict()
 )
-
-# first argument specifies the data to be displayed in the table
-
-# 'column_settings' argument specifies the columns to filter, the type of filtering, and the styling of the columns. 
-# If you want to filter by columns, specify the key 'cols'
-
-# 'resize' argument indicates the ability to change the width of the columns. 
-#If resize=false, you cannot reduce the column size to less than 150px.
 
 show_table(data, column_settings=settings, resize=false, out_file="./index.html")
 ```

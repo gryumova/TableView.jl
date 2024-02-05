@@ -1,8 +1,5 @@
 using Test
+using TableView
 
-include("../src/TableView.jl")
-using .TableView
-
-include("unit.jl")
-include("Utils/Utils.jl")
-include("Scripts/Scripts.jl")
+include("Utils.jl")
+include("Scripts.jl")
