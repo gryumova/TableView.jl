@@ -1,4 +1,4 @@
-include("../../src/Utils.jl")
+include("../../src/Scripts.jl")
 include("scripts-test-constants.jl")
 
 @testset "empty dict" begin
