@@ -28,7 +28,7 @@ julia> TableView.showTable(data, column_settings=settings)
 "./index.html"
 ```
 """
-function show_table(table::Tuple; 
+function show_table(table; 
     column_settings::Dict = Dict(), 
     resize::Bool = true, 
     out_file::String = "./index.html",

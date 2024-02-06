@@ -2,10 +2,8 @@
 
 # Function parse style argument on settigns.
 # Returns a generated JS string that is concatenated with the item variable and a CSS script to style the cell.
-function get_style_defs(item, settings, i)
+function get_style_defs(item, style_classes, settings, i)
     isempty(settings) && return item, ""
-
-    style_classes = ""
 
     if haskey(settings, "style")
         style = settings["style"] 
@@ -114,7 +112,7 @@ function get_column_defs(key, column_settings::Dict, filters_name)
         if i in filters_name   
             settings = column_settings[i]
             item = item * get_filter_defs(settings)
-            item, style_classes = get_style_defs(item, settings, i)
+            item, style_classes = get_style_defs(item, style_classes, settings, i)
         end
         item = item * "},\n"
 
@@ -153,6 +151,7 @@ function get_aggrid_scripts(column_settings::Dict, data::Tuple, min_width::Strin
     numeric =  get_filter_columns(column_settings, "number")
     date =  get_filter_columns(column_settings, "date")
     side_bar = isempty(column_settings) ? "" : SIDE_BAR
+
 
     script = """
     <style>

@@ -117,7 +117,7 @@ const FUNCTIONS_SCRIPT = """
                 list.push(node.value) ;
         })
 
-        gridApi.setColumnFilterModel(id.toLocaleLowerCase(), { 
+        gridApi.setColumnFilterModel(id, { 
             values: list
         }).then(() => gridApi.onFilterChanged())
         .then(() => {
@@ -145,7 +145,7 @@ const FUNCTIONS_SCRIPT = """
             let result = [];
             gridApi.forEachNode((elem) => {
                 if (elem.displayed)
-                    result.push(String(elem.data[id.toLocaleLowerCase()]).toLocaleLowerCase());
+                    result.push(String(elem.data[id]).toLocaleLowerCase());
             })
             let list = [...new Set(result)];
 
@@ -170,7 +170,7 @@ const FUNCTIONS_SCRIPT = """
 
             gridApi.forEachNode(elem => {
                 if (elem.displayed)
-                    result.push(Number(elem.data[id.toLocaleLowerCase()]));
+                    result.push(Number(elem.data[id]));
             });
         
             let maxValue = Math.max(...result);
@@ -191,7 +191,7 @@ const FUNCTIONS_SCRIPT = """
 
             gridApi.forEachNode(elem => {
                 if (elem.displayed)
-                    result.push(Date.parse(elem.data[id.toLocaleLowerCase()]));
+                    result.push(Date.parse(elem.data[id]));
             });
         
             let maxValue = Math.max(...result) + 24*60*60*1000;
@@ -256,6 +256,7 @@ const FUNCTIONS_SCRIPT = """
         } else {
             sliderOne.value = displayValOne.value;
         }
+        clickApplyNumeric(node);
         fillColor(node, \"number\");
     }
 
@@ -270,6 +271,7 @@ const FUNCTIONS_SCRIPT = """
         } else {
             sliderTwo.value = displayValTwo.value;
         }
+        clickApplyNumeric(node);
         fillColor(node, \"number\");
     }
 
@@ -286,7 +288,7 @@ const FUNCTIONS_SCRIPT = """
         } else {
             sliderOne.value = display_value; 
         }
-
+        clickApplyDate(node);
         fillColor(node, \"date\");
     }
 
@@ -303,20 +305,19 @@ const FUNCTIONS_SCRIPT = """
         } else {
             sliderTwo.value = display_value; 
         }
-
+        clickApplyDate(node);
         fillColor(node, \"date\");
     }
 
     function clickResetRow(id) {
         let result = [];
         gridApi.forEachNode(elem => {
-            result.push(String(elem.data[id.toLocaleLowerCase()]));
+            result.push(String(elem.data[id]));
         });
 
-        console.log(result.length)
         let list = [...new Set(result)];
 
-        gridApi.setColumnFilterModel(id.toLocaleLowerCase(), { 
+        gridApi.setColumnFilterModel(id, { 
             values: list
         }).then(() => gridApi.onFilterChanged()).then(() => {
             \$(`.filter-wrapper .column-filter`).map((item, elem) => {
@@ -410,7 +411,7 @@ const FUNCTIONS_SCRIPT = """
         let result = [];
 
         gridApi.forEachNode(elem => {
-            result.push(Number(elem.data[node.toLocaleLowerCase()]));
+            result.push(Number(elem.data[node]));
         });
 
         let maxValue = Math.max(...result);
@@ -426,7 +427,7 @@ const FUNCTIONS_SCRIPT = """
 
         displayValOne.value = minValue;
         displayValTwo.value = maxValue;
-        gridApi.setColumnFilterModel(node.toLocaleLowerCase(), {
+        gridApi.setColumnFilterModel(node, {
             operator: 'AND',
             conditions: [
                 {
@@ -458,7 +459,7 @@ const FUNCTIONS_SCRIPT = """
         let result = [];
 
         gridApi.forEachNode(elem => {
-            result.push(Date.parse(elem.data[node.toLocaleLowerCase()]));
+            result.push(Date.parse(elem.data[node]));
         });
 
         let maxValue = Math.max(...result) + 24*60*60*1000;
@@ -475,7 +476,7 @@ const FUNCTIONS_SCRIPT = """
         displayValOne.value = formatDate(Number(sliderOne.min)); 
         displayValTwo.value = formatDate(Number(sliderOne.max)); 
 
-        gridApi.setColumnFilterModel(node.toLocaleLowerCase(), {
+        gridApi.setColumnFilterModel(node, {
             operator: 'AND',
             conditions: [
                 {
@@ -501,7 +502,7 @@ const FUNCTIONS_SCRIPT = """
         let sliderOne = document.getElementById(`slider-1-\${node}`).value;
         let sliderTwo = document.getElementById(`slider-2-\${node}`).value;
 
-        gridApi.setColumnFilterModel(node.toLocaleLowerCase(), {
+        gridApi.setColumnFilterModel(node, {
             operator: 'AND',
             conditions: [
                 {
@@ -524,20 +525,20 @@ const FUNCTIONS_SCRIPT = """
     function clickApplyNumeric(node) {
         let sliderOne = document.getElementById(`slider-1-\${node}`).value;
         let sliderTwo = document.getElementById(`slider-2-\${node}`).value;
-
-
-        gridApi.setColumnFilterModel(node.toLocaleLowerCase(), {
+        
+        console.log(sliderOne, sliderTwo)
+        gridApi.setColumnFilterModel(node, {
             operator: 'AND',
             conditions: [
                 {
                     filterType: 'number',
                     type: 'greaterThanOrEqual',
-                    filter: Number(sliderOne)
+                    filter: parseFloat(sliderOne)
                 },
                 {
                     filterType: 'number',
                     type: 'lessThanOrEqual',
-                    filter: Number(sliderTwo)
+                    filter: parseFloat(sliderTwo)
                 }
         ]}).then(() => gridApi.onFilterChanged())
         .then(() => \$(`.filter-wrapper .column-filter`).map((item, elem) => {
