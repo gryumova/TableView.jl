@@ -219,13 +219,13 @@ const MAIN_STYLE = """
         pointer-events: none;
     } 
     .slider-track{
-        width: 88%;
-        height: 6px;
+        width: calc(100% - 26px);
+        height: 5px;
 
         position: absolute;
         margin: auto;
-        left: 6%;
-        top: 1.2em;
+        left: 13px;
+        top: 1em;
         bottom: 0;
 
         background: #d8d8d8;
@@ -247,8 +247,8 @@ const MAIN_STYLE = """
     }
     .input-slider1::-webkit-slider-thumb{
         -webkit-appearance: none;
-        height: 2em;
-        width: 1.5em;
+        height: 1.8em;
+        width: 1.3em;
 
         cursor: pointer;
 
@@ -260,8 +260,8 @@ const MAIN_STYLE = """
     }
     .input-slider2::-webkit-slider-thumb{
         -webkit-appearance: none;
-        height: 2em;
-        width: 1.5em;
+        height: 1.8em;
+        width: 1.3em;
 
         cursor: pointer;
 
