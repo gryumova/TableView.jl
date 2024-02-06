@@ -215,6 +215,7 @@ function get_filter_columns(column_settings, type::String)
 
     return JSON.json(columns_name)
 end
+ 
 
 function save_HTML(str::String, outFile::String)
     io = open(outFile, "w");
