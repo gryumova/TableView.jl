@@ -3,26 +3,26 @@
 const FUNCTIONS_SCRIPT = """
 <script>
     function inputNumeric(event, node, side) {
-        if (event.code == 'Enter') {
+        if (event.code == \"Enter\") {
             let number = Number(event.target.value);
             
             if (!isNaN(number)) {
-                if (side == 'one') 
+                if (side == \"one\") 
                     setNumberInputOne(node);
-                else if (side == 'two')
+                else if (side == \"two\")
                     setNumberInputTwo(node);
             }
         }
     }
 
     function inputDate(event, node, side) {
-        if (event.code == 'Enter') {
+        if (event.code == \"Enter\") {
             let regex = /[0-9]{4}-[0-9]{2}-[0-9]{2}/
             let result = regex.test(event.target.value);
             if (result) {
-                if (side == 'one') 
+                if (side == \"one\") 
                     setDateInputOne(node);
-                else if (side == 'two')
+                else if (side == \"two\")
                     setDateInputTwo(node);
             }
         }
@@ -60,18 +60,21 @@ const FUNCTIONS_SCRIPT = """
                 }
             }
 
-            if (type === 'date') {
+            if (type === \"date\") {
                 displayValOne.value = formatDate(Number(sliderOne.value));
                 displayValTwo.value = formatDate(Number(sliderTwo.value));
             } else {
                 displayValOne.value = sliderOne.value;
                 displayValTwo.value = sliderTwo.value;
             }
-            fillColor(node);
+            fillColor(node, type);
         }
         var onMouseUp = function (evtUp){
             document.removeEventListener('mousemove', onMouseMove);
             document.removeEventListener('mouseup', onMouseUp);
+            if (type == \"date\")
+                clickApplyDate(`\${node}`)
+            else clickApplyNumeric(`\${node}`)
         }
 
 
@@ -206,7 +209,7 @@ const FUNCTIONS_SCRIPT = """
             displayValTwo.value = formatDate(Number(sliderOne.max)); 
         }
 
-        fillColor(id);
+        fillColor(id, type);
     }
 
     function clickAll(id) {
@@ -253,7 +256,7 @@ const FUNCTIONS_SCRIPT = """
         } else {
             sliderOne.value = displayValOne.value;
         }
-        fillColor(node);
+        fillColor(node, \"number\");
     }
 
     function setNumberInputTwo(node) {
@@ -267,7 +270,7 @@ const FUNCTIONS_SCRIPT = """
         } else {
             sliderTwo.value = displayValTwo.value;
         }
-        fillColor(node);
+        fillColor(node, \"number\");
     }
 
     function setDateInputOne(node) {
@@ -284,7 +287,7 @@ const FUNCTIONS_SCRIPT = """
             sliderOne.value = display_value; 
         }
 
-        fillColor(node);
+        fillColor(node, \"date\");
     }
 
     function setDateInputTwo(node) {
@@ -301,7 +304,7 @@ const FUNCTIONS_SCRIPT = """
             sliderTwo.value = display_value; 
         }
 
-        fillColor(node);
+        fillColor(node, \"date\");
     }
 
     function clickResetRow(id) {
@@ -309,6 +312,8 @@ const FUNCTIONS_SCRIPT = """
         gridApi.forEachNode(elem => {
             result.push(String(elem.data[id.toLocaleLowerCase()]));
         });
+
+        console.log(result.length)
         let list = [...new Set(result)];
 
         gridApi.setColumnFilterModel(id.toLocaleLowerCase(), { 
@@ -318,10 +323,10 @@ const FUNCTIONS_SCRIPT = """
                 updateFilter(elem.id);
             })
             \$(`.numeric-filter`).map((item, elem) => {
-                updateSlider(elem.id, \"number\");
+                clickResetNumeric(elem.id);
             })
             \$(`.date-filter`).map((item, elem) => {
-                updateSlider(elem.id, \"date\");
+                clickResetDate(elem.id);
             })
         });
 
@@ -363,7 +368,7 @@ const FUNCTIONS_SCRIPT = """
             displayValOne.value = formatDate(Number(sliderOne.value)); 
         else
             displayValOne.value = sliderOne.value;
-        fillColor(node);
+        fillColor(node, type);
     }
     function slideTwo(node, type=''){
         let sliderOne = document.getElementById(`slider-1-\${node}`);
@@ -378,9 +383,9 @@ const FUNCTIONS_SCRIPT = """
             displayValTwo.value = formatDate(Number(sliderTwo.value)); 
         else
             displayValTwo.value = sliderTwo.value;
-        fillColor(node);
+        fillColor(node, type);
     }
-    function fillColor(node) {
+    function fillColor(node, type) {
         let sliderOne = document.getElementById(`slider-1-\${node}`);
         let sliderTwo = document.getElementById(`slider-2-\${node}`);
         let sliderTrack = document.querySelector(`.slider-track-\${node}`);
@@ -390,7 +395,9 @@ const FUNCTIONS_SCRIPT = """
         percent1 = ((sliderOne.value - sliderMinValue) / (sliderMaxValue - sliderMinValue)) * 100;
         percent2 = ((sliderTwo.value - sliderMinValue) / (sliderMaxValue - sliderMinValue)) * 100;
 
-        sliderTrack.style.background = `linear-gradient(to right, #dadae5 \${percent1}% , #3e3d3d \${percent1}% , #3e3d3d \${percent2}%, #dadae5 \${percent2}%)`;
+        if (type === \"date\")
+            sliderTrack.style.background = `linear-gradient(to right, #e5e5e5 \${percent1}% , #bababa \${percent1}% , #bababa \${percent2}%, #e5e5e5 \${percent2}%)`;
+        else sliderTrack.style.background = `linear-gradient(to right, #e5e5e5 \${percent1}% , #666666 \${percent1}% , #666666 \${percent2}%, #e5e5e5 \${percent2}%)`;
     }
 
     function clickResetNumeric(node) {
@@ -524,12 +531,12 @@ const FUNCTIONS_SCRIPT = """
             conditions: [
                 {
                     filterType: 'number',
-                    type: 'greaterThan',
+                    type: 'greaterThanOrEqual',
                     filter: Number(sliderOne)
                 },
                 {
                     filterType: 'number',
-                    type: 'lessThan',
+                    type: 'lessThanOrEqual',
                     filter: Number(sliderTwo)
                 }
         ]}).then(() => gridApi.onFilterChanged())

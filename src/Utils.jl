@@ -201,6 +201,22 @@ function get_aggrid_scripts(column_settings::Dict, data::Tuple, min_width::Strin
     return script
 end
 
+function get_filter_columns(column_settings, type::String)
+    columns_name = String[]
+
+    for i in keys(column_settings)
+        if "filter" in keys(column_settings[i])
+            if column_settings[i]["filter"] == type
+                push!(columns_name, i)
+            end
+        elseif i == "cols" && type == "text"
+            push!(columns_name, i)
+        end
+    end
+
+    return JSON.json(columns_name)
+end
+
 function save_HTML(str::String, outFile::String)
     io = open(outFile, "w");
     write(io, str);

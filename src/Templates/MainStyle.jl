@@ -191,7 +191,7 @@ const MAIN_STYLE = """
     }
     .name-numeric-filter {
         font-size: 14px;
-        font-weight: 600;
+        font-weight: 900;
         text-align: start;
 
         color: #3e3d3d;
@@ -211,26 +211,25 @@ const MAIN_STYLE = """
         outline: none;
 
         position: absolute;
-        margin: 0px;
-        left: 0px;
+        margin: 0;
         top: 0;
         bottom: 0;
 
         background-color: transparent;
         pointer-events: none;
-    }
+    } 
     .slider-track{
-        width: 100%;
-        height: 3px;
+        width: 88%;
+        height: 6px;
 
         position: absolute;
         margin: auto;
-        left: 0px;
-        top: 0.6em;
+        left: 6%;
+        top: 1.2em;
         bottom: 0;
 
         background: #d8d8d8;
-        border-radius: 5px;
+        border-radius: 3px;
 
         cursor: pointer;
     }
@@ -246,47 +245,42 @@ const MAIN_STYLE = """
         appearance: none;
         height: 5px;
     }
-    input[type='range']::-webkit-slider-thumb{
+    .input-slider1::-webkit-slider-thumb{
         -webkit-appearance: none;
-        height: 1.2em;
-        width: 1.2em;
+        height: 2em;
+        width: 1.5em;
 
-        background-color: #636363;
         cursor: pointer;
-        margin-top: 0px;
+
+        border: 1.5px solid #666666;
+        border-radius: 60% 0 0 60% / 50% 0 0 50%;
+        background: #ffffff;
 
         pointer-events: auto;
-        border-radius: 50%;
     }
-    input[type='range']::-moz-range-thumb{
+    .input-slider2::-webkit-slider-thumb{
         -webkit-appearance: none;
-        height: 1.2em;
-        width: 1.2em;
-
-        cursor: pointer;
-        border-radius: 50%;
-
-        background-color: #636363;
-        pointer-events: auto;
-    }
-    input[type='range']::-ms-thumb{
-        appearance: none;
-        height: 1.2em;
-        width: 1.2em;
+        height: 2em;
+        width: 1.5em;
 
         cursor: pointer;
 
-        border-radius: 50%;
-        background-color: #636363;
+        border: 1.5px solid #666666;
+        border-radius: 0 60% 60% 0 / 0 50% 50% 0;
+        background: #ffffff;
+
         pointer-events: auto;
     }
-    input[type='range']:active::-webkit-slider-thumb{
-        background-color: #ffffff;
-        border: 3px solid #636363;
+
+    .input-slider2:active {
+        background-color: transparent;
+        border: none;
+        outline: none;
     }
-    .values{
+
+    .values {
         position: relative;
-        margin: 10px 0px 10px 0px;
+        margin: 5px 0px 5px 0px;
 
         display: flex;
         flex-direction: row;
@@ -297,15 +291,21 @@ const MAIN_STYLE = """
         text-align: center;
     }
     .input-numeric-slider {
-        border: none;
+        border: 1.5px solid transparent;
         background: transparent;
         outline: none;
 
         width: 45%;
 
-        color: #3e3d3d;
-        font-weight: 700;
-        font-size: 12px;
+        color: #383838;
+        font-weight: 500;
+        font-size: 14px;
+        padding: 3px 0px 3px 0px;
+        margin: 0;
+    }
+
+    .input-numeric-slider:focus {
+        border: 1.5px solid #d0d0d0;
     }
 
     /* STYLED COMPONENT */
