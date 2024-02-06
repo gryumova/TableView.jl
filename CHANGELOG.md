@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.4] - 2024-02-06
+
+### Fixed
+
+ - Rewrite numeric and date fiters.
+ - Rewrite styles to filters.
+
 ## [1.0.4] - 2024-02-02
 
 ### Added
