@@ -90,14 +90,13 @@ end
             ),
         ) 
 
-        @test TableView.get_style_defs("", columns_dict_equal["c"], "c") == STYLE_DEFS_EQUAL
-        @test TableView.get_style_defs("", columns_dict_cols["a"], "a") == (
+        @test TableView.get_style_defs("", "", columns_dict_equal["c"], "c") == STYLE_DEFS_EQUAL
+        @test TableView.get_style_defs("", "", columns_dict_cols["a"], "a") == (
             "cellRenderer: cellRenderer, cellClass: ['styled-row-box', 'styled-row-box-a'], ", 
             ".styled-row-box-a span {background-color: green; color: red; }; "
         )
-        @test TableView.get_style_defs("", columns_dict_threshold["b"], "b") == STYLE_DEFS_THRESHOLD
-        @test TableView.get_style_defs("", "", "") == ("", "")
-
+        @test TableView.get_style_defs("", "", columns_dict_threshold["b"], "b") == STYLE_DEFS_THRESHOLD
+        @test TableView.get_style_defs("", "", "", "") == ("", "")
     end
 
     @testset "Case №3: get_filter_defs test" begin
@@ -145,8 +144,8 @@ end
             "cols" => Dict(),
         )
 
-        @test get_column_defs((), Dict(), ()) == ("[]", "")
-        @test get_column_defs(("a", "b", "c", "date", "cols"), columns_dict_cols, ("a", "b", "cols")) == (COLUMN_DEFS, "")
+        @test TableView.et_column_defs((), Dict(), ()) == ("[]", "")
+        @test TableView.get_column_defs(("a", "b", "c", "date", "cols"), columns_dict_cols, ("a", "b", "cols")) == (COLUMN_DEFS, "")
     end
 
     @testset "Case №5: MethodError test" begin
