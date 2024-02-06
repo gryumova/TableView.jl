@@ -35,24 +35,23 @@ end
     @testset "Case №2: get_style_defs test" begin
         STYLE_DEFS_EQUAL = ("""
         cellRenderer: cellRenderer, cellClass: ['styled-row-box', 'styled-row-box-c'], cellStyle: params => {
-            if (params.value == '7') {
-                return {color: 'rgb(134, 208, 134)'};
-            }
-
-            return null;
-            }, \
+    if (params.value == '7') {
+        return {color: 'rgb(134, 208, 134)'};
+    }
+    return null;
+    }, \
         """, 
         ".styled-row-box-c span {color: rgb(134, 208, 134); }; ",
         )
 
         STYLE_DEFS_THRESHOLD = ("""
         cellRenderer: cellRenderer, cellClass: ['styled-row-box', 'styled-row-box-b'], cellStyle: params => {
-            if (params.value > 35) {
-                return {color: 'rgb(134, 208, 134)'};
-            }
+    if (params.value > 35) {
+        return {color: 'rgb(134, 208, 134)'};
+    }
 
-            return {color: 'rgb(226, 73, 73)'};
-        }, \
+    return {color: 'rgb(226, 73, 73)'};
+}, \
         """, 
         ".styled-row-box-b span {colorDown: rgb(226, 73, 73); colorUp: rgb(134, 208, 134); }; "
         )
