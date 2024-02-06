@@ -33,14 +33,13 @@ end
     end
 
     @testset "Case №2: get_style_defs test" begin
-        ("cellRenderer: cellRenderer, cellClass: ['styled-row-box', 'styled-row-box-c'], cellStyle: params => {\n                if (params.value == '7') {\n                    return {color: 'rgb(134, 208, 134)'};\n                }\n\n                return null;\n            }, ", ".styled-row-box-c span {color: rgb(134, 208, 134); }; ")
         STYLE_DEFS_EQUAL = ("""
         cellRenderer: cellRenderer, cellClass: ['styled-row-box', 'styled-row-box-c'], cellStyle: params => {
-                if (params.value == '7') {
-                    return {color: 'rgb(134, 208, 134)'};
-                }
+            if (params.value == '7') {
+                return {color: 'rgb(134, 208, 134)'};
+            }
 
-                return null;
+            return null;
             }, \
         """, 
         ".styled-row-box-c span {color: rgb(134, 208, 134); }; ",
@@ -48,12 +47,12 @@ end
 
         STYLE_DEFS_THRESHOLD = ("""
         cellRenderer: cellRenderer, cellClass: ['styled-row-box', 'styled-row-box-b'], cellStyle: params => {
-                if (params.value > 35) {
-                    return {color: 'rgb(134, 208, 134)'};
-                }
+            if (params.value > 35) {
+                return {color: 'rgb(134, 208, 134)'};
+            }
 
-                return {color: 'rgb(226, 73, 73)'};
-            }, \
+            return {color: 'rgb(226, 73, 73)'};
+        }, \
         """, 
         ".styled-row-box-b span {colorDown: rgb(226, 73, 73); colorUp: rgb(134, 208, 134); }; "
         )
@@ -144,7 +143,7 @@ end
             "cols" => Dict(),
         )
 
-        @test TableView.et_column_defs((), Dict(), ()) == ("[]", "")
+        @test TableView.get_column_defs((), Dict(), ()) == ("[]", "")
         @test TableView.get_column_defs(("a", "b", "c", "date", "cols"), columns_dict_cols, ("a", "b", "cols")) == (COLUMN_DEFS, "")
     end
 
