@@ -41,6 +41,7 @@ const MAIN_STYLE = """
 
         overflow: hidden;
         padding: 10px;
+        padding-bottom: 5px;
     }
     .filter-wrapper .column-filter:not(:first-child) {
         border-top: 1px solid #e0e0e0;
@@ -181,6 +182,13 @@ const MAIN_STYLE = """
 
         padding: 10px;
     }
+    .date-filter {
+        position: relative;
+        border-top: 1px solid #e0e0e0;
+        text-align: start;
+
+        padding: 10px;
+    }
     .name-numeric-filter {
         font-size: 14px;
         font-weight: 600;
@@ -223,6 +231,8 @@ const MAIN_STYLE = """
 
         background: #d8d8d8;
         border-radius: 5px;
+
+        cursor: pointer;
     }
     input[type='range']::-webkit-slider-runnable-track{
         -webkit-appearance: none;
@@ -285,12 +295,18 @@ const MAIN_STYLE = """
         border: none;
 
         text-align: center;
-        font-weight: 700;
-        font-size: 12px;
+    }
+    .input-numeric-slider {
+        border: none;
+        background: transparent;
+        outline: none;
+
+        width: 45%;
 
         color: #3e3d3d;
+        font-weight: 700;
+        font-size: 12px;
     }
-
 
     /* STYLED COMPONENT */
     .styled-row-box {

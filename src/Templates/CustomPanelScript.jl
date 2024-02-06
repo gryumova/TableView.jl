@@ -5,6 +5,21 @@
 #  The HTML code is displayed based on the columnsSettings argument to the showTable function.
 const CUSTOM_PANEL_SCRIPT = """
 <script>
+    function formatDate(date) {
+        date = new Date(date)
+
+
+        var dd = date.getDate();
+        if (dd < 10) dd = '0' + dd;
+
+        var mm = date.getMonth() + 1;
+        if (mm < 10) mm = '0' + mm;
+
+        var yy = date.getFullYear();
+
+        return yy + '-' + mm + '-' + dd;
+    }
+
     class CustomFilterPanel {
         eGui;
         init(params) {
@@ -19,32 +34,35 @@ const CUSTOM_PANEL_SCRIPT = """
         getGui() {
             return this.eGui;
         }
-    
+
         setUpdated(value) {
-        this.updated = value;
+            this.updated = value;
         }
-    
+
         refresh() {}
-    
+
         calculateHTML(params, text, numeric, date) {
-            let len = text.length;
-            if (numeric.length != 0 || date.length != 0)
-                len += 1;
+            let len = 0;
+            if (numeric.length != 0 || date.length != 0) {
+                len += numeric.length;
+                len += date.length;
+            }
+            let textHeight = (99.3 - len * 12);
 
             let textFilter = text.map((node) => {
                 if (node === 'cols')
-                    return this.calculateCols(params, len);
+                    return this.calculateCols(params, textHeight/text.length);
                 else
-                    return this.calculateParams(params, node, len);
+                    return this.calculateParams(params, node, textHeight/text.length);
             })
-            let numericDateFilter = this.calculateFilter(params, numeric, date, 98 / (len));
+            let numericDateFilter = this.calculateFilter(params, numeric, date);
             document.getElementById('ag-32').lastChild.style.width = '100%';
             
             return `
-                <div>
+                <div style='overflow: hidden'>
                     <div 
                         class='filter-wrapper'
-                        style='grid-template-rows: repeat(\${text.length}, \${98 / (len)}vh)'
+                        style='grid-template-rows: repeat(\${text.length}, calc(\${textHeight/text.length}vh-10px)); overflow: hidden'
                     >
                         \${textFilter.join('')}
                     </div>
@@ -54,19 +72,19 @@ const CUSTOM_PANEL_SCRIPT = """
                 </div>
             `
         }
-        calculateFilter(params, numeric, date, height) {
-            let len = numeric.length + date.length;
+        
+        calculateFilter(params, numeric, date) {
             let textHTML = numeric.map((node) => {
-                return this.calculateNumericItem(params, node, height/len);
+                return this.calculateNumericItem(params, node);
             })
 
             let dateHTML = date.map((node) => {
-                return this.calculateDateItem(params, node, height/len);
+                return this.calculateDateItem(params, node);
             })
         
             return textHTML.join('') + dateHTML.join('');
         }
-    
+
         calculateDateItem(params, node, height) {
             let result = [];
         
@@ -78,24 +96,39 @@ const CUSTOM_PANEL_SCRIPT = """
             let minValue = Math.min(...result) - 24*60*60*1000;
 
             return `
-            <div class='numeric-filter' style='height: \${height - 2}vh'>
-                <div style='overflow-y: scroll; height: calc(100% - 29px)'>
+            <div 
+                class='date-filter' 
+                style='height: 12vh'
+                id='\${node}'
+            >
+                <div style='overflow: hidden; height: calc(100% - 29px)'>
                     <span class='name-numeric-filter'>
                         \${node.toLocaleLowerCase()}
                     </span>
                     <div class='values values-\${node}'>
-                        <span id='range1-\${node}'>
-                            \${formatDate(minValue)}
-                        </span>
-                        <span id='range2-\${node}'>
-                            \${formatDate(maxValue)}
-                        </span>
-                    </div><div class='container container-\${node}'>
+                        <input 
+                            class='input-numeric-slider'
+                            id='range1-\${node}'
+                            value='\${formatDate(minValue)}'
+                            onkeypress='inputDate(event, \"\${node}\", \"one\")'
+                            type='text'
+                        />
+                        <input 
+                            class='input-numeric-slider'
+                            id='range2-\${node}'
+                            value='\${formatDate(maxValue)}'
+                            onkeypress='inputDate(event, \"\${node}\", \"two\")'
+                            type ='text'
+                            style=\"text-align: end\"
+                        />
+                    </div>
+                    <div class='container container-\${node}'>
                         <div 
                             class='slider-track slider-track-\${node}'
                             style='
                                 background: #3e3d3d;
                             '
+                            onmousedown='clickTrack(event, \"\${node}\", \"date\")'
                         ></div>
                         <input 
                             type='range' 
@@ -122,7 +155,6 @@ const CUSTOM_PANEL_SCRIPT = """
             </div>
             `
         }
-
         calculateNumericItem(params, node, height) {
             let result = [];
         
@@ -134,18 +166,33 @@ const CUSTOM_PANEL_SCRIPT = """
             let minValue = Math.min(...result);
         
             return `
-            <div class='numeric-filter' style='height: \${height - 2}vh'>
-                <div style='overflow-y: scroll; height: calc(100% - 29px)'>
+            <div 
+                class='numeric-filter' 
+                style='height: 12vh'
+                id='\${node}'
+            >
+                <div style='overflow: hidden; height: calc(100% - 29px)'>
                     <span class='name-numeric-filter'>
                         \${node.toLocaleLowerCase()}
                     </span>
                     <div class='values values-\${node}'>
-                        <span id='range1-\${node}'>
-                            \${minValue}
-                        </span>
-                        <span id='range2-\${node}'>
-                            \${maxValue}
-                        </span>
+                        <input 
+                            class='input-numeric-slider'
+                            id='range1-\${node}'
+                            value='\${minValue}'
+                            onkeypress='inputNumeric(event, \"\${node}\", \"one\")'
+                            type ='text'
+                        >
+                        </input>
+                        <input 
+                            class='input-numeric-slider'
+                            style=\"text-align: end\"
+                            id='range2-\${node}'
+                            value='\${maxValue}'
+                            onkeypress='inputNumeric(event, \"\${node}\", \"two\")'
+                            type ='text'
+                        >
+                        </input>
                     </div>
                     <div class='container container-\${node}'>
                         <div 
@@ -153,6 +200,7 @@ const CUSTOM_PANEL_SCRIPT = """
                             style='
                                 background: #3e3d3d;
                             '
+                            onmousedown='clickTrack(event, \"\${node}\", \"number\")'
                         ></div>
                         <input 
                             type='range' 
@@ -179,7 +227,7 @@ const CUSTOM_PANEL_SCRIPT = """
             </div>
             `
         }
-        calculateCols(params, len) {
+        calculateCols(params, height) {
             let columns = params.api.getAllDisplayedColumns().map((item) => {
             return item.colId
             });
@@ -204,17 +252,17 @@ const CUSTOM_PANEL_SCRIPT = """
             <div 
                 class='column-filter'
                 id='ag-cols'
-                style='height: \${94 / len}vh;'
+                style='height: calc(\${height}vh - 35px);'
             >
-                <div style='height: calc(\${94 / len}vh - 32px);'>
+                <div style='overflow: hidden; height: calc(\${height}vh - 20px);'>
                     <input 
-                    type='text' 
-                    id='searcherCols' 
-                    class='title' 
-                    placeholder='Search for cols...'
-                    oninput='inputSearch(event, \"searchCols\")'
+                        type='text' 
+                        id='searcherCols' 
+                        class='title' 
+                        placeholder='Search for cols...'
+                        oninput='inputSearch(event, \"searchCols\")'
                     />
-                    <div class='column-filter-wrapper' style='overflow-y: scroll; height: calc(100% - 32px);' id='searchCols'>
+                    <div class='column-filter-wrapper' style='height: calc(100% - 28px);' id='searchCols'>
                         <div class='column-filter-item'>
                             <input 
                                 class='input-cols-filter' 
@@ -236,7 +284,7 @@ const CUSTOM_PANEL_SCRIPT = """
             </div>`
         };
 
-        calculateParams(params, node, len) {
+        calculateParams(params, node, height) {
             let result = [];
             params.api.forEachNode(elem => {
                 if (elem.displayed === true) {
@@ -262,8 +310,8 @@ const CUSTOM_PANEL_SCRIPT = """
             })
 
             return `
-                <div class='column-filter' id='\${node}' style='height: \${94 / len}vh;'>
-                    <div style='height: calc(\${94 / len}vh - 32px);'>
+                <div class='column-filter' id='\${node}' style='height: calc(\${height}vh - 35px)'>
+                    <div style='overflow: hidden; height: calc(\${height}vh - 32px);'>
                         <input 
                         type='text' 
                         id='searcher\${node}' 
@@ -271,7 +319,7 @@ const CUSTOM_PANEL_SCRIPT = """
                         placeholder='Search for \${node}...' 
                         oninput='inputSearch(event, \"search\${node}\")'
                         />
-                        <div class='column-filter-wrapper' style='overflow-y: scroll; height: calc(100% - 32px);' id='search\${node}'>
+                        <div class='column-filter-wrapper' style='height: calc(100% - 28px);' id='search\${node}'>
                             <div class='column-filter-item'>
                                 <input 
                                     class='input-cols-filter' 

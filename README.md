@@ -25,8 +25,16 @@ Row cells will be specified in key-value pairs of each `NamedTuple`.
 ## Keyword arguments
 - `column_settings::Dict`: Configuration for table filters. There you can specify following settings:
   - list the names of the columns and their parameters by another dict.
-  -  ...
-- `resize::Bool`: Determines whether column widths can change.
+  - specify the filter type for the column:
+    - `text`: enumeration of values to be displayed;
+    - `number`: the range of numeric values that will be displayed;
+    - `date`: the range of date values that will be displayed;
+  - specify the styling of the column cells:
+    - `color, colorDown, colorUp`: text color;
+    - `background`: background color;
+    - `equals`: define the value you want to highlight with `color`;
+    - `threshold`: define the value below which the text `colorDown` will be set, and above it - `colorUp`.
+- `resize::Bool`: Determines whether the column width can be changed by less than 150px.
 - `out_file::String`: Output file name.
 
 
