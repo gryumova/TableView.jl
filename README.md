@@ -26,12 +26,14 @@ Row cells will be specified in key-value pairs of each `NamedTuple`.
 - `column_settings::Dict`: Configuration for table filters. There you can specify following settings:
   - list the names of the columns and their parameters by another dict.
   - each name has a dictionary with an indication of the filter type:
-
+  
     `"filter" => type`
     - `"filter" => "text"`: checkboxes listing the values that will be displayed;
     - `"filter" => "number"`: the range of numeric values that will be displayed;
     - `"filter" => "date"`: the range of date values that will be displayed;
-  - you can also specify the following styles for columns in dict:
+  - you can also specify styles for columns in dict:
+ 
+      `"style" => Dict()`
     
     - `"color" => String`: sets the text color (color names, hex codes, rgb values);  
       `"background" => String`: sets the color of the framing block (color names, hex codes, rgb values);
