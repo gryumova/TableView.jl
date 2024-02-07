@@ -24,7 +24,7 @@ Row cells will be specified in key-value pairs of each `NamedTuple`.
 
 ## Keyword arguments
 - `column_settings::Dict`: Configuration for table filters. There you can specify following settings:
-  - list the names of the columns and their parameters by another dict.
+  - list the names of the columns and their parameters by another dict. Specify `"cols" => Dict()` in the list to include a filter for the columns to display.
   - each name has a dictionary with an indication of the filter type:
   
     `"filter" => type`
