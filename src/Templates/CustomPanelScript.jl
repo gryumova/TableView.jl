@@ -49,9 +49,9 @@ const CUSTOM_PANEL_SCRIPT = """
             }
             let textFilter = text.map((node) => {
                 if (node === 'cols')
-                    return this.calculateCols(params, `(99.8vh - \${len} * 101px)/\${text.length}`);
+                    return this.calculateCols(params, `(99.8vh - \${len} * 91px)/\${text.length}`);
                 else
-                    return this.calculateParams(params, node, `(99.8vh - \${len} * 101px)/\${text.length}`);
+                    return this.calculateParams(params, node, `(99.8vh - \${len} * 91px)/\${text.length}`);
             })
             let numericDateFilter = this.calculateFilter(params, numeric, date);
             document.getElementById('ag-32').lastChild.style.width = '100%';
@@ -60,7 +60,7 @@ const CUSTOM_PANEL_SCRIPT = """
                 <div style='overflow: hidden'>
                     <div 
                         class='filter-wrapper'
-                        style='grid-template-rows: repeat(\${text.length}, calc((99.8vh - \${len} * 101px)/\${text.length})); overflow: hidden'
+                        style='grid-template-rows: repeat(\${text.length}, calc((99.8vh - \${len} * 91px)/\${text.length})); overflow: hidden'
                     >
                         \${textFilter.join('')}
                     </div>
@@ -95,7 +95,7 @@ const CUSTOM_PANEL_SCRIPT = """
             return `
             <div 
                 class='date-filter' 
-                style='height: 78px'
+                style='height: 70px'
                 id='\${node}'
             >
                 <div style='overflow: hiiden; height: 100%'>
@@ -171,7 +171,7 @@ const CUSTOM_PANEL_SCRIPT = """
             return `
             <div 
                 class='numeric-filter' 
-                style='height: 78px'
+                style='height: 70px'
                 id='\${node}'
             >
                 <div style='overflow: hidden; height: 100%'>
@@ -314,7 +314,7 @@ const CUSTOM_PANEL_SCRIPT = """
 
             return `
                 <div class='column-filter' id='\${node}'>
-                    <div style='overflow: hidden;'>
+                    <div style='overflow: hidden; height: calc(100% - 30px);'>
                         <input 
                         type='text' 
                         id='searcher\${node}' 

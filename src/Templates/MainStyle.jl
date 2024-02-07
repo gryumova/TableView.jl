@@ -219,13 +219,13 @@ const MAIN_STYLE = """
         pointer-events: none;
     } 
     .slider-track{
-        width: calc(100% - 18px);
+        width: calc(100% - 12px);
         height: 4px;
 
         position: absolute;
         margin: auto;
-        left: 9px;
-        top: 0.8em;
+        left: 6px;
+        top: 9px;
         bottom: 0;
 
         background: #d8d8d8;
@@ -247,12 +247,12 @@ const MAIN_STYLE = """
     }
     .input-slider1::-webkit-slider-thumb{
         -webkit-appearance: none;
-        height: 1.5em;
-        width: 1em;
+        height: 14px;
+        width: 10px;
 
         cursor: pointer;
 
-        border: 1.5px solid #666666;
+        border: 1px solid #666666;
         border-radius: 60% 0 0 60% / 50% 0 0 50%;
         background: #ffffff;
 
@@ -261,12 +261,12 @@ const MAIN_STYLE = """
     }
     .input-slider2::-webkit-slider-thumb{
         -webkit-appearance: none;
-        height: 1.5em;
-        width: 1em;
+        height: 14px;
+        width: 10px;
 
         cursor: pointer;
 
-        border: 1.5px solid #666666;
+        border: 1px solid #666666;
         border-radius: 0 60% 60% 0 / 0 50% 50% 0;
         background: #ffffff;
 
