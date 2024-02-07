@@ -219,13 +219,13 @@ const MAIN_STYLE = """
         pointer-events: none;
     } 
     .slider-track{
-        width: calc(100% - 26px);
-        height: 5px;
+        width: calc(100% - 18px);
+        height: 4px;
 
         position: absolute;
         margin: auto;
-        left: 13px;
-        top: 1em;
+        left: 9px;
+        top: 0.8em;
         bottom: 0;
 
         background: #d8d8d8;
@@ -247,8 +247,8 @@ const MAIN_STYLE = """
     }
     .input-slider1::-webkit-slider-thumb{
         -webkit-appearance: none;
-        height: 1.8em;
-        width: 1.3em;
+        height: 1.5em;
+        width: 1em;
 
         cursor: pointer;
 
@@ -257,11 +257,12 @@ const MAIN_STYLE = """
         background: #ffffff;
 
         pointer-events: auto;
+        cursor: e-resize;
     }
     .input-slider2::-webkit-slider-thumb{
         -webkit-appearance: none;
-        height: 1.8em;
-        width: 1.3em;
+        height: 1.5em;
+        width: 1em;
 
         cursor: pointer;
 
@@ -270,6 +271,7 @@ const MAIN_STYLE = """
         background: #ffffff;
 
         pointer-events: auto;
+        cursor: w-resize;
     }
 
     .input-slider2:active {

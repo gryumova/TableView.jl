@@ -142,7 +142,7 @@ end
 
 # Generating a js script that creates a grid inside your container by calling the create Grid command in the grid package.
 # Once the Panel Component is registered with the grid it needs to be included into the SideBar.  
-function get_aggrid_scripts(column_settings::Dict, data::Tuple, min_width::String)
+function get_aggrid_scripts(column_settings::Dict, data, min_width::String)
     row_data = JSON.json(data)
     columns = keys(data[1])
 

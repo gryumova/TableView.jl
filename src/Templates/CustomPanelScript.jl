@@ -5,6 +5,21 @@
 #  The HTML code is displayed based on the columnsSettings argument to the showTable function.
 const CUSTOM_PANEL_SCRIPT = """
 <script>
+    function formatDate(date) {
+        date = new Date(date)
+
+
+        var dd = date.getDate();
+        if (dd < 10) dd = '0' + dd;
+
+        var mm = date.getMonth() + 1;
+        if (mm < 10) mm = '0' + mm;
+
+        var yy = date.getFullYear();
+
+        return yy + '-' + mm + '-' + dd;
+    }
+    
     class CustomFilterPanel {
         eGui;
         init(params) {
