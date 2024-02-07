@@ -312,7 +312,7 @@ const MAIN_STYLE = """
 
     /* STYLED COMPONENT */
     .styled-row-box {
-        text-align: center;
+        text-align: right;
     }
     .styled-row-box span {
         padding: 5px 10px;

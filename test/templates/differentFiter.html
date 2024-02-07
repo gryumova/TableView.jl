@@ -17,8 +17,8 @@
             enablePivot: true,
             
         },
-        columnDefs: [{ field: 'a', valueParser: numberParser, filter: 'agNumberColumnFilter', },
-{ field: 'b', filter: 'agSetColumnFilter', },
+        columnDefs: [{ field: 'a', filter: 'agNumberColumnFilter', cellRenderer: cellRenderer, },
+{ field: 'b', filter: 'agSetColumnFilter', cellRenderer: cellRenderer, },
 { field: 'c', },
 { field: 'date', filter: 'agDateColumnFilter', filterParams: {
     comparator: (filterLocalDateAtMidnight, cellValue) => {
@@ -41,7 +41,7 @@
 
         return 0;
     }
-}},
+}, cellRenderer: cellRenderer, },
 ],
         sideBar: {
     toolPanels: [
@@ -67,15 +67,26 @@ onCellValueChanged: (params) => {
     const myGridElement = document.querySelector('#grid-container');
     gridApi = agGrid.createGrid(myGridElement, gridOptions);
 
-    function numberParser(params) {
-        const newValue = params.newValue;
-        let valueAsNumber;
-        if (newValue === null || newValue === undefined || newValue === '') {
-          valueAsNumber = null;
-        } else {
-          valueAsNumber = parseFloat(params.newValue);
+    function cellNumberRenderer(params, currency="", short=false, separator=true) {
+        if (params.value === null || params.value === NaN || isNaN(parseFloat(params.value)))
+            return params.value;
+
+        let settings = {}
+        if (short) {
+            settings["notation"] = "compact";
+            settings["compactDisplay"] = "short";
+            settings["currencyDisplay"] = "narrowSymbol";
         }
-        return valueAsNumber;
+
+        settings["useGrouping"] = separator;
+        
+        if (currency !== "") {
+            settings["style"] = "currency";
+            settings["currency"] = currency;
+        }
+        
+        let formatter = new Intl.NumberFormat("en-GB", settings);
+        return formatter.format(Number(params.value));
     }
 
     function cellRenderer(params) {

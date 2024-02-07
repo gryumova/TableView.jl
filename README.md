@@ -31,6 +31,16 @@ Row cells will be specified in key-value pairs of each `NamedTuple`.
     - `"filter" => "text"`: checkboxes listing the values that will be displayed;
     - `"filter" => "number"`: the range of numeric values that will be displayed;
     - `"filter" => "date"`: the range of date values that will be displayed;
+  - for numeric values ​​you can specify number formatting:
+
+    `"formatter" => Dict()`
+
+    - `"short" => Bool`: "short" form for numbers if true (4K, 23M), default - `false`;
+    - `"currency" => String`: for currency formatting. Possible values are the ISO 4217 currency codes, such as "USD" for the US dollar, "EUR" for the euro, or "CNY" for the Chinese RMB — see the [Current currency & funds code list](https://en.wikipedia.org/wiki/ISO_4217#List_of_ISO_4217_currency_codes);
+    - `"separator" => Bool`: whether to use grouping separators, such as thousands separators or thousand/lakh/crore separators, default - `false`;
+
+        Example:  
+        `"formatter" => Dict("short" => true, "currency" => "USD", "separator" => true)`;
   - you can also specify styles for columns in dict:
  
       `"style" => Dict()`
@@ -75,10 +85,18 @@ settings = Dict(
         "style" => Dict(
             "color" => "red",
             "background" => "#FFFF79"
-        )
+        ),
+        "formatter" => Dict(
+            "short" => true,
+            "currency" => "USD",
+            "separator" => true,
+        ),
     ),
     "c" => Dict(
         "filter" => "text",
+        "style" => Dict(
+          "text-align" => "center",
+        )
     ),
     "cols" => Dict()
 )

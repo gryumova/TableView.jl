@@ -7,8 +7,13 @@ function get_style_defs(item, style_classes, settings, i)
 
     if haskey(settings, "style")
         style = settings["style"] 
-        item = item * "cellRenderer: cellRenderer, cellClass: ['styled-row-box', 'styled-row-box-$i'], "
+        item = item * "cellClass: ['styled-row-box', 'styled-row-box-$i'], "
         
+        if haskey(style, "text-align") 
+            text_align = style["text-align"]
+            style_classes = style_classes * ".styled-row-box-$i { text-align: $text_align; }\n  "
+        end
+
         style_classes = style_classes * ".styled-row-box-$i span {"
 
         if haskey(style, "background")
@@ -29,7 +34,6 @@ function get_style_defs(item, style_classes, settings, i)
 
                 return {color: '$colorDown'};
             }, "
-            style_classes = style_classes * "colorDown: $colorDown; colorUp: $colorUp; "
 
         elseif haskey(style, "equals")
             equals = style["equals"]
@@ -43,17 +47,49 @@ function get_style_defs(item, style_classes, settings, i)
 
                 return null;
             }, "
-
-            style_classes = style_classes * "color: $color; "
         elseif haskey(style, "color")
             color = style["color"]
             style_classes = style_classes * "color: $color; "
         end
 
-        style_classes = style_classes * "}; "
+        style_classes = style_classes * "} "
     end
 
     return item, style_classes
+end
+
+function getRenderFunction(settings) 
+    isempty(settings) && return ""
+
+    format = ""
+    if haskey(settings, "formatter")
+        formatter = settings["formatter"] 
+        if haskey(formatter, "short") 
+            short = formatter["short"]
+        else
+            short = false
+        end
+
+        if haskey(formatter, "currency") 
+            currency = formatter["currency"]
+        else
+            currency = ""
+        end 
+
+        if haskey(formatter, "currency") 
+            separator = formatter["separator"]
+        else
+            separator = true
+        end 
+        format = "cellRenderer: params => cellNumberRenderer(params, '$currency', $short, $separator), "
+
+    else
+        format = "cellRenderer: cellRenderer, "
+    end
+
+    println(format)
+
+    return format
 end
 
 # Function parse filter argument on settigns. 
@@ -67,7 +103,7 @@ function get_filter_defs(settings)
         script = if settings["filter"] == "text"
             script * "filter: 'agSetColumnFilter', "
         elseif settings["filter"] == "number"
-            script * "valueParser: numberParser, filter: 'agNumberColumnFilter', "
+            script * "filter: 'agNumberColumnFilter', "
         elseif settings["filter"] == "date"
             script * """filter: 'agDateColumnFilter', filterParams: {
                 comparator: (filterLocalDateAtMidnight, cellValue) => {
@@ -90,7 +126,7 @@ function get_filter_defs(settings)
 
                     return 0;
                 }
-            }"""
+            }, """
         end
     end
 
@@ -112,6 +148,7 @@ function get_column_defs(key, column_settings::Dict, filters_name)
         if i in filters_name   
             settings = column_settings[i]
             item = item * get_filter_defs(settings)
+            item = item * getRenderFunction(settings)
             item, style_classes = get_style_defs(item, style_classes, settings, i)
         end
         item = item * "},\n"
@@ -179,17 +216,28 @@ function get_aggrid_scripts(column_settings::Dict, data, min_width::String)
         const myGridElement = document.querySelector('#grid-container');
         gridApi = agGrid.createGrid(myGridElement, gridOptions);
 
-        function numberParser(params) {
-            const newValue = params.newValue;
-            let valueAsNumber;
-            if (newValue === null || newValue === undefined || newValue === '') {
-              valueAsNumber = null;
-            } else {
-              valueAsNumber = parseFloat(params.newValue);
-            }
-            return valueAsNumber;
-        }
+        function cellNumberRenderer(params, currency="", short=false, separator=true) {
+            if (params.value === null || params.value === NaN || isNaN(parseFloat(params.value)))
+                return params.value;
 
+            let settings = {}
+            if (short) {
+                settings["notation"] = "compact";
+                settings["compactDisplay"] = "short";
+                settings["currencyDisplay"] = "narrowSymbol";
+            }
+
+            settings["useGrouping"] = separator;
+            
+            if (currency !== "") {
+                settings["style"] = "currency";
+                settings["currency"] = currency;
+            }
+            
+            let formatter = new Intl.NumberFormat("en-GB", settings);
+            return formatter.format(Number(params.value));
+        }
+    
         function cellRenderer(params) {
             return params.value;
         }

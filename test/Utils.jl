@@ -34,26 +34,25 @@ end
 
     @testset "Case №2: get_style_defs test" begin
         STYLE_DEFS_EQUAL = ("""
-cellRenderer: cellRenderer, cellClass: ['styled-row-box', 'styled-row-box-c'], cellStyle: params => {
+cellClass: ['styled-row-box', 'styled-row-box-c'], cellStyle: params => {
                 if (params.value == '7') {
                     return {color: 'rgb(134, 208, 134)'};
                 }
 
                 return null;
             }, """, 
-        ".styled-row-box-c span {color: rgb(134, 208, 134); }; "
+        ".styled-row-box-c span {} "
         )
 
         STYLE_DEFS_THRESHOLD = ("""
-cellRenderer: cellRenderer, cellClass: ['styled-row-box', 'styled-row-box-b'], cellStyle: params => {
+cellClass: ['styled-row-box', 'styled-row-box-b'], cellStyle: params => {
                 if (params.value > 35) {
                     return {color: 'rgb(134, 208, 134)'};
                 }
-
                 return {color: 'rgb(226, 73, 73)'};
             }, """, 
-        ".styled-row-box-b span {colorDown: rgb(226, 73, 73); colorUp: rgb(134, 208, 134); }; "
-    )
+    ".styled-row-box-b span {} "
+)
 
         columns_dict_cols= Dict(
             "a" => Dict(
@@ -89,8 +88,8 @@ cellRenderer: cellRenderer, cellClass: ['styled-row-box', 'styled-row-box-b'], c
 
         @test TableView.get_style_defs("", "", columns_dict_equal["c"], "c") == STYLE_DEFS_EQUAL
         @test TableView.get_style_defs("", "", columns_dict_cols["a"], "a") == (
-            "cellRenderer: cellRenderer, cellClass: ['styled-row-box', 'styled-row-box-a'], ", 
-            ".styled-row-box-a span {background-color: green; color: red; }; "
+            "cellClass: ['styled-row-box', 'styled-row-box-a'], ", 
+            ".styled-row-box-a span {background-color: green; color: red; } "
         )
         @test TableView.get_style_defs("", "", columns_dict_threshold["b"], "b") == STYLE_DEFS_THRESHOLD
         @test TableView.get_style_defs("", "", "", "") == ("", "")
@@ -115,7 +114,7 @@ cellRenderer: cellRenderer, cellClass: ['styled-row-box', 'styled-row-box-b'], c
             ),
             "cols" => Dict(),
         ) 
-        @test TableView.get_filter_defs(columns_dict_cols["a"]) == "valueParser: numberParser, filter: 'agNumberColumnFilter', "
+        @test TableView.get_filter_defs(columns_dict_cols["a"]) == "filter: 'agNumberColumnFilter', "
         @test TableView.get_filter_defs(columns_dict_cols["date"]) == FILTER_DEFS
         @test TableView.get_filter_defs(Dict()) == ""
     end
@@ -123,8 +122,8 @@ cellRenderer: cellRenderer, cellClass: ['styled-row-box', 'styled-row-box-b'], c
     @testset "Case №4: get_column_defs test" begin
 
         COLUMN_DEFS = """
-        [{ field: 'a', valueParser: numberParser, filter: 'agNumberColumnFilter', },
-        { field: 'b', filter: 'agSetColumnFilter', },
+        [{ field: 'a', filter: 'agNumberColumnFilter', cellRenderer: cellRenderer, },
+        { field: 'b', filter: 'agSetColumnFilter', cellRenderer: cellRenderer, },
         { field: 'c', },
         { field: 'date', },
         { field: 'cols', },
