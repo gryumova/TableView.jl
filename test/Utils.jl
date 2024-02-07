@@ -49,6 +49,7 @@ cellClass: ['styled-row-box', 'styled-row-box-b'], cellStyle: params => {
                 if (params.value > 35) {
                     return {color: 'rgb(134, 208, 134)'};
                 }
+
                 return {color: 'rgb(226, 73, 73)'};
             }, """, 
     ".styled-row-box-b span {} "
