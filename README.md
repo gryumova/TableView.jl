@@ -25,15 +25,31 @@ Row cells will be specified in key-value pairs of each `NamedTuple`.
 ## Keyword arguments
 - `column_settings::Dict`: Configuration for table filters. There you can specify following settings:
   - list the names of the columns and their parameters by another dict.
-  - specify the filter type for the column:
-    - `text`: enumeration of values to be displayed;
-    - `number`: the range of numeric values that will be displayed;
-    - `date`: the range of date values that will be displayed;
-  - specify the styling of the column cells:
-    - `color, colorDown, colorUp`: text color;
-    - `background`: background color;
-    - `equals`: define the value you want to highlight with `color`;
-    - `threshold`: define the value below which the text `colorDown` will be set, and above it - `colorUp`.
+  - each name has a dictionary with an indication of the filter type:
+
+    `"filter" => type`
+    - `"filter" => "text"`: checkboxes listing the values that will be displayed;
+    - `"filter" => "number"`: the range of numeric values that will be displayed;
+    - `"filter" => "date"`: the range of date values that will be displayed;
+  - you can also specify the following styles for columns in dict:
+    
+    - `"color" => String`: sets the text color (color names, hex codes, rgb values);
+      `"background" => String`: sets the color of the framing block (color names, hex codes, rgb values);
+
+        `"style" => Dict( "color" => "red, "backgound" => "#FFFFEE")`
+    - `"equals"`: define the value you want to highlight with `color`;
+
+      `"color" => "red"`: sets the text color (color names, hex codes, rgb values);
+
+        `"style" => Dict( "color" => "red", "backgound" => "#FFFFEE", "equals" => 23)`
+    - `"threshold"`: to dynamically determine the color of the text, set this value;
+    
+      `"colorUp" => String`: text color, if the cell value is lower than the set value (color names, hexadecimal codes, rgb values);
+
+      `"colorDown" => String`: text color, if the cell value is higher than the set value (color names, hexadecimal codes, rgb values).
+
+        `"style" => Dict( "threshold" => 50, "colorUp" => "#3d85c6", "colorDown" => "#a64d79", "backgound" => "rgb(230, 230, 250)")`
+
 - `resize::Bool`: Determines whether the column width can be changed by less than 150px.
 - `out_file::String`: Output file name.
 
