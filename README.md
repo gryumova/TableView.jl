@@ -33,21 +33,21 @@ Row cells will be specified in key-value pairs of each `NamedTuple`.
     - `"filter" => "date"`: the range of date values that will be displayed;
   - you can also specify the following styles for columns in dict:
     
-    - `"color" => String`: sets the text color (color names, hex codes, rgb values);
+    - `"color" => String`: sets the text color (color names, hex codes, rgb values);  
       `"background" => String`: sets the color of the framing block (color names, hex codes, rgb values);
 
+        Example:  
         `"style" => Dict( "color" => "red, "backgound" => "#FFFFEE")`
-    - `"equals"`: define the value you want to highlight with `color`;
+    - `"equals"`: define the value you want to highlight with `color`;  
+      `"color" => String`: sets the text color (color names, hex codes, rgb values);
 
-      `"color" => "red"`: sets the text color (color names, hex codes, rgb values);
-
+        Example:  
         `"style" => Dict( "color" => "red", "backgound" => "#FFFFEE", "equals" => 23)`
-    - `"threshold"`: to dynamically determine the color of the text, set this value;
-    
-      `"colorUp" => String`: text color, if the cell value is lower than the set value (color names, hexadecimal codes, rgb values);
+    - `"threshold"`: to dynamically determine the color of the text, set this value;  
+      `"colorUp" => String`: text color, if the cell value is lower than the set value (color names, hexadecimal codes, rgb values);   
+      `"colorDown" => String`: text color, if the cell value is higher than the set value (color names, hexadecimal codes, rgb values). 
 
-      `"colorDown" => String`: text color, if the cell value is higher than the set value (color names, hexadecimal codes, rgb values).
-
+        Example:  
         `"style" => Dict( "threshold" => 50, "colorUp" => "#3d85c6", "colorDown" => "#a64d79", "backgound" => "rgb(230, 230, 250)")`
 
 - `resize::Bool`: Determines whether the column width can be changed by less than 150px.
