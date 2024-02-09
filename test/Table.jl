@@ -49,6 +49,6 @@ end
         data = ()
         settings = (a = (filter = "text"))
         @test TableView.show_table(data, column_settings=Dict()) == ""
-        @test_throws MethodError TableView.show_table(data, column_settings=settings)
+        @test_throws TypeError TableView.show_table(data, column_settings=settings)
     end
 end
