@@ -70,18 +70,23 @@ function getRenderFunction(settings)
             short = false
         end
 
-        if haskey(formatter, "currency") 
-            currency = formatter["currency"]
+        if haskey(formatter, "style")
+            style = formatter["style"]
+            if  haskey(formatter, "currency")
+                currency = formatter["currency"]
+            else
+                currency = ""
+            end
         else
-            currency = ""
+            style = "decimal"
         end 
 
-        if haskey(formatter, "currency") 
+        if haskey(formatter, "separator") 
             separator = formatter["separator"]
         else
             separator = true
         end 
-        format = "cellRenderer: params => cellNumberRenderer(params, '$currency', $short, $separator), "
+        format = "cellRenderer: params => cellNumberRenderer(params, '$style', '$currency',  $short, $separator), "
 
     else
         format = "cellRenderer: cellRenderer, "
@@ -216,23 +221,22 @@ function get_aggrid_scripts(column_settings::Dict, data, min_width::String)
         const myGridElement = document.querySelector('#grid-container');
         gridApi = agGrid.createGrid(myGridElement, gridOptions);
 
-        function cellNumberRenderer(params, currency="", short=false, separator=true) {
+        function cellNumberRenderer(params, style, currency="", short=false, separator=true) {
             if (params.value === null || params.value === NaN || isNaN(parseFloat(params.value)))
                 return params.value;
-
+    
             let settings = {}
             if (short) {
                 settings["notation"] = "compact";
                 settings["compactDisplay"] = "short";
                 settings["currencyDisplay"] = "narrowSymbol";
             }
-
+    
             settings["useGrouping"] = separator;
-            
-            if (currency !== "") {
-                settings["style"] = "currency";
+            settings["style"] = style;
+    
+            if (currency !== "")
                 settings["currency"] = currency;
-            }
             
             let formatter = new Intl.NumberFormat("en-GB", settings);
             return formatter.format(Number(params.value));

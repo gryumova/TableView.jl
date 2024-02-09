@@ -36,11 +36,18 @@ Row cells will be specified in key-value pairs of each `NamedTuple`.
     `"formatter" => Dict()`
 
     - `"short" => Bool`: "short" form for numbers if true (4K, 23M), default - `false`;
-    - `"currency" => String`: for currency formatting. Possible values are the ISO 4217 currency codes, such as "USD" for the US dollar, "EUR" for the euro, or "CNY" for the Chinese RMB — see the [Current currency & funds code list](https://en.wikipedia.org/wiki/ISO_4217#List_of_ISO_4217_currency_codes);
+    - `"style" => String`: the formatting style to use: 
+
+      `"style" => "decimal"`(default): for plain number formatting.
+
+      `"style" => "currency"`: for currency formatting. Specify `"currency" => String`. Possible values are the ISO 4217 currency codes, such as "USD" for the US dollar, "EUR" for the euro, or "CNY" for the Chinese RMB — see the [Current currency & funds code list](https://en.wikipedia.org/wiki/ISO_4217#List_of_ISO_4217_currency_codes);
+
+      `"style" => "percent"`: for percent formatting.
+   
     - `"separator" => Bool`: whether to use grouping separators, such as thousands separators or thousand/lakh/crore separators, default - `false`;
 
         Example:  
-        `"formatter" => Dict("short" => true, "currency" => "USD", "separator" => true)`;
+        `"formatter" => Dict("short" => true, "style" => "currency", "currency" => "USD", "separator" => true)`;
   - you can also specify styles for columns in dict:
  
       `"style" => Dict()`
@@ -88,7 +95,7 @@ settings = Dict(
         ),
         "formatter" => Dict(
             "short" => true,
-            "currency" => "USD",
+            "currency" => "percent",
             "separator" => true,
         ),
     ),

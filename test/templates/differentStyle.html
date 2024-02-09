@@ -58,7 +58,7 @@ onCellValueChanged: (params) => {
     const myGridElement = document.querySelector('#grid-container');
     gridApi = agGrid.createGrid(myGridElement, gridOptions);
 
-    function cellNumberRenderer(params, currency="", short=false, separator=true) {
+    function cellNumberRenderer(params, style, currency="", short=false, separator=true) {
         if (params.value === null || params.value === NaN || isNaN(parseFloat(params.value)))
             return params.value;
 
@@ -70,11 +70,10 @@ onCellValueChanged: (params) => {
         }
 
         settings["useGrouping"] = separator;
-        
-        if (currency !== "") {
-            settings["style"] = "currency";
+        settings["style"] = style;
+
+        if (currency !== "")
             settings["currency"] = currency;
-        }
         
         let formatter = new Intl.NumberFormat("en-GB", settings);
         return formatter.format(Number(params.value));

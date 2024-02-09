@@ -223,9 +223,9 @@ const MAIN_STYLE = """
         height: 4px;
 
         position: absolute;
-        margin: auto;
+        margin: 0;
         left: 6px;
-        top: 9px;
+        top: 5.5px;
         bottom: 0;
 
         background: #d8d8d8;
