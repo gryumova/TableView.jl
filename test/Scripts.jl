@@ -114,7 +114,7 @@ end
                 "separator" => true,
             ),
         )
-        formatter_currency = Dict(
+        formatter_decimal = Dict(
             "formatter" => Dict(
                 "short" => false,
                 "style" => "decimal",
@@ -122,7 +122,7 @@ end
             ),
         )
             
-        @test TableView.getRenderFunction(formatter_currency) == "cellRenderer: params => cellNumberRenderer(params, 'decimal', '',  false, false), "
+        @test TableView.getRenderFunction(formatter_decimal) == "cellRenderer: params => cellNumberRenderer(params, 'decimal', '',  false, false), "
         @test TableView.getRenderFunction(formatter_currency) == "cellRenderer: params => cellNumberRenderer(params, 'currency', 'USD',  true, true), "
         @test TableView.getRenderFunction(formatter_percent) == "cellRenderer: params => cellNumberRenderer(params, 'percent', '',  true, true), "
     end
