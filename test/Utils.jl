@@ -35,7 +35,7 @@ end
     @testset "Case №2: get_style_defs test" begin
         STYLE_DEFS_EQUAL = ("""
 cellClass: ['styled-row-box', 'styled-row-box-c'], cellStyle: params => {
-                if (params.value == '7') {
+                if (String(params.value) == '7') {
                     return {color: 'rgb(134, 208, 134)'};
                 }
 
