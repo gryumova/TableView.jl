@@ -44,6 +44,7 @@ end
                 "style" => Dict(
                     "color" => "rgb(134, 208, 134)",
                     "background" => "rgb(226, 73, 73)",
+                    "text-align" => "center"
                 ),
             ),
             "c" => Dict(
@@ -92,7 +93,48 @@ end
         @test TableView.get_aggrid_scripts(columns_dict_number, data, "") == DIFFERENT_FILTER
     end
     
-    @testset "Case №4: MethodError test" begin
+    @testset "Case №3: Formatting number" begin    
+        formatter_percent = Dict(
+            "style" => Dict(
+                "color" => "rgb(134, 208, 134)",
+                "background" => "rgb(226, 73, 73)",
+                "text-align" => "center"
+            ),
+            "formatter" => Dict(
+                "short" => true,
+                "style" => "percent",
+                "separator" => true,
+            ),
+        )
+        formatter_currency = Dict(
+            "formatter" => Dict(
+                "short" => true,
+                "style" => "currency",
+                "currency" => "USD",
+                "separator" => true,
+            ),
+        )
+        formatter_currency = Dict(
+            "formatter" => Dict(
+                "short" => false,
+                "style" => "decimal",
+                "separator" => false,
+            ),
+        )
+            
+        @test TableView.getRenderFunction(formatter_currency) == "cellRenderer: params => cellNumberRenderer(params, 'decimal', '',  false, false), "
+        @test TableView.getRenderFunction(formatter_currency) == "cellRenderer: params => cellNumberRenderer(params, 'currency', 'USD',  true, true), "
+        @test TableView.getRenderFunction(formatter_percent) == "cellRenderer: params => cellNumberRenderer(params, 'percent', '',  true, true), "
+    end
+
+    @testset "Case №5: Columns name" begin
+        data = ()
+        settings = (a = (filter = "text"))
+    
+        @test_throws MethodError TableView.get_aggrid_scripts(settings, data, "")
+    end
+
+    @testset "Case №6: MethodError test" begin
         data = ()
         settings = (a = (filter = "text"))
     

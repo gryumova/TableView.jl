@@ -95,7 +95,7 @@ settings = Dict(
         ),
         "formatter" => Dict(
             "short" => true,
-            "currency" => "percent",
+            "style" => "percent",
             "separator" => true,
         ),
     ),
