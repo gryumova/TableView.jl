@@ -27,7 +27,7 @@
                 return {color: 'rgb(226, 73, 73)'};
             }, },
 { field: 'c', cellRenderer: cellRenderer, cellClass: ['styled-row-box', 'styled-row-box-c'], cellStyle: params => {
-                if (params.value == '7') {
+                if (String(params.value) == '7') {
                     return {color: 'rgb(134, 208, 134)'};
                 }
 

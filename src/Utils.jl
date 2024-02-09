@@ -5,6 +5,7 @@
 function get_style_defs(item, style_classes, settings, i)
     isempty(settings) && return item, ""
 
+    println(i, settings)
     if haskey(settings, "style")
         style = settings["style"] 
         item = item * "cellClass: ['styled-row-box', 'styled-row-box-$i'], "
@@ -41,7 +42,7 @@ function get_style_defs(item, style_classes, settings, i)
             color = get(style, "color", "red")
 
             item = item * "cellStyle: params => {
-                if (params.value == '$equals') {
+                if (String(params.value) == '$equals') {
                     return {color: '$color'};
                 }
 
