@@ -259,17 +259,3 @@ function save_HTML(str::String, outFile::String)
 
     return outFile
 end
-
-
-columns_dict_cols= Dict(
-    "a" => Dict(
-        "filter" => "number",
-    ),
-    "b" => Dict(
-        "filter" => "text",
-    ),
-    "cols_filter" => true
-)
-
-get_column_defs((), Dict(), ()) == ("[]", "")
-get_column_defs(("a", "b", "c", "date"), columns_dict_cols, ("a", "b", "cols_filter")) 
