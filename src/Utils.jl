@@ -80,6 +80,7 @@ function getRenderFunction(settings)
             end
         else
             style = "decimal"
+            currency=""
         end 
 
         if haskey(formatter, "separator") 
