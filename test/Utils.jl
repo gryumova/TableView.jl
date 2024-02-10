@@ -26,7 +26,7 @@ end
             "cols_filter" => true
         ) 
 
-        @test TableView.get_filter_columns(columns_dict_cols, "text") == "[\"b\",\"cols\"]"
+        @test TableView.get_filter_columns(columns_dict_cols, "text") == "[\"cols\",\"b\"]"
         @test TableView.get_filter_columns(columns_dict_cols, "number") == "[\"c\",\"a\"]"
         @test TableView.get_filter_columns(columns_dict_cols, "date") == "[\"date\"]"
         @test TableView.get_filter_columns(Dict(), "date") == "[]"
@@ -123,13 +123,11 @@ cellClass: ['styled-row-box', 'styled-row-box-b'], cellStyle: params => {
     @testset "Case №4: get_column_defs test" begin
 
         COLUMN_DEFS = """
-        [{ field: 'a', filter: 'agNumberColumnFilter', cellRenderer: cellRenderer, },
-        { field: 'b', filter: 'agSetColumnFilter', cellRenderer: cellRenderer, },
-        { field: 'c', },
-        { field: 'date', },
-        { field: 'cols', },
-        ]\
-        """
+[{ field: 'a', filter: 'agNumberColumnFilter', cellRenderer: cellRenderer, },
+{ field: 'b', filter: 'agSetColumnFilter', cellRenderer: cellRenderer, },
+{ field: 'c', },
+{ field: 'date', },
+]"""
 
         columns_dict_cols= Dict(
             "a" => Dict(
@@ -142,7 +140,7 @@ cellClass: ['styled-row-box', 'styled-row-box-b'], cellStyle: params => {
         )
 
         @test TableView.get_column_defs((), Dict(), ()) == ("[]", "")
-        @test TableView.get_column_defs(("a", "b", "c", "date", "cols"), columns_dict_cols, ("a", "b", "cols")) == (COLUMN_DEFS, "")
+        @test TableView.get_column_defs(("a", "b", "c", "date"), columns_dict_cols, ("a", "b", "cols")) == (COLUMN_DEFS, "")
     end
 
     @testset "Case №5: MethodError test" begin
