@@ -533,12 +533,12 @@ const FUNCTIONS_SCRIPT = """
                 {
                     filterType: 'number',
                     type: 'greaterThanOrEqual',
-                    filter: parseFloat(sliderOne)
+                    filter: parseFloat(sliderOne) - 0.0001
                 },
                 {
                     filterType: 'number',
                     type: 'lessThanOrEqual',
-                    filter: parseFloat(sliderTwo)
+                    filter: parseFloat(sliderTwo) + 0.0001
                 }
         ]}).then(() => gridApi.onFilterChanged())
         .then(() => \$(`.filter-wrapper .column-filter`).map((item, elem) => {
