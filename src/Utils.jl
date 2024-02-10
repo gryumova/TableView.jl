@@ -5,7 +5,6 @@
 function get_style_defs(item, style_classes, settings, i)
     isempty(settings) && return item, ""
 
-    println(i, settings)
     if haskey(settings, "style")
         style = settings["style"] 
         item = item * "cellClass: ['styled-row-box', 'styled-row-box-$i'], "
@@ -94,8 +93,6 @@ function getRenderFunction(settings)
         format = "cellRenderer: cellRenderer, "
     end
 
-    println(format)
-
     return format
 end
 
@@ -170,14 +167,15 @@ end
 # Returns a list of columns depending on the type of filtering.
 function get_filter_columns(column_settings, type::String)
     columns_name = String[]
-
     for i in keys(column_settings)
         if "filter" in keys(column_settings[i])
             if column_settings[i]["filter"] == type
                 push!(columns_name, i)
             end
-        elseif i == "cols" && type == "text"
-            push!(columns_name, i)
+        elseif i == "cols_filter" && type == "text"
+            if column_settings[i] == true
+                push!(columns_name, "cols")
+            end
         end
     end
 
@@ -253,23 +251,6 @@ function get_aggrid_scripts(column_settings::Dict, data, min_width::String)
 
     return script
 end
-
-function get_filter_columns(column_settings, type::String)
-    columns_name = String[]
-
-    for i in keys(column_settings)
-        if "filter" in keys(column_settings[i])
-            if column_settings[i]["filter"] == type
-                push!(columns_name, i)
-            end
-        elseif i == "cols" && type == "text"
-            push!(columns_name, i)
-        end
-    end
-
-    return JSON.json(columns_name)
-end
- 
 
 function save_HTML(str::String, outFile::String)
     io = open(outFile, "w");

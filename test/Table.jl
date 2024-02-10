@@ -37,7 +37,7 @@ end
                 "text-align" => "center",
                 )
             ),
-            "cols" => Dict()
+            "cols_filter" => true
         )
 
         TableView.show_table(data, column_settings=settings, resize=false, out_file="./index.html")

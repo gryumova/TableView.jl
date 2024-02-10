@@ -23,7 +23,7 @@ end
             "date" => Dict(
                 "filter" => "date",
             ),
-            "cols" => Dict(),
+            "cols_filter" => true
         ) 
 
         @test TableView.get_filter_columns(columns_dict_cols, "text") == "[\"b\",\"cols\"]"
@@ -113,7 +113,7 @@ cellClass: ['styled-row-box', 'styled-row-box-b'], cellStyle: params => {
             "date" => Dict(
                 "filter" => "date",
             ),
-            "cols" => Dict(),
+            "cols_filter" => true
         ) 
         @test TableView.get_filter_defs(columns_dict_cols["a"]) == "filter: 'agNumberColumnFilter', "
         @test TableView.get_filter_defs(columns_dict_cols["date"]) == FILTER_DEFS
@@ -138,7 +138,7 @@ cellClass: ['styled-row-box', 'styled-row-box-b'], cellStyle: params => {
             "b" => Dict(
                 "filter" => "text",
             ),
-            "cols" => Dict(),
+            "cols_filter" => true
         )
 
         @test TableView.get_column_defs((), Dict(), ()) == ("[]", "")

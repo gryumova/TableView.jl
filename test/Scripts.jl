@@ -87,7 +87,7 @@ end
             "date" => Dict(
                 "filter" => "date",
             ),
-            "cols" => Dict(),
+            "cols_filter" => true
         ) 
     
         @test TableView.get_aggrid_scripts(columns_dict_number, data, "") == DIFFERENT_FILTER
