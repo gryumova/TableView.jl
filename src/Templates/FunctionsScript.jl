@@ -433,12 +433,12 @@ const FUNCTIONS_SCRIPT = """
                 {
                     filterType: 'number',
                     type: 'greaterThanOrEqual',
-                    filter: Number(minValue)
+                    filter: Number(minValue) - 0.0001
                 },
                 {
                     filterType: 'number',
                     type: 'lessThanOrEqual',
-                    filter: Number(maxValue)
+                    filter: Number(maxValue) + 0.0001
                 }
         ]}).then(() => gridApi.onFilterChanged())
         .then(() => \$(`.filter-wrapper .column-filter`).map((item, elem) => {
