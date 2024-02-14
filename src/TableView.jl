@@ -46,7 +46,8 @@ function show_table(table;
     <head>
         <meta charSet='UTF-8'/>
         <meta name='viewport' content='width=device-width, initial-scale=1'/>
-        <script src='http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js'></script>
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+        <script src='https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js'></script>
         $MAIN_STYLE
     </head>
     <body>

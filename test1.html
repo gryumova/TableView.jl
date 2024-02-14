@@ -3,8 +3,7 @@
 <head>
     <meta charSet='UTF-8'/>
     <meta name='viewport' content='width=device-width, initial-scale=1'/>
-    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-    <script src='https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js'></script>
+    <script src='http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js'></script>
     <style>
     body {
         display: flex;
@@ -722,16 +721,20 @@
 
     <script src='https://cdn.jsdelivr.net/npm/ag-grid-enterprise@31.0.2/dist/ag-grid-enterprise.min.js'></script>
     <style>
-    .styled-row-box-a span {background-color: #FFFF79; color: red; } .styled-row-box-c { text-align: center; }
-  .styled-row-box-c span {} 
+    .styled-row-box-long_value { text-align: left; }
+  .styled-row-box-long_value span {} .styled-row-box-decimal_value { text-align: center; }
+  .styled-row-box-decimal_value span {background-color: #93c47d; } .styled-row-box-currency_code { text-align: center; }
+  .styled-row-box-currency_code span {background-color: #93c47d; color: #e06666; } .styled-row-box-percent { text-align: center; }
+  .styled-row-box-percent span {} .styled-row-box-separator { text-align: right; }
+  .styled-row-box-separator span {} 
 </style>
 <script type='text/javascript'>
-    filter=["c","cols"]
-    numeric=["a"]
+    filter=["cols"]
+    numeric=["long_value","decimal_value","currency_code","percent","separator"]
     date=[]
     let gridApi;
     const gridOptions = {
-        rowData: [{"a":0,"b":1,"c":6},{"a":1,"b":35,"c":7},{"a":2,"b":134,"c":6},{"a":3,"b":868,"c":7},{"a":4,"b":34,"c":0}],
+        rowData: [{"long_value":1.0e10,"decimal_value":0.333,"currency_code":784,"percent":0.5,"separator":1.23},{"long_value":1.0e9,"decimal_value":0.677,"currency_code":126,"percent":0.2,"separator":4.56},{"long_value":1.0e8,"decimal_value":1.333,"currency_code":376,"percent":1,"separator":7.89}],
         defaultColDef: {
             flex: 1,
             filter: true,
@@ -741,9 +744,17 @@
             enablePivot: true,
             minWidth: 150
         },
-        columnDefs: [{ field: 'a', filter: 'agNumberColumnFilter', cellRenderer: params => cellNumberRenderer(params, 'percent', '',  true, true), cellClass: ['styled-row-box', 'styled-row-box-a'], },
-{ field: 'b', },
-{ field: 'c', filter: 'agSetColumnFilter', cellRenderer: cellRenderer, cellClass: ['styled-row-box', 'styled-row-box-c'], },
+        columnDefs: [{ field: 'long_value', filter: 'agNumberColumnFilter', cellRenderer: params => cellNumberRenderer(params, 'decimal', '',  true, true), cellClass: ['styled-row-box', 'styled-row-box-long_value'], },
+{ field: 'decimal_value', filter: 'agNumberColumnFilter', cellRenderer: params => cellNumberRenderer(params, 'decimal', '',  false, true), cellClass: ['styled-row-box', 'styled-row-box-decimal_value'], },
+{ field: 'currency_code', filter: 'agNumberColumnFilter', cellRenderer: params => cellNumberRenderer(params, 'currency', 'USD',  false, true), cellClass: ['styled-row-box', 'styled-row-box-currency_code'], },
+{ field: 'percent', filter: 'agNumberColumnFilter', cellRenderer: params => cellNumberRenderer(params, 'percent', '',  false, true), cellClass: ['styled-row-box', 'styled-row-box-percent'], cellStyle: params => {
+                if (params.value > 0.5) {
+                    return {color: '#93c47d'};
+                }
+
+                return {color: '#e06666'};
+            }, },
+{ field: 'separator', filter: 'agNumberColumnFilter', cellRenderer: params => cellNumberRenderer(params, 'decimal', '',  false, false), cellClass: ['styled-row-box', 'styled-row-box-separator'], },
 ],
         sideBar: {
     toolPanels: [
