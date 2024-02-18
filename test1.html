@@ -3,7 +3,8 @@
 <head>
     <meta charSet='UTF-8'/>
     <meta name='viewport' content='width=device-width, initial-scale=1'/>
-    <script src='http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js'></script>
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js'></script>
     <style>
     body {
         display: flex;
@@ -734,7 +735,7 @@
     date=[]
     let gridApi;
     const gridOptions = {
-        rowData: [{"long_value":1.0e10,"decimal_value":0.333,"currency_code":784,"percent":0.5,"separator":1.23},{"long_value":1.0e9,"decimal_value":0.677,"currency_code":126,"percent":0.2,"separator":4.56},{"long_value":1.0e8,"decimal_value":1.333,"currency_code":376,"percent":1,"separator":7.89}],
+        rowData: [{"long_value":1.0e10,"decimal_value":0.333,"currency_code":784,"percent":0.5134,"separator":1.23},{"long_value":1.0e9,"decimal_value":0.677,"currency_code":126,"percent":0.124152,"separator":4.56},{"long_value":1.0e8,"decimal_value":1.333,"currency_code":376,"percent":12434,"separator":7.89}],
         defaultColDef: {
             flex: 1,
             filter: true,
@@ -744,17 +745,17 @@
             enablePivot: true,
             minWidth: 150
         },
-        columnDefs: [{ field: 'long_value', filter: 'agNumberColumnFilter', cellRenderer: params => cellNumberRenderer(params, 'decimal', '',  true, true), cellClass: ['styled-row-box', 'styled-row-box-long_value'], },
-{ field: 'decimal_value', filter: 'agNumberColumnFilter', cellRenderer: params => cellNumberRenderer(params, 'decimal', '',  false, true), cellClass: ['styled-row-box', 'styled-row-box-decimal_value'], },
-{ field: 'currency_code', filter: 'agNumberColumnFilter', cellRenderer: params => cellNumberRenderer(params, 'currency', 'USD',  false, true), cellClass: ['styled-row-box', 'styled-row-box-currency_code'], },
-{ field: 'percent', filter: 'agNumberColumnFilter', cellRenderer: params => cellNumberRenderer(params, 'percent', '',  false, true), cellClass: ['styled-row-box', 'styled-row-box-percent'], cellStyle: params => {
+        columnDefs: [{ field: 'long_value', filter: 'agNumberColumnFilter', cellRenderer: params => cellNumberRenderer(params, 'decimal', 3, '',  true, true), cellClass: ['styled-row-box', 'styled-row-box-long_value'], },
+{ field: 'decimal_value', filter: 'agNumberColumnFilter', cellRenderer: params => cellNumberRenderer(params, 'decimal', 2, '',  false, true), cellClass: ['styled-row-box', 'styled-row-box-decimal_value'], },
+{ field: 'currency_code', filter: 'agNumberColumnFilter', cellRenderer: params => cellNumberRenderer(params, 'currency', 3, 'USD',  false, true), cellClass: ['styled-row-box', 'styled-row-box-currency_code'], },
+{ field: 'percent', filter: 'agNumberColumnFilter', cellRenderer: params => cellNumberRenderer(params, 'percent', 2, '',  false, true), cellClass: ['styled-row-box', 'styled-row-box-percent'], cellStyle: params => {
                 if (params.value > 0.5) {
                     return {color: '#93c47d'};
                 }
 
                 return {color: '#e06666'};
             }, },
-{ field: 'separator', filter: 'agNumberColumnFilter', cellRenderer: params => cellNumberRenderer(params, 'decimal', '',  false, false), cellClass: ['styled-row-box', 'styled-row-box-separator'], },
+{ field: 'separator', filter: 'agNumberColumnFilter', cellRenderer: params => cellNumberRenderer(params, 'decimal', 2, '',  false, false), cellClass: ['styled-row-box', 'styled-row-box-separator'], },
 ],
         sideBar: {
     toolPanels: [
@@ -780,7 +781,7 @@ onCellValueChanged: (params) => {
     const myGridElement = document.querySelector('#grid-container');
     gridApi = agGrid.createGrid(myGridElement, gridOptions);
 
-    function cellNumberRenderer(params, style, currency="", short=false, separator=true) {
+    function cellNumberRenderer(params, style, maxdigits=3, currency="", short=false, separator=true) {
         if (params.value === null || params.value === NaN || isNaN(parseFloat(params.value)))
             return params.value;
 
@@ -793,6 +794,8 @@ onCellValueChanged: (params) => {
 
         settings["useGrouping"] = separator;
         settings["style"] = style;
+        settings["minimumFractionDigits"] = 0;
+        settings["maximumFractionDigits"] = maxdigits;
 
         if (currency !== "")
             settings["currency"] = currency;

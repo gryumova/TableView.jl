@@ -87,7 +87,14 @@ function getRenderFunction(settings)
         else
             separator = true
         end 
-        format = "cellRenderer: params => cellNumberRenderer(params, '$style', '$currency',  $short, $separator), "
+
+        if haskey(formatter, "maximumFractionDigits") 
+            maxdigits = formatter["maximumFractionDigits"]
+        else
+            maxdigits = 3
+        end 
+
+        format = "cellRenderer: params => cellNumberRenderer(params, '$style', $maxdigits, '$currency',  $short, $separator), "
 
     else
         format = "cellRenderer: cellRenderer, "
@@ -221,7 +228,7 @@ function get_aggrid_scripts(column_settings::Dict, data, min_width::String)
         const myGridElement = document.querySelector('#grid-container');
         gridApi = agGrid.createGrid(myGridElement, gridOptions);
 
-        function cellNumberRenderer(params, style, currency="", short=false, separator=true) {
+        function cellNumberRenderer(params, style, maxdigits=3, currency="", short=false, separator=true) {
             if (params.value === null || params.value === NaN || isNaN(parseFloat(params.value)))
                 return params.value;
     
@@ -234,6 +241,8 @@ function get_aggrid_scripts(column_settings::Dict, data, min_width::String)
     
             settings["useGrouping"] = separator;
             settings["style"] = style;
+            settings["minimumFractionDigits"] = 0;
+            settings["maximumFractionDigits"] = maxdigits;
     
             if (currency !== "")
                 settings["currency"] = currency;

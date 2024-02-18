@@ -97,6 +97,7 @@ settings = Dict(
             "short" => true,
             "style" => "percent",
             "separator" => true,
+            "maximumFractionDigits" => 4
         ),
     ),
     "c" => Dict(
