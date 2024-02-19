@@ -186,7 +186,7 @@ function get_filter_columns(column_settings, type::String)
         end
     end
 
-    return JSON.json(columns_name)
+    return columns_name
 end
 
 # Generating a js script that creates a grid inside your container by calling the create Grid command in the grid package.
@@ -196,10 +196,10 @@ function get_aggrid_scripts(column_settings::Dict, data, min_width::String)
     columns = keys(data[1])
 
     column_defs, style_classes = get_column_defs(columns, column_settings, keys(column_settings))
-    filter = get_filter_columns(column_settings, "text")
-    numeric =  get_filter_columns(column_settings, "number")
-    date =  get_filter_columns(column_settings, "date")
-    side_bar = isempty(column_settings) ? "" : SIDE_BAR
+    filter = JSON.json(get_filter_columns(column_settings, "text"))
+    numeric =  JSON.json(get_filter_columns(column_settings, "number"))
+    date =  JSON.json(get_filter_columns(column_settings, "date"))
+    side_bar = isemptyFilter(column_settings) ? "" : SIDE_BAR
 
 
     script = """
@@ -267,4 +267,17 @@ function save_HTML(str::String, outFile::String)
     close(io);
 
     return outFile
+end
+
+
+function isemptyFilter(column_settings::Dict)
+    if isempty(column_settings) 
+        return true
+    end
+
+    text = get_filter_columns(column_settings, "text")
+    number = get_filter_columns(column_settings, "number")
+    date = get_filter_columns(column_settings, "date")
+
+    return isempty(text) && isempty(number) && isempty(date)
 end
