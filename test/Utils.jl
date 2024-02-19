@@ -26,10 +26,10 @@ end
             "cols_filter" => true
         ) 
 
-        @test TableView.get_filter_columns(columns_dict_cols, "text") == "[\"cols\",\"b\"]"
-        @test TableView.get_filter_columns(columns_dict_cols, "number") == "[\"c\",\"a\"]"
-        @test TableView.get_filter_columns(columns_dict_cols, "date") == "[\"date\"]"
-        @test TableView.get_filter_columns(Dict(), "date") == "[]"
+        @test TableView.get_filter_columns(columns_dict_cols, "text") == ["cols", "b"]
+        @test TableView.get_filter_columns(columns_dict_cols, "number") == ["c", "a"]
+        @test TableView.get_filter_columns(columns_dict_cols, "date") == ["date"]
+        @test TableView.get_filter_columns(Dict(), "date") == []
     end
 
     @testset "Case №2: get_style_defs test" begin
