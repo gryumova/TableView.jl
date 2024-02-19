@@ -1,126 +1,136 @@
 # TableView.jl
-TableView is a Julia package for generating an html file with a table based on [AgGrid](https://www.ag-grid.com). You can set the configuration for filters and customize the display of column cells.
+
+TableView is a Julia package that provides functionality for visualization table data throw generating an HTML file based on AgGrid. You can flexibly customize the style and filtering of your data.
+
+## Installation
+To install TableView, simply use the Julia package manager:
+```
+] add TableView
+```
 
 ## Usage
-Simple example:
-```julia
+
+A simple example of a table with cryptocurrency data:
+
+```@example
 using TableView
 
-
-data = (
-    (a = 0, b = 1, c = 6),
-    (a = 1, b = 35, c = 7),
-    (a = 2, b = 134, c = 6),
-    (a = 3, b = 868, c = 7),
-    (a = 4, b = 34, c = 0),
+# Let's first declare the column 'headers' and 'cryptocurrency' row values
+headers = (:Name, :Price, Symbol("1h"), Symbol("24h"), Symbol("7d"), Symbol("Market cap"), Symbol("Volume(24h)"))
+cryptocurrency = (
+    NamedTuple{headers}((
+        "<img src=https://s2.coinmarketcap.com/static/img/coins/64x64/1.png  width=auto height=12> BTC",
+        51_704.17, 0.0011, -0.0088, 0.0748, 1_015_017_701_069, 19_853_081_339,
+    )),
+    NamedTuple{headers}((
+        "<img src=https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png  width=auto height=12> ETH",
+        2_797.54, -0.0009, 0.0181, 0.1140, 336_167_174_675, 18_875_589_553,
+    )),
+    NamedTuple{headers}((
+        "<img src=https://s2.coinmarketcap.com/static/img/coins/64x64/825.png  width=auto height=12> USDT",
+        1.00, 0.0001, 0.0001, -0.0001, 97_687_504_632, 46_870_650_622,
+    )),
+    NamedTuple{headers}((
+        "<img src=https://s2.coinmarketcap.com/static/img/coins/64x64/1839.png  width=auto height=12> BNB",
+        353.33, 0.0002, 0.0018, 0.0994, 52_838_510_510, 1_006_060_987,
+    )),
+    NamedTuple{headers}((
+        "<img src=https://s2.coinmarketcap.com/static/img/coins/64x64/5426.png  width=auto height=12> SOL",
+        111.63, 0.0022, 0.0436, 0.0209, 49_199_185_486, 1_376_798_775,
+    )),
+    NamedTuple{headers}((
+        "<img src=https://s2.coinmarketcap.com/static/img/coins/64x64/52.png  width=auto height=12> XRP",
+        0.5567, -0.0017, 0.0156, 0.0513, 30_372_867_543, 802_166_044,
+    )),
+    NamedTuple{headers}((
+        "<img src=https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png  width=auto height=12> USDC",
+        1.00, 0.0001, -0.0003, -0.0002, 28_093_824_870, 3_967_216_040,
+    )),
+    NamedTuple{headers}((
+        "<img src=https://s2.coinmarketcap.com/static/img/coins/64x64/2010.png  width=auto height=12> ADA",
+        0.6255, -0.0064, 0.0794, 0.1420, 22_180_294_747, 735_219_506,
+    )),
+    NamedTuple{headers}((
+        "<img src=https://s2.coinmarketcap.com/static/img/coins/64x64/5805.png  width=auto height=12> AVAX",
+        40.23, 0.0039, 0.0304, -0.0057, 14_786_919_682, 441_694_819,
+    )),
+    NamedTuple{headers}((
+        "<img src=https://s2.coinmarketcap.com/static/img/coins/64x64/74.png  width=auto height=12> DOGE",
+        0.08361, 0.0002, 0.0030, 0.0207, 11_966_508_925, 299_147_452,
+    )),
+    NamedTuple{headers}((
+        "<img src=https://s2.coinmarketcap.com/static/img/coins/64x64/1958.png  width=auto height=12> TRX",
+        0.1352, -0.0003, 0.0066, 0.0871, 11_903_355_674, 246_026_974,
+    )),
+    NamedTuple{headers}((
+        "<img src=https://s2.coinmarketcap.com/static/img/coins/64x64/1975.png  width=auto height=12> LINK",
+        19.90, 0.0014, -0.0086, -0.0141, 11_684_892_535, 341_667_040,
+    )),
+    NamedTuple{headers}((
+        "<img src=https://s2.coinmarketcap.com/static/img/coins/64x64/6636.png  width=auto height=12> DOT",
+        7.78, 0.0006, 0.0386, 0.0802, 9_959_472_484, 198_049_180,
+    )),
+    NamedTuple{headers}((
+        "<img src=https://s2.coinmarketcap.com/static/img/coins/64x64/3890.png  width=auto height=12> MATIC",
+        0.9682, -0.0138, 0.0427, 0.1463, 9_312_126_213, 344_848_552,
+    )),
+    NamedTuple{headers}((
+        "<img src=https://s2.coinmarketcap.com/static/img/coins/64x64/11419.png  width=auto height=12> TON",
+        2.27, 0.0065, -0.0286, 0.0822, 7_875_889_558, 33_988_801,
+    )),
 )
 
-# 'table' argument can be 'number', 'text', 'date'
-# 'style' argument can include 'color' and 'background'. You can change text color depending of a value of cell.
-#       style => Dict(
-#           colorUp => "red",
-#           colorDown => "green",
-#           threshold => 10,
-#       )
-#       or
-#       style => Dict(
-#           color => "red",
-#           equals => 10,
-#       )
-
+# Next we need to specify column settings, such as filtering or formatting and styling
 settings = Dict(
-    a => Dict(
-        filter => "number",
-        style => (
-            color => "red",
-            background => "#FFFF79"
-        )
+    "Name" => Dict(
+        "filter" => "text",
     ),
-    c => Dict(
-        filter = "text",
+    "Price" => Dict(
+        "filter" => "number",
+        "formatter" => Dict("style" => "currency", "currency" => "USD"),
     ),
-    cols => Dict()
+    "1h" => Dict(
+        "formatter" => Dict("style" => "percent"),
+        "style" => Dict(
+            "threshold" => 0.0,
+            "colorUp" => "#26b521",
+            "colorDown" => "#ba4022",
+            "text-align" => "center",
+        ),
+    ),
+    "24h" => Dict(
+        "formatter" => Dict("style" => "percent"),
+        "style" => Dict(
+            "threshold" => 0.0,
+            "colorUp" => "#26b521",
+            "colorDown" => "#ba4022",
+            "text-align" => "center",
+        ),
+    ),
+    "7d" => Dict(
+        "formatter" => Dict("style" => "percent"),
+        "style" => Dict(
+            "threshold" => 0.0,
+            "colorUp" => "#26b521",
+            "colorDown" => "#ba4022",
+            "text-align" => "center",
+        ),
+    ),
+    "Market cap" => Dict(
+        "filter" => "number",
+        "formatter" => Dict("style" => "currency", "currency" => "USD"),
+    ),
+    "Volume(24h)" => Dict(
+        "filter" => "number",
+        "formatter" => Dict("style" => "currency", "currency" => "USD"),
+    ),
+    "cols_filter" => true,
 )
 
-# first argument specifies the data to be displayed in the table
-
-# 'column_settings' argument specifies the columns to filter, the type of filtering, and the styling of the columns. 
-# If you want to filter by columns, specify the key 'cols'
-
-# 'resize' argument indicates the ability to change the width of the columns. 
-# If resize=false, you cannot reduce the column size to less than 150px.
-
-show_table(data, column_settings=settings, resize=false, out_file="./index.html")
+# Finally, let's pass all the values to the function that creates the HTML table
+show_table(cryptocurrency, column_settings = settings, resize = false, out_file = "./cryptocurrency_showcase.html")
 ```
 
-## AgGrid customization
-Custom Tool Panel Components can be included into the grid's SideBar. 
-Implementing a Tool Panel Component:
-```JavaScript
-    class CustomFilterPanel {
-            eGui;
-            init(params) {
-                this.eGui = document.createElement('div');
-                this.eGui.style.textAlign = 'center';
-            
-                const renderStats = () => {
-                    this.eGui.innerHTML = this.calculateHTML(params, filter, numeric, date)
-                };
-                params.api.addEventListener('gridReady', renderStats);
-            }
-            getGui() {
-                return this.eGui;
-            }
-        
-            setUpdated(value) {
-            this.updated = value;
-            }
-        
-            refresh() {}
-        
-            calculateHTML(params, text, numeric, date) {
-                // generating HTML scripts
-            }
-            calculateFilter(params, numeric, date, height) {
-                // generating HTML scripts filter 
-            }
-        
-            calculateDateItem(params, node, height) {
-                // generating HTML scripts filter for date value
-            }
-
-            calculateNumericItem(params, node, height) {
-                // generating HTML scripts filter for numeric value
-            }
-            calculateCols(params, len) {
-                // generating HTML scripts filter for columns
-            };
-
-            calculateParams(params, node, len) {
-                // generating HTML scripts filter for text value
-            };
-        }
-
-```
-
-Registering a Tool Panel component follows the same approach as any other custom components in the grid. 
-Once the Tool Panel Component is registered with the grid it needs to be included into the SideBar. The following snippet illustrates this:
-```JavaScript
-const gridOptions: {
-    sideBar: {
-        toolPanels: [
-            {
-                id: 'customStats',
-                labelDefault: 'Custom Stats',
-                labelKey: 'customStats',
-                iconKey: 'custom-stats',
-                toolPanel: CustomFilterPanel,
-                toolPanelParams: {
-                    // can pass any custom params here
-                },
-            }
-        ]
-    }
-    // other grid properties
-}
+```@raw html
+    <iframe src="cryptocurrency_showcase.html" style="height:700px;width:100%;"></iframe>
 ```

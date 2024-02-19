@@ -722,7 +722,9 @@
 
     <script src='https://cdn.jsdelivr.net/npm/ag-grid-enterprise@31.0.2/dist/ag-grid-enterprise.min.js'></script>
     <style>
-    
+    .styled-row-box-color_col { text-align: left; }
+  .styled-row-box-color_col span {background-color: #34abeb; color: cyan; } .styled-row-box-eauals_col { text-align: center; }
+  .styled-row-box-eauals_col span {} .styled-row-box-threshold_col span {} 
 </style>
 <script type='text/javascript'>
     filter=[]
@@ -740,9 +742,21 @@
             enablePivot: true,
             minWidth: 150
         },
-        columnDefs: [{ field: 'color_col', },
-{ field: 'eauals_col', },
-{ field: 'threshold_col', },
+        columnDefs: [{ field: 'color_col', cellRenderer: cellRenderer, cellClass: ['styled-row-box', 'styled-row-box-color_col'], },
+{ field: 'eauals_col', cellRenderer: cellRenderer, cellClass: ['styled-row-box', 'styled-row-box-eauals_col'], cellStyle: params => {
+                if (String(params.value) == '3') {
+                    return {color: 'rgb(250, 100, 100)'};
+                }
+
+                return null;
+            }, },
+{ field: 'threshold_col', cellRenderer: cellRenderer, cellClass: ['styled-row-box', 'styled-row-box-threshold_col'], cellStyle: params => {
+                if (params.value > 3.0) {
+                    return {color: 'green'};
+                }
+
+                return {color: 'red'};
+            }, },
 ],
         sideBar: {
     toolPanels: [
