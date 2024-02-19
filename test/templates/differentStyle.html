@@ -35,26 +35,7 @@
             }, },
 { field: 'date', },
 ],
-        sideBar: {
-    toolPanels: [
-        {
-            id: 'customStats',
-            labelDefault: 'Custom Stats',
-            labelKey: 'customStats',
-            iconKey: 'custom-stats',
-            toolPanel: CustomFilterPanel,
-            toolPanelParams: {
-            title: 'Custom Stats',
-            },
-        },
-    ],
-    position: 'right',
-    defaultToolPanel: 'customStats',
-},
-onCellValueChanged: (params) => {
-    params.api.refreshClientSideRowModel();
-}
-
+        
     }
     const myGridElement = document.querySelector('#grid-container');
     gridApi = agGrid.createGrid(myGridElement, gridOptions);
