@@ -722,20 +722,15 @@
 
     <script src='https://cdn.jsdelivr.net/npm/ag-grid-enterprise@31.0.2/dist/ag-grid-enterprise.min.js'></script>
     <style>
-    .styled-row-box-long_value { text-align: left; }
-  .styled-row-box-long_value span {} .styled-row-box-decimal_value { text-align: center; }
-  .styled-row-box-decimal_value span {background-color: #93c47d; } .styled-row-box-currency_code { text-align: center; }
-  .styled-row-box-currency_code span {background-color: #93c47d; color: #e06666; } .styled-row-box-percent { text-align: center; }
-  .styled-row-box-percent span {} .styled-row-box-separator { text-align: right; }
-  .styled-row-box-separator span {} 
+    
 </style>
 <script type='text/javascript'>
-    filter=["cols"]
-    numeric=["long_value","decimal_value","currency_code","percent","separator"]
+    filter=[]
+    numeric=[]
     date=[]
     let gridApi;
     const gridOptions = {
-        rowData: [{"long_value":1.0e10,"decimal_value":0.333,"currency_code":784,"percent":0.5134,"separator":1.23},{"long_value":1.0e9,"decimal_value":0.677,"currency_code":126,"percent":0.124152,"separator":4.56},{"long_value":1.0e8,"decimal_value":1.333,"currency_code":376,"percent":12434,"separator":7.89}],
+        rowData: [{"color_col":1,"eauals_col":1,"threshold_col":1},{"color_col":2,"eauals_col":2,"threshold_col":2},{"color_col":3,"eauals_col":3,"threshold_col":3},{"color_col":4,"eauals_col":4,"threshold_col":4},{"color_col":5,"eauals_col":5,"threshold_col":5}],
         defaultColDef: {
             flex: 1,
             filter: true,
@@ -745,17 +740,9 @@
             enablePivot: true,
             minWidth: 150
         },
-        columnDefs: [{ field: 'long_value', filter: 'agNumberColumnFilter', cellRenderer: params => cellNumberRenderer(params, 'decimal', 3, '',  true, true), cellClass: ['styled-row-box', 'styled-row-box-long_value'], },
-{ field: 'decimal_value', filter: 'agNumberColumnFilter', cellRenderer: params => cellNumberRenderer(params, 'decimal', 2, '',  false, true), cellClass: ['styled-row-box', 'styled-row-box-decimal_value'], },
-{ field: 'currency_code', filter: 'agNumberColumnFilter', cellRenderer: params => cellNumberRenderer(params, 'currency', 3, 'USD',  false, true), cellClass: ['styled-row-box', 'styled-row-box-currency_code'], },
-{ field: 'percent', filter: 'agNumberColumnFilter', cellRenderer: params => cellNumberRenderer(params, 'percent', 2, '',  false, true), cellClass: ['styled-row-box', 'styled-row-box-percent'], cellStyle: params => {
-                if (params.value > 0.5) {
-                    return {color: '#93c47d'};
-                }
-
-                return {color: '#e06666'};
-            }, },
-{ field: 'separator', filter: 'agNumberColumnFilter', cellRenderer: params => cellNumberRenderer(params, 'decimal', 2, '',  false, false), cellClass: ['styled-row-box', 'styled-row-box-separator'], },
+        columnDefs: [{ field: 'color_col', },
+{ field: 'eauals_col', },
+{ field: 'threshold_col', },
 ],
         sideBar: {
     toolPanels: [

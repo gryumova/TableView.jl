@@ -15,7 +15,8 @@ makedocs(;
     ),
     pages = [
         "Home" => "index.md",
-        "Generate HTML" => "pages/generate_html.md"
+        "Generate HTML" => "pages/generate_html.md",
+        "AgGrid customization" => "pages/aggrid_customization.md",
     ],
 )
 
