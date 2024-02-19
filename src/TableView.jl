@@ -36,7 +36,7 @@ function show_table(table;
     isempty(table) && return ""
 
     min_width = resize ? "" : "minWidth: 150"
-    custom_panel = isempty(column_settings) ? "" : CUSTOM_PANEL_SCRIPT
+    custom_panel = isemptyFilter(column_settings) ? "" : CUSTOM_PANEL_SCRIPT
     side_bar = get_aggrid_scripts(column_settings, table, min_width)
     side_bar_functions = FUNCTIONS_SCRIPT
 

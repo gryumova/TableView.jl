@@ -722,20 +722,15 @@
 
     <script src='https://cdn.jsdelivr.net/npm/ag-grid-enterprise@31.0.2/dist/ag-grid-enterprise.min.js'></script>
     <style>
-    .styled-row-box-long_value { text-align: left; }
-  .styled-row-box-long_value span {} .styled-row-box-decimal_value { text-align: center; }
-  .styled-row-box-decimal_value span {background-color: #93c47d; } .styled-row-box-currency_code { text-align: center; }
-  .styled-row-box-currency_code span {background-color: #93c47d; color: #e06666; } .styled-row-box-percent { text-align: center; }
-  .styled-row-box-percent span {} .styled-row-box-separator { text-align: right; }
-  .styled-row-box-separator span {} 
+    
 </style>
 <script type='text/javascript'>
-    filter=["cols"]
-    numeric=["long_value","decimal_value","currency_code","percent","separator"]
+    filter=[]
+    numeric=["short_col"]
     date=[]
     let gridApi;
     const gridOptions = {
-        rowData: [{"long_value":1.0e10,"decimal_value":0.333,"currency_code":784,"percent":0.5134,"separator":1.23},{"long_value":1.0e9,"decimal_value":0.677,"currency_code":126,"percent":0.124152,"separator":4.56},{"long_value":1.0e8,"decimal_value":1.333,"currency_code":376,"percent":12434,"separator":7.89}],
+        rowData: [{"default_col":1.0e6,"short_col":1.0e6,"decimal_col":1.0e6,"usd_col":1.0e6,"eur_col":1.0e6,"percent_col":1.0e6,"separator_col":1.0e6},{"default_col":1000.0,"short_col":1000.0,"decimal_col":1000.0,"usd_col":1000.0,"eur_col":1000.0,"percent_col":1000.0,"separator_col":1000.0},{"default_col":1.0,"short_col":1.0,"decimal_col":1.0,"usd_col":1.0,"eur_col":1.0,"percent_col":1.0,"separator_col":1.0},{"default_col":0.01,"short_col":0.01,"decimal_col":0.01,"usd_col":0.01,"eur_col":0.01,"percent_col":0.01,"separator_col":0.01}],
         defaultColDef: {
             flex: 1,
             filter: true,
@@ -745,17 +740,13 @@
             enablePivot: true,
             minWidth: 150
         },
-        columnDefs: [{ field: 'long_value', filter: 'agNumberColumnFilter', cellRenderer: params => cellNumberRenderer(params, 'decimal', 3, '',  true, true), cellClass: ['styled-row-box', 'styled-row-box-long_value'], },
-{ field: 'decimal_value', filter: 'agNumberColumnFilter', cellRenderer: params => cellNumberRenderer(params, 'decimal', 2, '',  false, true), cellClass: ['styled-row-box', 'styled-row-box-decimal_value'], },
-{ field: 'currency_code', filter: 'agNumberColumnFilter', cellRenderer: params => cellNumberRenderer(params, 'currency', 3, 'USD',  false, true), cellClass: ['styled-row-box', 'styled-row-box-currency_code'], },
-{ field: 'percent', filter: 'agNumberColumnFilter', cellRenderer: params => cellNumberRenderer(params, 'percent', 2, '',  false, true), cellClass: ['styled-row-box', 'styled-row-box-percent'], cellStyle: params => {
-                if (params.value > 0.5) {
-                    return {color: '#93c47d'};
-                }
-
-                return {color: '#e06666'};
-            }, },
-{ field: 'separator', filter: 'agNumberColumnFilter', cellRenderer: params => cellNumberRenderer(params, 'decimal', 2, '',  false, false), cellClass: ['styled-row-box', 'styled-row-box-separator'], },
+        columnDefs: [{ field: 'default_col', },
+{ field: 'short_col', filter: 'agNumberColumnFilter', cellRenderer: params => cellNumberRenderer(params, 'decimal', 3, '',  true, true), },
+{ field: 'decimal_col', cellRenderer: params => cellNumberRenderer(params, 'decimal', 3, '',  false, true), },
+{ field: 'usd_col', cellRenderer: params => cellNumberRenderer(params, 'currency', 3, 'USD',  false, true), },
+{ field: 'eur_col', cellRenderer: params => cellNumberRenderer(params, 'currency', 3, 'EUR',  false, true), },
+{ field: 'percent_col', cellRenderer: params => cellNumberRenderer(params, 'percent', 3, '',  false, true), },
+{ field: 'separator_col', cellRenderer: params => cellNumberRenderer(params, 'decimal', 3, '',  false, true), },
 ],
         sideBar: {
     toolPanels: [
