@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charSet='UTF-8'/>
+    <meta name='viewport' content='width=device-width, initial-scale=1'/>
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js'></script>
+    <style>
+    body {
+        display: flex;
+        flex-direction: row;
+
+        margin: 0px;
+        background: #ffffff;
+    } 
+    #grid-container {
+        border: none;
+        height: 100vh;
+        width: 100%;
+    }
+    .ag-root-wrapper {
+        border-radius: 0;
+    }
+    .ag-side-buttons {
+        display: none;
+    }
+    .filter-wrapper {
+        display: grid;
+        width: 100%;
+
+        overflow-x: hidden;
+    }
+
+    .column-filter {
+        font-weight: 400;
+
+        width: calc(100% - 20px);
+        position: relative;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: stretch;
+        align-items: stretch;
+
+        overflow: hidden;
+        padding: 10px;
+        padding-bottom: 5px;
+    }
+    .filter-wrapper .column-filter:not(:first-child) {
+        border-top: 1px solid #e0e0e0;
+    }
+    .column-filter-wrapper {
+        overflow-y: scroll;
+    }
+    .title {
+        text-align: start;
+        width: 100%;
+        margin: 0px 5px 10px 5px;
+
+        font-size: 14px;
+        font-weight: 600;
+        color: #808080;
+
+        border:none;
+
+        cursor: pointer;
+    }
+    .title:focus {
+        border: none;
+        outline: none;
+    }
+    .column-filter-item {
+        margin: 7px 0px 0px 0px;
+        width: 100%;
+
+        display: flex;
+        flex-direction: row;
+        align-items: start;
+        justify-content: start;
+
+        position: relative;
+
+        color: #3e3d3d;
+        font-weight: 700;
+    }
+    .input-column-name {
+        padding-top: 0px;
+        padding-right: 5px;
+        position: absolute;
+        left: 25px;
+        right: 0;
+
+        text-align: start;
+
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        cursor: default;
+    }
+    input[type='checkbox'] {
+        margin-right: 15px;
+        display: none;
+    }
+
+    input[type='checkbox']:checked, 
+    input[type='checkbox']:not(:checked) {
+        display: inline-block;
+        position: relative;
+        cursor: pointer;
+    }
+
+    input[type='checkbox']:checked:before, 
+    input[type='checkbox']:not(:checked):before{
+        content: '';
+        position: absolute;
+        left: -0.5px;
+        top: -0.5px;
+        width: 13px;
+        height: 13px;
+        border: 1px solid #b9bdc0;
+        background-color: #ffffff;
+    }
+
+    input[type='checkbox']:checked:after, 
+    input[type='checkbox']:not(:checked):after {
+        content: '';
+        position: absolute;
+        -webkit-transition: all 0.2s ease;
+        -moz-transition: all 0.2s ease;
+        -o-transition: all 0.2s ease;
+        transition: all 0.2s ease;
+    }
+
+    input[type='checkbox']:checked:after, 
+    input[type='checkbox']:not(:checked):after {
+        left: 2.5px;
+        top: 2.5px;
+        width: 9px;
+        height: 9px;
+        background-color: #b9bdc0;
+    }
+    input[type='checkbox']:not(:checked):after {
+        opacity: 0;
+    }
+
+    input[type='checkbox']:checked:after {
+        opacity: 1;
+    }
+    input[type='text'] {
+        cursor: text;
+    }
+    .apply-button-wrapper {
+        width: 100%;
+        height: 29px;
+
+        position: relative;
+        margin: 0;
+        margin-top: 5px;
+    }
+    .apply-button {
+        position: relative;
+        width: calc(50% - 5px);
+
+        border: none;
+        background-color: #eeeeee;
+        color: #646464;
+
+        font-size: 14px;
+        font-weight: 500;
+        padding: 5px;
+        margin: 0;
+
+        cursor: pointer;
+    }
+
+    .apply-button:hover {
+        background: #cdcdcd;
+    }
+
+    .numeric-filter {
+        position: relative;
+        border-top: 1px solid #e0e0e0;
+        text-align: start;
+
+        padding: 10px;
+    }
+    .date-filter {
+        position: relative;
+        border-top: 1px solid #e0e0e0;
+        text-align: start;
+
+        padding: 10px;
+    }
+    .name-numeric-filter {
+        font-size: 14px;
+        font-weight: 900;
+        text-align: start;
+
+        color: #3e3d3d;
+    }
+    .container {
+        position: relative;
+
+        width: 100%;
+        height: 6px;
+    }
+    input[type='range']{
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+
+        width: 100%;
+        outline: none;
+
+        position: absolute;
+        margin: 0;
+        top: 0;
+        bottom: 0;
+
+        background-color: transparent;
+        pointer-events: none;
+    } 
+    .slider-track{
+        width: calc(100% - 12px);
+        height: 4px;
+
+        position: absolute;
+        margin: 0;
+        left: 6px;
+        top: 5.5px;
+        bottom: 0;
+
+        background: #d8d8d8;
+        border-radius: 3px;
+
+        cursor: pointer;
+    }
+    input[type='range']::-webkit-slider-runnable-track{
+        -webkit-appearance: none;
+        height: 5px;
+    }
+    input[type='range']::-moz-range-track{
+        -moz-appearance: none;
+        height: 5px;
+    }
+    input[type='range']::-ms-track{
+        appearance: none;
+        height: 5px;
+    }
+    .input-slider1::-webkit-slider-thumb{
+        -webkit-appearance: none;
+        height: 14px;
+        width: 10px;
+
+        cursor: pointer;
+
+        border: 1px solid #666666;
+        border-radius: 60% 0 0 60% / 50% 0 0 50%;
+        background: #ffffff;
+
+        pointer-events: auto;
+        cursor: e-resize;
+    }
+    .input-slider2::-webkit-slider-thumb{
+        -webkit-appearance: none;
+        height: 14px;
+        width: 10px;
+
+        cursor: pointer;
+
+        border: 1px solid #666666;
+        border-radius: 0 60% 60% 0 / 0 50% 50% 0;
+        background: #ffffff;
+
+        pointer-events: auto;
+        cursor: w-resize;
+    }
+
+    .input-slider2:active {
+        background-color: transparent;
+        border: none;
+        outline: none;
+    }
+
+    .values {
+        position: relative;
+        margin: 5px 0px 5px 0px;
+
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+
+        border: none;
+
+        text-align: center;
+    }
+    .input-numeric-slider {
+        border: 1.5px solid transparent;
+        background: transparent;
+        outline: none;
+
+        width: 45%;
+
+        color: #383838;
+        font-weight: 500;
+        font-size: 14px;
+        padding: 3px 0px 3px 0px;
+        margin: 0;
+    }
+
+    .input-numeric-slider:focus {
+        border: 1.5px solid #d0d0d0;
+    }
+
+    /* STYLED COMPONENT */
+    .styled-row-box {
+        text-align: right;
+    }
+    .styled-row-box span {
+        padding: 5px 10px;
+        border-radius: 4px;
+    }
+</style>
+
+</head>
+<body>
+    <div id='grid-container' class='ag-theme-quartz'></div>
+    <style>
+    .ag-theme-quartz,
+    .ag-theme-quartz-dark {
+        --ag-foreground-color: #343434;
+        --ag-background-color: #ffffff;
+
+        --ag-header-foreground-color: #808080;
+        --ag-header-background-color: #ffffff;   
+        
+        --ag-data-color: #636363;
+        
+        --ag-row-border-width: 1px;
+        --ag-row-border-color: #e0e0e0;
+    
+        --ag-header-column-resize-handle-display: block;
+        --ag-header-column-resize-handle-height: 100%;
+        --ag-header-column-resize-handle-width: 1px;
+        --ag-header-column-resize-handle-color: #dddddd;
+
+        --ag-header-column-separator-display: block;
+        --ag-header-column-separator-height: 100%;
+        --ag-header-column-separator-width: 1px;
+        --ag-header-column-separator-color: #dddddd;
+    }
+    .ag-theme-quartz .ag-header-cell-label {
+        font-weight: 600;
+    }
+    .ag-header-cell-text {
+        text-align: center;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .ag-theme-quartz .ag-cell-value {
+        font-weight: 600;
+    }
+    #ag-32 {
+        border: none;
+    }
+    .ag-root-wrapper.ag-layout-normal.ag-ltr {
+        border-radius: 0;
+    }
+    .ag-header-cell-menu-button {
+        display: none;
+    }
+</style>
+
+    <script>
+    function formatDate(date) {
+        date = new Date(date)
+
+
+        var dd = date.getDate();
+        if (dd < 10) dd = '0' + dd;
+
+        var mm = date.getMonth() + 1;
+        if (mm < 10) mm = '0' + mm;
+
+        var yy = date.getFullYear();
+
+        return yy + '-' + mm + '-' + dd;
+    }
+    
+    class CustomFilterPanel {
+        eGui;
+        init(params) {
+            this.eGui = document.createElement('div');
+            this.eGui.style.textAlign = 'center';
+        
+            const renderStats = () => {
+                this.eGui.innerHTML = this.calculateHTML(params, filter, numeric, date)
+            };
+            params.api.addEventListener('gridReady', renderStats);
+        }
+        getGui() {
+            return this.eGui;
+        }
+
+        setUpdated(value) {
+            this.updated = value;
+        }
+
+        refresh() {}
+
+        calculateHTML(params, text, numeric, date) {
+            let len = 0;
+            if (numeric.length != 0 || date.length != 0) {
+                len += numeric.length;
+                len += date.length;
+            }
+            let textFilter = text.map((node) => {
+                if (node === 'cols')
+                    return this.calculateCols(params, `(99.8vh - ${len} * 91px)/${text.length}`);
+                else
+                    return this.calculateParams(params, node, `(99.8vh - ${len} * 91px)/${text.length}`);
+            })
+            let numericDateFilter = this.calculateFilter(params, numeric, date);
+            document.getElementById('ag-32').lastChild.style.width = '100%';
+            
+            return `
+                <div style='overflow: hidden'>
+                    <div 
+                        class='filter-wrapper'
+                        style='grid-template-rows: repeat(${text.length}, calc((99.8vh - ${len} * 91px)/${text.length})); overflow: hidden'
+                    >
+                        ${textFilter.join('')}
+                    </div>
+                    <div>
+                        ${numericDateFilter}
+                    </div>
+                </div>
+            `
+        }
+        calculateFilter(params, numeric, date) {
+            let textHTML = numeric.map((node) => {
+                return this.calculateNumericItem(params, node);
+            })
+
+            let dateHTML = date.map((node) => {
+                return this.calculateDateItem(params, node);
+            })
+        
+            return textHTML.join('') + dateHTML.join('');
+        }
+
+        calculateDateItem(params, node, height) {
+            let result = [];
+        
+            gridApi.forEachNode(elem => {
+                result.push(Date.parse(elem.data[node]));
+            });
+        
+            let maxValue = Math.max(...result) + 24*60*60*1000;
+            let minValue = Math.min(...result) - 24*60*60*1000;
+
+            return `
+            <div 
+                class='date-filter' 
+                style='height: 70px'
+                id='${node}'
+            >
+                <div style='overflow: hiiden; height: 100%'>
+                    <span class='name-numeric-filter'>
+                        ${node}
+                    </span>
+                    <div class='values values-${node}'>
+                        <input 
+                            class='input-numeric-slider'
+                            id='range1-${node}'
+                            value='${formatDate(minValue)}'
+                            onkeypress='inputDate(event, "${node}", "one")'
+                            type='text'
+                        />
+                        <input 
+                            class='input-numeric-slider'
+                            id='range2-${node}'
+                            value='${formatDate(maxValue)}'
+                            onkeypress='inputDate(event, "${node}", "two")'
+                            type ='text'
+                            style="text-align: end"
+                        />
+                    </div>
+                    <div class='container container-${node}'>
+                        <div 
+                            class='slider-track slider-track-${node}'
+                            style='
+                                background: #bababa;
+                            '
+                            onmousedown='clickTrack(event, "${node}", "date")'
+                        ></div>
+                        <input 
+                            type='range' 
+                            min='${minValue}' 
+                            max='${maxValue}' 
+                            value='${minValue}' 
+                            id='slider-1-${node}' 
+                            oninput='slideOne("${node}", "date")'
+                            class='input-slider1'
+                            onmouseup='clickApplyDate("${node}")'
+                        >
+                        <input 
+                            type='range' 
+                            min='${minValue}' 
+                            max='${maxValue}' 
+                            value='${maxValue}' 
+                            id='slider-2-${node}' 
+                            oninput='slideTwo("${node}", "date")'
+                            class='input-slider2'
+                            onmouseup='clickApplyDate("${node}")'
+                        >
+                    </div>
+                </div>
+            </div>
+            `
+        }
+        calculateNumericItem(params, node, height) {
+            let result = [];
+        
+            gridApi.forEachNode(elem => {
+                result.push(parseFloat(elem.data[node]));
+            });
+        
+            let maxValue = Math.max(...result);
+            let minValue = Math.min(...result);
+
+            let step = ""
+                if (Number(minValue) === minValue && minValue % 1 !== 0) {
+                    step = "0.01";
+                } else {
+                    step = "1";
+                }
+            return `
+            <div 
+                class='numeric-filter' 
+                style='height: 70px'
+                id='${node}'
+            >
+                <div style='overflow: hidden; height: 100%'>
+                    <span class='name-numeric-filter'>
+                        ${node.toLocaleLowerCase()}
+                    </span>
+                    <div class='values values-${node}'>
+                        <input 
+                            class='input-numeric-slider'
+                            id='range1-${node}'
+                            value='${minValue}'
+                            onkeypress='inputNumeric(event, "${node}", "one")'
+                            type ='text'
+                        >
+                        </input>
+                        <input 
+                            class='input-numeric-slider'
+                            style="text-align: end"
+                            id='range2-${node}'
+                            value='${maxValue}'
+                            onkeypress='inputNumeric(event, "${node}", "two")'
+                            type ='text'
+                        >
+                        </input>
+                    </div>
+                    <div class='container container-${node}'>
+                        <div 
+                            class='slider-track slider-track-${node}'
+                            style='
+                                background: #666666;
+                            '
+                            onmousedown='clickTrack(event, "${node}", "number")'
+                        ></div>
+                        <input 
+                            type='range' 
+                            min='${minValue}' 
+                            max='${maxValue}' 
+                            value='${minValue}'
+                            step='${step}'
+                            id='slider-1-${node}' 
+                            class='input-slider1'
+                            oninput='slideOne("${node}")'
+                            onmouseup='clickApplyNumeric("${node}")'
+                        >
+                        <input 
+                            type='range' 
+                            min='${minValue}' 
+                            max='${maxValue}' 
+                            value='${maxValue}'
+                            step='${step}'
+                            id='slider-2-${node}' 
+                            class='input-slider2'
+                            oninput='slideTwo("${node}")'
+                            onmouseup='clickApplyNumeric("${node}")'
+                        >
+                    </div>
+                </div>
+            </div>
+            `
+        }
+        calculateCols(params, height) {
+            let columns = params.api.getAllDisplayedColumns().map((item) => {
+            return item.colId
+            });
+
+            let cols_thtml = columns.map((column) => {
+                return `
+                <div class='column-filter-item'>
+                    <input 
+                        class='input-cols-filter' 
+                        onclick='clickItem(event, "AllCols")' 
+                        type='checkbox' 
+                        value='${column}' 
+                        checked
+                    />
+                    <label class='input-column-name' for='${column}'>${column.toLocaleUpperCase()}</label>
+                </div>`
+            })
+
+
+            return `
+            <div 
+                class='column-filter'
+                id='ag-cols'
+            >
+                <div style='overflow: hidden; height: calc(100% - 30px);'>
+                    <input 
+                        type='text' 
+                        id='searcherCols' 
+                        class='title' 
+                        placeholder='Search for cols...'
+                        oninput='inputSearch(event, "searchCols")'
+                    />
+                    <div class='column-filter-wrapper' style='height: calc(100% - 28px)' id='searchCols'>
+                        <div class='column-filter-item'>
+                            <input 
+                                class='input-cols-filter' 
+                                type='checkbox' 
+                                value='All' 
+                                onclick='clickAll("ag-cols")' 
+                                checked
+                                id='AllCols' 
+                            />
+                            <label class='input-column-name' for='AllCols'>(All)</label>
+                        </div>
+                        ${cols_thtml.join('')}
+                    </div>
+                </div>
+                <div class='apply-button-wrapper'>
+                    <button class='apply-button' onclick='clickResetCols("searchCols")'>Reset</button>
+                    <button class='apply-button' onclick='clickHandleCols(event)'>Apply</button>
+                </div>
+            </div>`
+        };
+
+        calculateParams(params, node, height) {
+            let result = [];
+            params.api.forEachNode(elem => {
+                if (elem.displayed === true) {
+                    result.push(elem.data[node]);
+                }
+            });
+            let values = [...new Set(result)];
+
+            let values_html = values.map((value) => {
+                return `
+                    <div class='column-filter-item'>
+                        <input 
+                            class='input-cols-filter' 
+                            onclick='clickItem(event, "AllParams${node}")' 
+                            type='checkbox' 
+                            value='${value}' 
+                            checked
+                            id='${value}' 
+                        />
+                        <label for='${value}' class='input-column-name'>${value}</label>
+                    </div>
+                `
+            })
+
+            return `
+                <div class='column-filter' id='${node}'>
+                    <div style='overflow: hidden; height: calc(100% - 30px);'>
+                        <input 
+                        type='text' 
+                        id='searcher${node}' 
+                        class='title' 
+                        placeholder='Search for ${node}...' 
+                        oninput='inputSearch(event, "search${node}")'
+                        />
+                        <div class='column-filter-wrapper' style='height: calc(100% - 28px);' id='search${node}'>
+                            <div class='column-filter-item'>
+                                <input 
+                                    class='input-cols-filter' 
+                                    type='checkbox' 
+                                    value='All' 
+                                    onclick='clickAll("search${node}")' 
+                                    checked
+                                    id='AllParams${node}' 
+                                />
+                                <label 
+                                    for='AllParams${node}' 
+                                    class='input-column-name'
+                                >
+                                    (All)
+                                </label>
+                            </div>
+                            ${values_html.join('')}
+                        </div>
+                    </div>
+                    <div class='apply-button-wrapper'>
+                        <button class='apply-button' onclick='clickResetRow("${node}")'>Reset</button>
+                        <button class='apply-button' onclick='clickHandleFilter(event, "${node}")'>Apply</button>
+                    </div>
+                </div>
+            `;
+        };
+    }
+</script>
+
+    <script src='https://cdn.jsdelivr.net/npm/ag-grid-enterprise@31.0.2/dist/ag-grid-enterprise.min.js'></script>
+    <style>
+    
+</style>
+<script type='text/javascript'>
+    filter=["text_col"]
+    numeric=["number_col"]
+    date=["date_col"]
+    let gridApi;
+    const gridOptions = {
+        rowData: [{"text_col":"a","number_col":1,"date_col":"2024-01-01T00:00:00"},{"text_col":"b","number_col":2,"date_col":"2024-02-01T00:00:00"},{"text_col":"c","number_col":3,"date_col":"2024-03-01T00:00:00"}],
+        defaultColDef: {
+            flex: 1,
+            filter: true,
+            editable: true,
+            enableValue: true,
+            enableRowGroup: true,
+            enablePivot: true,
+            
+        },
+        columnDefs: [{ field: 'text_col', filter: 'agSetColumnFilter', cellRenderer: cellRenderer, },
+{ field: 'number_col', filter: 'agNumberColumnFilter', cellRenderer: cellRenderer, },
+{ field: 'date_col', filter: 'agDateColumnFilter', filterParams: {
+    comparator: (filterLocalDateAtMidnight, cellValue) => {
+        const dateAsString = cellValue;
+
+        let cellDate = new Date(Date.parse(dateAsString));
+        var dd = cellDate.getDate();
+        var mm = cellDate.getMonth();
+        var yy = cellDate.getFullYear();
+
+        cellDate = new Date(yy, mm, dd);
+
+        if (cellDate <= filterLocalDateAtMidnight) {
+            return -1;
+        }
+
+        if (cellDate >= filterLocalDateAtMidnight) {
+            return 1;
+        }
+
+        return 0;
+    }
+}, cellRenderer: cellRenderer, },
+],
+        sideBar: {
+    toolPanels: [
+        {
+            id: 'customStats',
+            labelDefault: 'Custom Stats',
+            labelKey: 'customStats',
+            iconKey: 'custom-stats',
+            toolPanel: CustomFilterPanel,
+            toolPanelParams: {
+            title: 'Custom Stats',
+            },
+        },
+    ],
+    position: 'right',
+    defaultToolPanel: 'customStats',
+},
+onCellValueChanged: (params) => {
+    params.api.refreshClientSideRowModel();
+}
+
+    }
+    const myGridElement = document.querySelector('#grid-container');
+    gridApi = agGrid.createGrid(myGridElement, gridOptions);
+
+    function cellNumberRenderer(params, style, maxdigits=3, currency="", short=false, separator=true) {
+        if (params.value === null || params.value === NaN || isNaN(parseFloat(params.value)))
+            return params.value;
+
+        let settings = {}
+        if (short) {
+            settings["notation"] = "compact";
+            settings["compactDisplay"] = "short";
+            settings["currencyDisplay"] = "narrowSymbol";
+        }
+
+        settings["useGrouping"] = separator;
+        settings["style"] = style;
+        settings["minimumFractionDigits"] = 0;
+        settings["maximumFractionDigits"] = maxdigits;
+
+        if (currency !== "")
+            settings["currency"] = currency;
+        
+        let formatter = new Intl.NumberFormat("en-GB", settings);
+        return formatter.format(Number(params.value));
+    }
+
+    function cellRenderer(params) {
+        return params.value;
+    }
+      
+</script>
+
+    <script>
+    function inputNumeric(event, node, side) {
+        if (event.code == "Enter") {
+            let number = Number(event.target.value);
+            
+            if (!isNaN(number)) {
+                if (side == "one") 
+                    setNumberInputOne(node);
+                else if (side == "two")
+                    setNumberInputTwo(node);
+            }
+        }
+    }
+
+    function inputDate(event, node, side) {
+        if (event.code == "Enter") {
+            let regex = /[0-9]{4}-[0-9]{2}-[0-9]{2}/
+            let result = regex.test(event.target.value);
+            if (result) {
+                if (side == "one") 
+                    setDateInputOne(node);
+                else if (side == "two")
+                    setDateInputTwo(node);
+            }
+        }
+    }
+
+    function clickTrack(event, node, type) {
+        let div = event.target
+        let sliderOne = document.getElementById(`slider-1-${node}`);
+        let sliderTwo = document.getElementById(`slider-2-${node}`);
+        let displayValOne = document.getElementById(`range1-${node}`);
+        let displayValTwo = document.getElementById(`range2-${node}`);
+
+        let dt = (Number(sliderOne.max) - Number(sliderOne.min)) / sliderOne.getBoundingClientRect().width;
+        let range = Number(sliderTwo.value) - Number(sliderOne.value);        
+        let xStart = event.clientX;
+
+        var onMouseMove = function (evtMove){
+            evtMove.preventDefault();
+            var xNew = xStart - evtMove.clientX;
+            xStart = evtMove.clientX;
+
+            if (sliderOne.value - dt * xNew > sliderOne.min &&
+                    sliderTwo.value - dt * xNew < sliderOne.max) {
+                sliderOne.value -= dt * xNew;
+                sliderTwo.value -= dt * xNew;
+            } else {
+                if (sliderOne.value - dt * xNew < sliderOne.min) {
+                    let delta = sliderOne.value - sliderOne.min;
+                    sliderOne.value = sliderOne.min;
+                    sliderTwo.value -= delta;
+                } else if (sliderTwo.value - dt * xNew > sliderOne.max){
+                    let delta = sliderTwo.value - sliderOne.max;
+                    sliderTwo.value = sliderOne.max;
+                    sliderOne.value -= delta;
+                }
+            }
+
+            if (type === "date") {
+                displayValOne.value = formatDate(Number(sliderOne.value));
+                displayValTwo.value = formatDate(Number(sliderTwo.value));
+            } else {
+                displayValOne.value = sliderOne.value;
+                displayValTwo.value = sliderTwo.value;
+            }
+            fillColor(node, type);
+        }
+        var onMouseUp = function (evtUp){
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+            if (type == "date")
+                clickApplyDate(`${node}`)
+            else clickApplyNumeric(`${node}`)
+        }
+
+
+        document.addEventListener('mousemove', onMouseMove)
+        document.addEventListener('mouseup', onMouseUp)
+    }
+
+    function clickHandleCols(event) {
+        let block = document.getElementById('ag-cols')
+        let check = $(block).find('input[type=checkbox]:checked');
+        
+        let cols = check && check.map(element => {
+            if (check[element].value !== 'All')
+                return  check[element].value;
+        })
+
+        cols = Array.from(cols);
+
+        const columnDefs = gridApi.getColumnDefs()
+        columnDefs.forEach((colDef) => {
+            if (cols.includes(colDef.field)) {
+                colDef.hide = false;
+            } else {
+                colDef.hide = true;
+            }
+        });
+
+        gridApi.setGridOption('columnDefs', columnDefs);
+
+        event.preventDefault();
+    }
+
+    function clickHandleFilter(event, id) {
+        let block = document.getElementById(id)
+        let check = $(block).find('input[type=checkbox]:checked');
+
+        let list = [];
+        check.each((index, node) => {
+            if (node.value !== 'All')
+                list.push(node.value) ;
+        })
+
+        gridApi.setColumnFilterModel(id, { 
+            values: list
+        }).then(() => gridApi.onFilterChanged())
+        .then(() => {
+            $(`.filter-wrapper .column-filter`).map((item, elem) => {
+                if (elem.id !== id) {
+                    updateFilter(elem.id);
+                }
+            })
+            $(`.numeric-filter`).map((item, elem) => {
+                if (elem.id !== id) {
+                    updateSlider(elem.id, "number");
+                }
+            })
+            $(`.date-filter`).map((item, elem) => {
+                if (elem.id !== id) {
+                    updateSlider(elem.id, "date");
+                }
+            })
+        });
+        event.preventDefault();
+    }
+
+    function updateFilter(id) {
+        if (id !== 'ag-cols') {
+            let result = [];
+            gridApi.forEachNode((elem) => {
+                if (elem.displayed)
+                    result.push(String(elem.data[id]).toLocaleLowerCase());
+            })
+            let list = [...new Set(result)];
+
+            $(`#${id} .column-filter-item`).hide().filter(function () {
+                if ($(this).text().trim() === '(All)') 
+                    return true;
+
+                return list.indexOf($(this).text().trim().toLocaleLowerCase()) !== -1;
+            }).show();
+        } 
+    }
+
+    function updateSlider(id, type) {
+        let sliderOne = document.getElementById(`slider-1-${id}`);
+        let sliderTwo = document.getElementById(`slider-2-${id}`);
+
+        let displayValOne = document.getElementById(`range1-${id}`);
+        let displayValTwo = document.getElementById(`range2-${id}`);
+        
+        if (type != 'date') {
+            let result = [];
+
+            gridApi.forEachNode(elem => {
+                if (elem.displayed)
+                    result.push(Number(elem.data[id]));
+            });
+        
+            let maxValue = Math.max(...result);
+            let minValue = Math.min(...result);
+
+            sliderOne.min = minValue;
+            sliderOne.max = maxValue;
+            sliderTwo.min = minValue;
+            sliderTwo.max = maxValue;
+
+            sliderOne.value = minValue;
+            sliderTwo.value = maxValue;
+
+            displayValOne.value = minValue;
+            displayValTwo.value = maxValue;
+        } else {
+            let result = [];
+
+            gridApi.forEachNode(elem => {
+                if (elem.displayed)
+                    result.push(Date.parse(elem.data[id]));
+            });
+        
+            let maxValue = Math.max(...result) + 24*60*60*1000;
+            let minValue = Math.min(...result) - 24*60*60*1000;
+
+            sliderOne.min = minValue;
+            sliderOne.max = maxValue;
+            sliderTwo.min = minValue;
+            sliderTwo.max = maxValue;
+
+            sliderOne.value = minValue;
+            sliderTwo.value = maxValue;
+
+            displayValOne.value = formatDate(Number(sliderOne.min)); 
+            displayValTwo.value = formatDate(Number(sliderOne.max)); 
+        }
+
+        fillColor(id, type);
+    }
+
+    function clickAll(id) {
+        let block = document.getElementById(id);
+        let check = $(block).find('input[type=checkbox]');
+
+        if (check[0].checked === true) {
+            check.each((index, node) => {
+                node.checked = true;
+            })
+        } else {
+            check.each((index, node) => {
+                node.checked = false;
+            });
+        }
+    }
+
+    function clickItem(event, id) {
+        let AllCheckbox = document.getElementById(id);
+        if (!event.target.checked) {
+            AllCheckbox.checked = false;
+        } 
+    }
+
+    function inputSearch(event, id) {
+        if (event.target.value.length > 0) {
+            $(`#${id} .column-filter-item`).hide().filter(function () {
+                return $(this).text().toLowerCase().indexOf(event.target.value.toLowerCase()) != -1;
+            }).show();
+        }
+        else {
+            $(`#${id} .column-filter-item`).show();
+        }
+    }
+
+    function setNumberInputOne(node) {
+        let displayValOne = document.getElementById(`range1-${node}`);
+        let sliderOne = document.getElementById(`slider-1-${node}`);
+        let sliderTwo = document.getElementById(`slider-2-${node}`);
+
+        if (Number(displayValOne.value) >= Number(sliderTwo.value)) {
+            sliderOne.value = sliderTwo.value;
+            displayValOne.value = sliderTwo.value;
+        } else {
+            sliderOne.value = displayValOne.value;
+        }
+        clickApplyNumeric(node);
+        fillColor(node, "number");
+    }
+
+    function setNumberInputTwo(node) {
+        let displayValTwo = document.getElementById(`range2-${node}`);
+        let sliderOne = document.getElementById(`slider-1-${node}`);
+        let sliderTwo = document.getElementById(`slider-2-${node}`);
+
+        if (Number(displayValTwo.value) <= Number(sliderOne.value)) {
+            sliderTwo.value = sliderTwo.value;
+            displayValTwo.value = sliderTwo.value;
+        } else {
+            sliderTwo.value = displayValTwo.value;
+        }
+        clickApplyNumeric(node);
+        fillColor(node, "number");
+    }
+
+    function setDateInputOne(node) {
+        let sliderOne = document.getElementById(`slider-1-${node}`);
+        let sliderTwo = document.getElementById(`slider-2-${node}`);
+        let displayValOne = document.getElementById(`range1-${node}`);
+
+        let display_value = Date.parse(displayValOne.value)
+
+        if (display_value >= Number(sliderTwo.value)) {
+            sliderOne.value = sliderTwo.value;
+            displayValOne.value = formatDate(Number(sliderTwo.value)); 
+        } else {
+            sliderOne.value = display_value; 
+        }
+        clickApplyDate(node);
+        fillColor(node, "date");
+    }
+
+    function setDateInputTwo(node) {
+        let sliderOne = document.getElementById(`slider-1-${node}`);
+        let sliderTwo = document.getElementById(`slider-2-${node}`);
+        let displayValTwo = document.getElementById(`range2-${node}`);
+
+        let display_value = Date.parse(displayValTwo.value)
+
+        if (display_value <= Number(sliderOne.value)) {
+            sliderTwo.value = sliderOne.value;
+            displayValTwo.value = formatDate(Number(sliderOne.value)); 
+        } else {
+            sliderTwo.value = display_value; 
+        }
+        clickApplyDate(node);
+        fillColor(node, "date");
+    }
+
+    function clickResetRow(id) {
+        let result = [];
+        gridApi.forEachNode(elem => {
+            result.push(String(elem.data[id]));
+        });
+
+        let list = [...new Set(result)];
+
+        gridApi.setColumnFilterModel(id, { 
+            values: list
+        }).then(() => gridApi.onFilterChanged()).then(() => {
+            $(`.filter-wrapper .column-filter`).map((item, elem) => {
+                updateFilter(elem.id);
+            })
+            $(`.numeric-filter`).map((item, elem) => {
+                clickResetNumeric(elem.id);
+            })
+            $(`.date-filter`).map((item, elem) => {
+                clickResetDate(elem.id);
+            })
+        });
+
+        $(`#${id} input[type='text']`).val('');
+
+        $(`#${id} .column-filter-item input`).each((index, elem) => {
+            elem.checked = true;
+        });
+    }
+
+    function clickResetCols(id) {
+        event.preventDefault();
+
+        const columnDefs = gridApi.getColumnDefs();
+        columnDefs.forEach((colDef) => {
+            colDef.hide = false;
+        });
+
+        gridApi.setGridOption('columnDefs', columnDefs);
+
+        $(`#${id} .column-filter-item input`).each((index, elem) => {
+            elem.checked = true;
+        });
+
+        $(`#ag-cols input[type='text']`).val('');
+        $(`#${id} .column-filter-item`).show();
+    }
+
+    function slideOne(node, type=''){
+        let sliderOne = document.getElementById(`slider-1-${node}`);
+        let sliderTwo = document.getElementById(`slider-2-${node}`);
+        let displayValOne = document.getElementById(`range1-${node}`);
+
+        if (Number(sliderOne.value) >= Number(sliderTwo.value)) {
+            sliderOne.value = sliderTwo.value;
+        }
+
+        if (type == 'date')
+            displayValOne.value = formatDate(Number(sliderOne.value)); 
+        else
+            displayValOne.value = sliderOne.value;
+        fillColor(node, type);
+    }
+    function slideTwo(node, type=''){
+        let sliderOne = document.getElementById(`slider-1-${node}`);
+        let sliderTwo = document.getElementById(`slider-2-${node}`);
+        let displayValTwo = document.getElementById(`range2-${node}`);
+
+        if (Number(sliderTwo.value) <= Number(sliderOne.value)) {
+            sliderTwo.value = sliderOne.value;
+        }
+
+        if (type == 'date')
+            displayValTwo.value = formatDate(Number(sliderTwo.value)); 
+        else
+            displayValTwo.value = sliderTwo.value;
+        fillColor(node, type);
+    }
+    function fillColor(node, type) {
+        let sliderOne = document.getElementById(`slider-1-${node}`);
+        let sliderTwo = document.getElementById(`slider-2-${node}`);
+        let sliderTrack = document.querySelector(`.slider-track-${node}`);
+        let sliderMaxValue = sliderOne.max;
+        let sliderMinValue = sliderOne.min;
+
+        percent1 = ((sliderOne.value - sliderMinValue) / (sliderMaxValue - sliderMinValue)) * 100;
+        percent2 = ((sliderTwo.value - sliderMinValue) / (sliderMaxValue - sliderMinValue)) * 100;
+
+        if (type === "date")
+            sliderTrack.style.background = `linear-gradient(to right, #e5e5e5 ${percent1}% , #bababa ${percent1}% , #bababa ${percent2}%, #e5e5e5 ${percent2}%)`;
+        else sliderTrack.style.background = `linear-gradient(to right, #e5e5e5 ${percent1}% , #666666 ${percent1}% , #666666 ${percent2}%, #e5e5e5 ${percent2}%)`;
+    }
+
+    function clickResetNumeric(node) {
+        let sliderOne = document.getElementById(`slider-1-${node}`);
+        let sliderTwo = document.getElementById(`slider-2-${node}`);
+
+        let displayValOne = document.getElementById(`range1-${node}`);
+        let displayValTwo = document.getElementById(`range2-${node}`);
+
+        let result = [];
+
+        gridApi.forEachNode(elem => {
+            result.push(Number(elem.data[node]));
+        });
+
+        let maxValue = Math.max(...result);
+        let minValue = Math.min(...result);
+
+        sliderOne.min = minValue;
+        sliderOne.max = maxValue;
+        sliderTwo.min = minValue;
+        sliderTwo.max = maxValue;
+
+        sliderOne.value = minValue;
+        sliderTwo.value = maxValue;
+
+        displayValOne.value = minValue;
+        displayValTwo.value = maxValue;
+        gridApi.setColumnFilterModel(node, {
+            operator: 'AND',
+            conditions: [
+                {
+                    filterType: 'number',
+                    type: 'greaterThanOrEqual',
+                    filter: Number(minValue) - 0.0001
+                },
+                {
+                    filterType: 'number',
+                    type: 'lessThanOrEqual',
+                    filter: Number(maxValue) + 0.0001
+                }
+        ]}).then(() => gridApi.onFilterChanged())
+        .then(() => $(`.filter-wrapper .column-filter`).map((item, elem) => {
+            updateFilter(elem.id);
+        }));
+
+        let sliderTrack = document.querySelector(`.slider-track-${node}`);
+        sliderTrack.style.background = `#3e3d3d`;
+    }
+
+    function clickResetDate(node) {
+        let sliderOne = document.getElementById(`slider-1-${node}`);
+        let sliderTwo = document.getElementById(`slider-2-${node}`);
+
+        let displayValOne = document.getElementById(`range1-${node}`);
+        let displayValTwo = document.getElementById(`range2-${node}`);
+        
+        let result = [];
+
+        gridApi.forEachNode(elem => {
+            result.push(Date.parse(elem.data[node]));
+        });
+
+        let maxValue = Math.max(...result) + 24*60*60*1000;
+        let minValue = Math.min(...result) - 24*60*60*1000;
+
+        sliderOne.min = minValue;
+        sliderOne.max = maxValue;
+        sliderTwo.min = minValue;
+        sliderTwo.max = maxValue;
+
+        sliderOne.value = minValue;
+        sliderTwo.value = maxValue;
+
+        displayValOne.value = formatDate(Number(sliderOne.min)); 
+        displayValTwo.value = formatDate(Number(sliderOne.max)); 
+
+        gridApi.setColumnFilterModel(node, {
+            operator: 'AND',
+            conditions: [
+                {
+                    filterType: 'number',
+                    type: 'greaterThanOrEqual',
+                    filter: formatDate(Number(minValue))
+                },
+                {
+                    filterType: 'number',
+                    type: 'lessThanOrEqual',
+                    filter: formatDate(Number(maxValue))
+                }
+        ]}).then(() => gridApi.onFilterChanged())
+        .then(() => $(`.filter-wrapper .column-filter`).map((item, elem) => {
+            updateFilter(elem.id);
+        }));
+
+        let sliderTrack = document.querySelector(`.slider-track-${node}`);
+        sliderTrack.style.background = `#3e3d3d`;
+    }
+
+    function clickApplyDate(node) {
+        let sliderOne = document.getElementById(`slider-1-${node}`).value;
+        let sliderTwo = document.getElementById(`slider-2-${node}`).value;
+
+        gridApi.setColumnFilterModel(node, {
+            operator: 'AND',
+            conditions: [
+                {
+                    filterType: 'date',
+                    type: 'greaterThan',
+                    dateFrom: formatDate(Number(sliderOne))
+                },
+                {
+                    filterType: 'date',
+                    type: 'lessThan',
+                    dateFrom: formatDate(Number(sliderTwo))
+                }
+        ]}).then(() => {
+            gridApi.onFilterChanged();
+        })
+        .then(() => $(`.filter-wrapper .column-filter`).map((item, elem) => {
+            updateFilter(elem.id);
+        }));
+    }
+    function clickApplyNumeric(node) {
+        let sliderOne = document.getElementById(`slider-1-${node}`).value;
+        let sliderTwo = document.getElementById(`slider-2-${node}`).value;
+        
+        console.log(sliderOne, sliderTwo)
+        gridApi.setColumnFilterModel(node, {
+            operator: 'AND',
+            conditions: [
+                {
+                    filterType: 'number',
+                    type: 'greaterThanOrEqual',
+                    filter: parseFloat(sliderOne) - 0.0001
+                },
+                {
+                    filterType: 'number',
+                    type: 'lessThanOrEqual',
+                    filter: parseFloat(sliderTwo) + 0.0001
+                }
+        ]}).then(() => gridApi.onFilterChanged())
+        .then(() => $(`.filter-wrapper .column-filter`).map((item, elem) => {
+            updateFilter(elem.id);
+        }));
+    }
+</script>
+
+</body>
+</html>
